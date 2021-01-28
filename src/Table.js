@@ -1,50 +1,15 @@
 import React from 'react'
-import {Layer, Rect, Stage, Text, Image} from 'react-konva';
+import {Layer, Rect, Stage, Text} from 'react-konva';
 import tablebackground from './images/tabletop.jpg'
 import Instructions from './player';
-import useImage from 'use-image';
+import CardImage from './card';
 
-var cardBackUrl = 'https://i.pinimg.com/564x/10/80/a4/1080a4bd1a33cec92019fab5efb3995d.jpg'
-
-function CardImage(props) {  
-    const [back] = useImage(cardBackUrl);
-    return (
-      <Image image={back} x={props.x} y={props.y} width={cardwidth} rotation = {props.rotation} height={cardheight} shadowBlur={15} player={props.player} onClick={props.onClick}/>
-    );
-  }
-/* to do:
-
--stop bench playing from bottom layer if cards are on the top!!
--Bench ready up validation - put in phase called waiting when they have readied up where they cant do anything
-----use played by to check if moves from / to bench!!!!!
-other then re order the cards in their deck
--bug with burning 7's - need to check last card played -not the top of the table!!!!!
--the invisbile rendering is broke - use while instead
-
------- CHECK OVER MOVE VALIDATION ---> USING LAST PLAYED /TOP TABLE IN WRONG PLACES
-
-just add the validatin in for these check when chcking play bench
-    -end turn playing last card in top layer
-    -enter this new stage at the start of the next turn
-    only diff is that it if move invalid force card onto the table and then only let them pickup
-
-
-
--message displayer
--possible move checker - > show message each round showing currnt player turn
-    -                  - > on your turn state if they cant go and show pass button to click
-
-    Clean-up:
--figure out how to speerate render class methods - put in other js file
--UI convenience functions:
-    -render button - pass in coords and onlick behaviour + props.choice=true --> can make selection
-*/
 const screenx = 1200;
 const screeny = 800;
 const padx = 50;
 const pady = 100;
-const cardwidth = 50;
-const cardheight = 70;
+const cardwidth = 60;
+const cardheight = 84;
 
 
 export class SHEDtable extends React.Component {
@@ -83,6 +48,8 @@ export class SHEDtable extends React.Component {
         this.props.moves.PickupTable()
     };
     
+
+    
   
     renderCard =  (props) => {
         let card = props.card
@@ -93,44 +60,19 @@ export class SHEDtable extends React.Component {
             let x = props.x;
             let y = props.y;
             let orientation = props.orientation
-            let cardtext = card.name()
-            let opacity = 1;
 
-            //move card up a bit if invisble
-            if (card.invisible && props.reverse===false) {
-                opacity = 0.5
-            }; 
-            
-            let xoffset; let yoffset; let rotation =0;
+            let rotation;
             if (orientation==='left'|| orientation==='right') {
-                xoffset=-cardheight
-                yoffset=cardwidth/2
                 rotation=90
             } else if (orientation==='bottom' || orientation==='top'){
-                xoffset=cardwidth/2
-                yoffset=cardheight
                 rotation=0
             } else {
-                xoffset=cardwidth/2
-                yoffset=cardheight
                 rotation=0
-            };
+            }; 
+            return(
+                <CardImage card={props.card} x={x} y={y} width={cardwidth} height={cardheight} rotation={rotation} fill={'blue'} shadowBlur={15} reverse={props.reverse} player={props.player} onClick={props.onClick}/>
+                )
             
-            
-            if (props.reverse) {
-                return(
-                    <React.Fragment>
-                    <CardImage x={x} y={y} width={cardwidth} rotation = {rotation} height={cardheight} fill={'blue'} shadowBlur={15} player={props.player} onClick={props.onClick}/>
-                    </React.Fragment>
-                    )
-            } else {
-                return(
-                    <React.Fragment>
-                    <Rect x={x} y={y} width={cardwidth} rotation={rotation} height={cardheight} opacity={opacity} fill={'red'} shadowBlur={15} player={props.player} onClick={props.onClick}/>
-                    <Text x={x+xoffset} y={y+yoffset} rotation={rotation-90} opacity={opacity} text={cardtext} fontSize={18} />
-                    </React.Fragment>
-                    )
-            };
         };
     };
 
@@ -138,23 +80,25 @@ export class SHEDtable extends React.Component {
         let player = props.player; //player who's hand is being rendered
         let thisPlayerNumber = parseInt(this.props.playerID); //the current player
         let hand = this.props.G.hands[player];
-        let x = props.x; let y = props.y; let space = props.space;
+        let x = props.x; let y = props.y; 
         let orientation=props.orientation;
         let cards = [];
+
+        let space = 20
 
         for (let i= 0; i < hand.length; i++) {
             let xcord; let ycord;
             if (orientation==='left') {
                 xcord = x + padx
-                ycord = y+(i*space) - screeny + pady + cardwidth
+                ycord = y+(i*space) - screeny/2 
             } else if (orientation==='right') {
                 xcord = x + screenx - cardheight
-                ycord = y+(i*-space) - cardwidth
+                ycord = y+(i*-space) - screeny/2 + pady
             } else if (orientation==='bottom') {
-                xcord = x+(i*space)
+                xcord = x+(i*space) + screenx/2 -cardwidth*i -padx
                 ycord = y
             } else if (orientation==='top') {
-                xcord = x+(i*-space) + screenx - padx - cardheight
+                xcord = x+(i*space) + screenx/2 -cardwidth*i -padx
                 ycord = y+pady-screeny+cardheight/2
             } else {
                 xcord = x+(i*space)
@@ -165,7 +109,9 @@ export class SHEDtable extends React.Component {
             let phase = this.props.ctx.phase;
             let clickAction;
             if (phase === 'StartPhase') {clickAction = 'addBench'} else {clickAction = 'play'};
-
+            if (player===thisPlayerNumber) {
+                console.log('cards in hand', hand)
+            }
             cards.push(
             <this.renderCard
             key={i}
@@ -185,7 +131,6 @@ export class SHEDtable extends React.Component {
         let player = props.player; //the players cards being rendered
         let bench = this.props.G.benchs[player]
 
-
         let x = props.x; let y = props.y; let xspace = cardwidth+20; let yspace = 20; let orientation=props.orientation
         let padbench = 20;
         let cards=[];
@@ -194,8 +139,6 @@ export class SHEDtable extends React.Component {
         let phase = this.props.ctx.phase;
         let clickAction;
         if (phase === 'StartPhase') {clickAction = 'takeBench'} else {clickAction = 'playBench'};
-        
-        
         
         for (let j=0; j<3; j++) {
             //find number of cards at postion.
@@ -217,8 +160,6 @@ export class SHEDtable extends React.Component {
                     ycord = y + (j*xspace) -screeny/2
                 };
 
-
-            
                 cards.push(
                     <this.renderCard 
                     reverse={i===0}
@@ -249,24 +190,23 @@ export class SHEDtable extends React.Component {
         let table = this.props.G.table
         let x = props.x;
         let y = props.y;
-        let tableCardsToRender = [];
-       
-        
-        //recursivly get invisible stacked cards to show bottom most
-        function getTableCards(table, position) { 
-            let thiscard = table[position];
-            tableCardsToRender.push( thiscard )
-            if (thiscard.invisible && position >=1) {
-                getTableCards(table, (position-1), tableCardsToRender)
-            } else { return };
-        };
-        
+
         if (table.length > 0) {
+            let tableCardsToRender = [];
+            let index = table.length-1
+            while (true) {
+                let card = table[index]
+                tableCardsToRender.push(card)
+                if (card.invisible === false || index===0) {
+                    break
+                }
+                index--
+            }
             
-            getTableCards(table, (table.length-1))
+            //getTableCards(table, (table.length-1))
             let renderedCards = [];
             for (let i=0; i<tableCardsToRender.length; i++) {
-                renderedCards.push( <this.renderCard card={tableCardsToRender[i]} onClick={()=>this.clickTable()} x={x} y={y}/> );
+                renderedCards.push( <this.renderCard card={tableCardsToRender[i]} reverse={false} onClick={()=>this.clickTable()} x={x} y={y}/> );
             }
             return renderedCards.reverse();
         } else {
@@ -298,7 +238,7 @@ export class SHEDtable extends React.Component {
 
         return (
             <React.Fragment>
-                <this.renderHand x={x} y={y} orientation={orientation} space={80} player={props.player}/> 
+                <this.renderHand x={x} y={y} orientation={orientation} player={props.player}/> 
                 <this.renderBench x={x} y={y} orientation={orientation} player={props.player}/>
             </React.Fragment> 
         )
@@ -427,7 +367,6 @@ export class SHEDtable extends React.Component {
         //loop over all 4 players and render them accordingly
         let thisPlayerNumber = parseInt(this.props.playerID);
         let Gameover = this.props.ctx.gameover;
-        console.log('Gameover: ', Gameover)
          if (Gameover !== undefined) {
              return (
                 <div>

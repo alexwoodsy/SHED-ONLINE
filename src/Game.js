@@ -137,7 +137,7 @@ function GameOver(G, ctx) {
 
 
 function GetDeck() {
-    let suits = ["Hearts", "Diamonds", "Spades", "Clubs"];
+    let suits = ["hearts", "diamonds", "spades", "clubs"];
     let ranks = [2,3,4,5,6,7,8,9,10,11,12,13,14];
     let deck = []
         for (let i=0; i < suits.length; i++) {
