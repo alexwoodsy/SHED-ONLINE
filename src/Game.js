@@ -177,7 +177,7 @@ function PickupTable(G, ctx) {
 //draw the card from deck and add the end of hand
 function DrawCard(G, ctx) {
     G.hands[ctx.currentPlayer].push( G.deck.pop() )  
-    console.log("added to hand")
+    //console.log("added to hand")
 
     if (G.hands[ctx.currentPlayer].length >=3) {ctx.events.endTurn()}
     
@@ -194,11 +194,11 @@ function PlayCard(G, ctx, position) {
         
         //add to table
         G.table = G.table.concat(G.hands[ctx.currentPlayer].splice(position, 1))
-        console.log("added to table") 
+        //console.log("added to table") 
 
         
         //end of play behaviour
-        console.log('can play again?', CanPlayAgain(G, ctx))
+        //console.log('can play again?', CanPlayAgain(G, ctx))
        if (CanPlayAgain(G, ctx) === false) {
            //let topCard = G.table[G.table.length-1]
             //update gamestate if card(s) played have magic behaviour
@@ -220,7 +220,7 @@ function TakeBench(G, ctx, player, position) {
         let card = G.benchs[player][position].pop()
         card.playedBy = ctx.currentPlayer //used to check if taken from bench
         G.hands[player].push( card ) 
-        console.log('taking from bench')
+        //console.log('taking from bench')
     };
 };
 
@@ -238,7 +238,7 @@ function AddBench(G, ctx, player, position) {
     if (freeBenchPos !== null && G.hands[player][position].playedBy===null) {
         G.benchs[player][freeBenchPos].push( G.hands[player][position] )
         G.hands[player].splice(position, 1)
-        console.log('adding to bench')
+        //console.log('adding to bench')
     } else {
         return INVALID_MOVE;
     };
@@ -246,7 +246,7 @@ function AddBench(G, ctx, player, position) {
 
 function PlayBench(G, ctx, position) {
     let PlayablePositions = BenchPlayable(G, ctx).positions;
-    console.log('playable pos', PlayablePositions)
+    //console.log('playable pos', PlayablePositions)
     let StartLayer = BenchPlayable(G, ctx).layer;
     let section = G.benchs[ctx.currentPlayer][position];
     let card = section[section.length-1];
@@ -259,7 +259,7 @@ function PlayBench(G, ctx, position) {
         if (position===PlayablePositions[i]) {correctLayer = true}
     }
 
-    console.log('correct layer:', correctLayer)
+    //console.log('correct layer:', correctLayer)
     if ( MoveValid(G, ctx, card) && correctLayer) {
         //play the card
         card.playedBy = ctx.currentPlayer;
@@ -272,7 +272,7 @@ function PlayBench(G, ctx, position) {
         //console.log('bench playable after',position, currentPlayablepos )
 
         if (CurrentLayer!==StartLayer) { //check if the move should end
-            console.log('ending turn as cant play from top and bottom')
+            //console.log('ending turn as cant play from top and bottom')
             MoveIsMagic(G, ctx)
             EndPlay(G, ctx);
         } else if (CurrentLayer===0 && currentPlayablePositions.length ===0) {
@@ -284,11 +284,11 @@ function PlayBench(G, ctx, position) {
             MoveIsMagic(G, ctx)
             EndPlay(G, ctx);
         } else {
-            console.log('can PLAY Again from the TOP row ') ///DEBUGGING
+            //console.log('can PLAY Again from the TOP row ') ///DEBUGGING
         };
     } else {
         if (StartLayer===1) {
-            console.log('move on top layer is invalid')
+            //console.log('move on top layer is invalid')
             return INVALID_MOVE;
         } else if (StartLayer===0) {
             card.playedBy = ctx.currentPlayer;
@@ -296,7 +296,7 @@ function PlayBench(G, ctx, position) {
             G.table.push( G.benchs[ctx.currentPlayer][position].pop() ) 
             //do not do magic in this case
             ctx.events.setStage('pickup')
-            console.log('card was not valid move so now pickup')
+            //console.log('card was not valid move so now pickup')
         }
         
     };
@@ -421,7 +421,7 @@ function MoveValid(G, ctx, card) {
         //console.log('standard case?', topCard.rank > card.rank, topCard.rank, card.rank)
         
     };
-    console.log('move valid', checkval)
+   //console.log('move valid', checkval)
     //valid unless a check above says otherwise
     return checkval;
 };
@@ -541,7 +541,7 @@ function MoveIsMagic(G, ctx) {
             G.magicEvent = 'reset'
             break
         default: //when movetype is null due card being normal
-            console.log('standard')
+            //console.log('standard')
             G.magicEvent = null
             break // do nothing - allow us to track magic events 
     };
