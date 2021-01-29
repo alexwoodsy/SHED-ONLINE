@@ -48,8 +48,6 @@ export class SHEDtable extends React.Component {
         this.props.moves.PickupTable()
     };
     
-
-    
   
     renderCard =  (props) => {
         let card = props.card
@@ -109,9 +107,7 @@ export class SHEDtable extends React.Component {
             let phase = this.props.ctx.phase;
             let clickAction;
             if (phase === 'StartPhase') {clickAction = 'addBench'} else {clickAction = 'play'};
-            if (player===thisPlayerNumber) {
-                console.log('cards in hand', hand)
-            }
+           
             cards.push(
             <this.renderCard
             key={i}
