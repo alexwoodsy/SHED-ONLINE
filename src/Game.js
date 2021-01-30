@@ -6,6 +6,7 @@ var emptyDeck = false;
 
 
 export const SHED = {
+    name: 'SHED',
     setup: ctx => ({ 
         deck: GetDeck(),
         hands: Array(ctx.numPlayers).fill(Array(0)),
@@ -125,7 +126,6 @@ class Card {
             };
         }
         return magicCheck
-
     }; 
 
     

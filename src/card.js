@@ -39,7 +39,7 @@ function CardImage(props) {
     const [front] =useImage(cardImg)
 
     
-    let cardtext = card.name()
+    //let cardtext = card.name()
     let opacity = 1;
 
     if (card.invisible && props.reverse===false) {
@@ -61,8 +61,8 @@ function CardImage(props) {
           );
     } else {
         return (
-            <React.Fragment key ={cardtext}>
-                <Image id={cardtext} image={front} x={props.x} y={props.y} width={props.width} opacity={opacity} rotation = {props.rotation} height={props.height} shadowBlur={15} player={props.player} onClick={props.onClick}/>
+            <React.Fragment>
+                <Image image={front} x={props.x} y={props.y} width={props.width} opacity={opacity} rotation = {props.rotation} height={props.height} shadowBlur={15} player={props.player} onClick={props.onClick}/>
                 
             </React.Fragment>
             );
