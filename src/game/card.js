@@ -72,5 +72,5 @@ function CardImage(props) {
 
 //<Text x={props.x} y={props.y} rotation={props.rotation-90} opacity={opacity} text={cardtext} fontSize={18} />
 
-
-  export default CardImage
+export default CardImage
+  

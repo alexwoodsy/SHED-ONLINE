@@ -1,6 +1,6 @@
-import React from 'react'
+import React from 'react';
 import {Layer, Rect, Stage, Text} from 'react-konva';
-import tablebackground from './images/tabletop.jpg'
+import tablebackground from '../images/tabletop.jpg'
 import Instructions from './player';
 import CardImage from './card';
 
@@ -69,7 +69,7 @@ export class SHEDtable extends React.Component {
                 rotation=0
             }; 
             return(
-                <CardImage card={props.card} x={x} y={y} width={cardwidth} height={cardheight} rotation={rotation} fill={'blue'} shadowBlur={15} reverse={props.reverse} player={props.player} onClick={props.onClick}/>
+                <CardImage card={props.card} x={x} y={y} width={cardwidth} height={cardheight} rotation={rotation} fill={'blue'} shadowBlur={15} reverse={props.reverse} player={props.player} onClick={props.onClick} />
                 )
             
         };

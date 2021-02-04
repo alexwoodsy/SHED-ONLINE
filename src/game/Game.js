@@ -1,5 +1,6 @@
 import { INVALID_MOVE } from 'boardgame.io/core';
 
+
 // VARS TO CHNAGE FOR DEBUGGING 
 var cardsInHand = 3;
 var emptyDeck = false;
@@ -105,7 +106,7 @@ export const SHED = {
 
 
 //card class
-class Card {
+export class Card {
     constructor(suit, rank) {
         this.suit = suit;
         this.rank = rank;
@@ -552,8 +553,4 @@ function MoveIsMagic(G, ctx) {
 
 
 
-
-
-  
-export default Card
 
