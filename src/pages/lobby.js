@@ -15,15 +15,15 @@ import { SHEDtable } from '../game/Table'
 
 
 
-//const PORT = process.env.PORT || 8000; // was in use on local depoloy
-//const { origin, protocol, hostname} = window.location;
-//const SERVER = `${protocol}//${hostname}:${PORT}`;
+// const PORT = process.env.PORT || 8000; // was in use on local depoloy
+// const { origin, protocol, hostname} = window.location;
+// const SERVER = `${protocol}//${hostname}:${PORT}`;
 //const importedGames = [{ game: SHED, board: SHEDtable }];
 
-port = process.env.PORT || 80
+
+const port = process.env.PORT || 80;
 
 const SERVER = `${protocol}//${hostname}:${port}`;
-
 
 
 
