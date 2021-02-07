@@ -32,7 +32,7 @@ const SHEDClient = Client({
     game: SHED,
     board: SHEDtable,
     debug: true,
-    multiplayer: SocketIO({server: SERVER}),
+    multiplayer: SocketIO({server: `${protocol}//${hostname}`}),
     loading: loading,
   });
 
