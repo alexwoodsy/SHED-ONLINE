@@ -16,9 +16,15 @@ import { SHEDtable } from '../game/Table'
 
 
 //const PORT = process.env.PORT || 8000; was in use on local depoloy
-const { protocol, hostname, port} = window.location;
-const SERVER = `${protocol}//${hostname}:${port}`;
+//const { protocol, hostname, port} = window.location;
+//const SERVER = `${protocol}//${hostname}:${port}`;
 //const importedGames = [{ game: SHED, board: SHEDtable }];
+
+
+//directly from docs
+const { origin, protocol, hostname } = window.location;
+const SERVER = `${protocol}//${hostname}:${origin}`;
+
 
 
 const SHEDClient = Client({
