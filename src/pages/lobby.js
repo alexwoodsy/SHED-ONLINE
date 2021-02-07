@@ -158,8 +158,8 @@ export const Lobby = () => {
 
     function testingConnection (adress) {
         console.log('trying server:', adress)
-        test = new LobbyClient({ server: adress })
-        test.listGames().then(console.log).catch(console.error);
+        let testcon = new LobbyClient({ server: adress })
+        testcon.listGames().then(console.log).catch(console.error);
     }
 
     testingConnection(origin)
