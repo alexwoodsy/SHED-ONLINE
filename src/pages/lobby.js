@@ -163,7 +163,7 @@ export const Lobby = () => {
     }
 
     testingConnection(origin)
-    testingConnection(`${protocol}//${hostname}:${PORT}`)
+    testingConnection(`${protocol}//${hostname}:${port}`)
     testingConnection(`${protocol}//${hostname}`)
     testingConnection(`${protocol}//${hostname}:${80}`)
 
