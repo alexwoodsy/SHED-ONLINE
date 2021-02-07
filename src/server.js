@@ -4,7 +4,7 @@ import serve from 'koa-static';
 const SHED = require("./game/Game").SHED;
 
 const server = Server({ 
-  games: [SHED],
+  games: [SHED]
  });
 
  const PORT = process.env.PORT || 8000;

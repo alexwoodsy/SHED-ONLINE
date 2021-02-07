@@ -24,7 +24,7 @@ const { origin, protocol, hostname} = window.location;
 
 const port = process.env.PORT || 8000;
 
-const SERVER = `${protocol}//${hostname}:${port}`;
+const SERVER = `${protocol}//${hostname}`;
 
 
 
