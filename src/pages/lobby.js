@@ -15,15 +15,15 @@ import { SHEDtable } from '../game/Table'
 
 
 
-//const PORT = process.env.PORT || 8000; was in use on local depoloy
-//const { protocol, hostname, port} = window.location;
-//const SERVER = `${protocol}//${hostname}:${port}`;
+const PORT = process.env.PORT || 8000; // was in use on local depoloy
+const { origin, protocol, hostname} = window.location;
+const SERVER = `${protocol}//${hostname}:${PORT}`;
 //const importedGames = [{ game: SHED, board: SHEDtable }];
 
 
-//directly from docs
-const { origin, protocol, hostname } = window.location;
-const SERVER = `${protocol}//${hostname}:${origin}`;
+//last try
+// const { origin, protocol, hostname } = window.location;
+// const SERVER = `${protocol}//${hostname}:${origin}`;
 
 
 
@@ -111,12 +111,16 @@ export const Lobby = () => {
 
     const Create  = async (numPlayers) => {
         try {
+            console.log('lobby client',lobbyClient)
+            console.log('server', SERVER)
+            console.log('window loc', origin, protocol, hostname)
             const { matchID } = await lobbyClient.createMatch('SHED', {
                 numPlayers: numPlayers
                 });
             setmatchID(matchID)
         } catch(err) {
             alert('could no create match - check connection')
+            console.error(err)
         }
         
     };
