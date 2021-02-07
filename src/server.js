@@ -20,7 +20,7 @@ const lobbyConfig = {
 
   server.run({
     port: PORT,
-    callback: () => {
+    caback: () => {
       server.app.use(
         async (ctx, next) => await serve(frontEndAppBuildPath)(Object.assign(ctx, { path: "index.html" }), next)
       );
