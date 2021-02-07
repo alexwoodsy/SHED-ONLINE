@@ -22,7 +22,7 @@ import { SHEDtable } from '../game/Table'
 
 const { origin, protocol, hostname} = window.location;
 
-const port = process.env.PORT || 80;
+const port = process.env.PORT || 8000;
 
 const SERVER = `${protocol}//${hostname}:${port}`;
 
@@ -32,7 +32,7 @@ const SHEDClient = Client({
     game: SHED,
     board: SHEDtable,
     debug: true,
-    multiplayer: SocketIO({server: `${protocol}//${hostname}`}),
+    multiplayer: SocketIO({server: SERVER}),
     loading: loading,
   });
 
