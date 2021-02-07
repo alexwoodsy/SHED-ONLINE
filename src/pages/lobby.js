@@ -155,6 +155,18 @@ export const Lobby = () => {
         //event.preventDefault();
     }
 
+
+    function testingConnection (adress) {
+        console.log('trying server:', adress)
+        test = new LobbyClient({ server: adress })
+        test.listGames().then(console.log).catch(console.error);
+    }
+
+    testingConnection(origin)
+    testingConnection(`${protocol}//${hostname}:${PORT}`)
+    testingConnection(`${protocol}//${hostname}`)
+    testingConnection(`${protocol}//${hostname}:${80}`)
+
     if (canJoin) {
         return (
             <SHEDClient 

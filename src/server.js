@@ -9,9 +9,9 @@ const server = Server({
 
  const PORT = process.env.PORT || 8000;
 
-//  const lobbyConfig = {
-//   apiCallback: () => console.log('Running Lobby API on port 8000...'),
-// };
+ const lobbyConfig = {
+  apiCallback: () => console.log('Running Lobby API on port 8000...'),
+};
 
  // Build path relative to the server.js file
  const frontEndAppBuildPath = path.resolve(__dirname, './build');
@@ -24,4 +24,4 @@ const server = Server({
        next
      )
    )
- });
+ },lobbyConfig);
