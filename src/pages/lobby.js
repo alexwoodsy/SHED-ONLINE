@@ -32,7 +32,7 @@ const SHEDClient = Client({
     game: SHED,
     board: SHEDtable,
     debug: true,
-    multiplayer: SocketIO({server: SERVER}),
+    multiplayer: SocketIO({server: origin}),
     loading: loading,
   });
 
@@ -54,7 +54,7 @@ export const Lobby = () => {
        
     
     
-    let lobbyClient = useMemo(()=> new LobbyClient({ server: SERVER }), [])//empty dependency means init once
+    let lobbyClient = useMemo(()=> new LobbyClient({ server: origin }), [])//empty dependency means init once
 
     useEffect(()=>{
         const ConnectClient = async () => {
