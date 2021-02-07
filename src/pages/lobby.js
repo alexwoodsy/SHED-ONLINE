@@ -4,7 +4,7 @@ import { LobbyClient } from 'boardgame.io/client';
 import { SocketIO } from 'boardgame.io/multiplayer'
 import { SHED } from '../game/Game';
 import { SHEDtable } from '../game/Table'
-//import { Async } from 'boardgame.io/dist/types/src/server/db/base';
+
 
 // import {
 //     BrowserRouter as Router,
@@ -15,10 +15,10 @@ import { SHEDtable } from '../game/Table'
 
 
 
-const PORT = process.env.PORT || 8000;
-const { protocol, hostname,} = window.location;
-const SERVER = `${protocol}//${hostname}:${PORT}`;
-
+//const PORT = process.env.PORT || 8000; was in use on local depoloy
+const { protocol, hostname, port} = window.location;
+const SERVER = `${protocol}//${hostname}:${port}`;
+//const importedGames = [{ game: SHED, board: SHEDtable }];
 
 
 const SHEDClient = Client({
