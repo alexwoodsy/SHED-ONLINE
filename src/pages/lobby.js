@@ -20,6 +20,7 @@ import { SHEDtable } from '../game/Table'
 // const SERVER = `${protocol}//${hostname}:${PORT}`;
 //const importedGames = [{ game: SHED, board: SHEDtable }];
 
+const { origin, protocol, hostname} = window.location;
 
 const port = process.env.PORT || 80;
 
