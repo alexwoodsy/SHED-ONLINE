@@ -14,16 +14,16 @@ const frontEndAppBuildPath = path.resolve(__dirname, './build');
 server.app.use(serve(frontEndAppBuildPath))
 
 const lobbyConfig = {
+    apiPort: PORT,
     apiCallback: () => console.log('Running Lobby API on port 8080...'),
   };
 
-server.run(PORT, () => {
+  server.run({
+    port: PORT,
+    callback: () => {
       server.app.use(
-    async (ctx, next) => await serve(frontEndAppBuildPath)(
-      Object.assign(ctx, { path: 'index.html' }),
-      next
-    )
-  )
+        async (ctx, next) => await serve(frontEndAppBuildPath)(Object.assign(ctx, { path: "index.html" }), next)
+      );
     },
-    lobbyConfig,
-);
+    lobbyConfig: lobbyConfig,
+  });
