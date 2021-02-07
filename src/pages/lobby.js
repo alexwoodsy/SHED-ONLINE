@@ -18,8 +18,7 @@ import { SHEDtable } from '../game/Table'
 const PORT = process.env.PORT || 8000;
 const { protocol, hostname,} = window.location;
 const SERVER = `${protocol}//${hostname}:${PORT}`;
-// const SERVER = `${protocol}//${hostname}:${port}`;
-//const SERVER = 'localhost:8000'
+
 
 
 const SHEDClient = Client({
