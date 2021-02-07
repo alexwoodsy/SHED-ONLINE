@@ -50,7 +50,6 @@ export class SHEDtable extends React.Component {
     
   
     renderCard =  (props) => {
-        console.log(this.props.ctx)
         let card = props.card
         if (card === null) {
             console.alarm('null card render attmepted')

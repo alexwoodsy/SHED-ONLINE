@@ -1,17 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Client } from 'boardgame.io/react';
 import { LobbyClient } from 'boardgame.io/client';
 import { SocketIO } from 'boardgame.io/multiplayer'
-import { SHED, SHEDtable } from '../game';
+import { SHED } from '../game/Game';
+import { SHEDtable } from '../game/Table'
+//import { Async } from 'boardgame.io/dist/types/src/server/db/base';
+
+// import {
+//     BrowserRouter as Router,
+//     Switch,
+//     Route,
+//     Redirect,
+//   } from "react-router-dom";
 
 
-// const { origin, protocol, hostname } = window.location;
-// const port = 8000;
+
+const PORT = process.env.PORT || 8000;
+const { protocol, hostname,} = window.location;
+const SERVER = `${protocol}//${hostname}:${PORT}`;
 // const SERVER = `${protocol}//${hostname}:${port}`;
-const SERVER = 'localhost:8000'
+//const SERVER = 'localhost:8000'
 
 
-export const SHEDClient = Client({
+const SHEDClient = Client({
     game: SHED,
     board: SHEDtable,
     debug: true,
@@ -25,142 +36,172 @@ function loading () {
   
 }
 
-export class Lobby extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { 
-            canJoin: false,
-            playerID: null, 
-            matchID: '', 
-            playerName: '',
-            playerCredentials: null,
+export const Lobby = () => {
+    
+    const [canJoin, setcanJoin] = useState(false);
+    const [playerID, setplayerID] = useState(null);
+    const [matchID, setmatchID] = useState('')
+    const [playerName, setplayerName] = useState('')
+    const [playerCredentials, setplayerCredentials] = useState(null)
+    //const gettingSeat = useRef(false);
+    const connectingClient = useRef(false);
+       
+    
+    
+    let lobbyClient = useMemo(()=> new LobbyClient({ server: SERVER }), [])//empty dependency means init once
 
-        };
-        this.lobbyClient = null;
-    }
-
-
-    handleChangeJoinMatch = (event) => {
-        this.setState({matchID: event.target.value})
-    };
-
-    handleChangePlayerName = (event) => {
-        this.setState({playerName: event.target.value})
-    };
-
-    async handleJoin (event) {
-        event.preventDefault()
-        console.log(this.getMatchJoining())
-        const { playerCredentials } = await this.lobbyClient.joinMatch(
-            'SHED',
-            this.state.matchID,
-            {
-              playerID: this.state.playerID,
-              playerName: this.state.playerName,
+    useEffect(()=>{
+        const ConnectClient = async () => {
+            if (playerID !== null) {
+                const { playerCredentials } = await lobbyClient.joinMatch(
+                        'SHED',
+                        matchID,
+                        {
+                            playerID: playerID,
+                            playerName: playerName,
+                        },
+                    );
+                    setcanJoin(true);
+                    setplayerCredentials(playerCredentials); 
+                                
+            } else {
+                alert('no room in game/ no game found');
             }
-          );
-        this.setState({playerCredentials: playerCredentials})
+        };
+        if (connectingClient.current) {
+            ConnectClient(playerName)
+            connectingClient.current = false;
+        };
+        
+    }, [playerID, playerName, lobbyClient, matchID])
+
+    
+    const getFreeSeat = async () => {
+        //check if joining is possible 
+       // console.log('joining match id', matchID)
+       try {
+        const matchJoining = await lobbyClient.getMatch('SHED', matchID)
+        //console.log("joining", matchJoining)
+        let freeSeat = null;
+        for (let i=0; i < matchJoining.players.length; i++) {
+            //console.log('checking players', matchJoining.players[i].name)
+            if (typeof matchJoining.players[i].name === 'undefined') {
+                freeSeat = i.toString()
+                break;
+            }
+        }
+        setplayerID(freeSeat)
+       } catch(err) {
+           console.log(matchID, err)
+        alert('could not find match')
+       }
+    }
+
+    
+    const Join = async () => {
+        getFreeSeat()
+        connectingClient.current = true;
+        
     };
 
-    //need to use game/matchID to create lobby in
-    async handleCreateMatch (numPlayers) {
+    const Create  = async (numPlayers) => {
+        try {
+            const { matchID } = await lobbyClient.createMatch('SHED', {
+                numPlayers: numPlayers
+                });
+            setmatchID(matchID)
+        } catch(err) {
+            alert('could no create match - check connection')
+        }
         
-        console.log(SERVER)
-        this.lobbyClient  = new LobbyClient(SERVER);
+    };
 
-        //create the game and assign match ID to state:
-        const { matchID } = await this.lobbyClient.createMatch('SHED', {
-            numPlayers: numPlayers
-          });
+    function handleChangeJoinMatch (event) {
+        setmatchID(event.target.value)
+    };
 
-        this.setState({matchID: matchID}) //autofills
-        
-    }
+    function handleChangePlayerName (event) {
+        setplayerName(event.target.value)
+    };
 
-    //gets info on game currently joining so we can assign this client an ID
-    async getMatchJoining() {
-        const match = await this.lobbyClient.getMatch('SHED', this.state.matchID);
-        const playersInMatch = match.players;
+    function handleJoin (event) {
+        if (playerName.length!==0) {
+            if (matchID.length === 9) {
+                Join(); 
+            event.preventDefault();
+            } else {
+                alert('match ID incorrect')
+            }
+        } else {
+            alert('must enter a name before joining!')
+        }
+        event.preventDefault();
+    };
 
-    }
-    
-    
-    createMatch = () => {
-        //change to be a selection thing 0-4 for the number of players
+    function handleCreateMatch (event) {
         let numPlayers = 2;
-        if (this.state.playerID === null) {
-            return (
-                <div>
-                    <h2>Create Match</h2>
-                    <button onClick={() => this.handleCreateMatch(numPlayers)}>
-                        <h2>Create match</h2>
-                </button>
-                </div>
-
-            );
-        }
-        return null;
+        //create the game and assign match ID to state:
+        Create(numPlayers)
+        //event.preventDefault();
     }
-    
-    joinMatch = () => {
-        if (this.state.canJoin === false) {
-            return(
-                <form onSubmit={this.handleJoin}>
-                    <h2>Join Match</h2>
-                    <div>
-                    <label>
-                        Player Name:
-                        <input type="text" value={this.state.playerName} onChange={this.handleChangePlayerName} />
-                    </label>
-                    </div>
-                    <div>
-                    <label>
-                        match ID:
-                        <input type="text" value={this.state.matchID} onChange={this.handleChangeJoinMatch} />
-                        <input type="submit" value="Join" />
-                    </label>
-                    </div>
-                </form>
-            );
-        }
+
+    if (canJoin) {
         return (
-            <SHEDClient playerID={this.state.playerID} matchID={this.state.matchID} />
-        )
+            <SHEDClient 
+            playerID={playerID} 
+            matchID={matchID} 
+            credentials={playerCredentials} />
+        );
+    } else {
+        return (
+            <div>
+                <CreateMatch
+                onChangeCreateMatch={handleCreateMatch}
+                />
+                <JoinMatch
+                playerName={playerName} 
+                onChangePlayerName={handleChangePlayerName}
+                matchID={matchID}
+                onChangeMatchID={handleChangeJoinMatch}
+                onSubmit={handleJoin} 
+                />
+            </div>
+        );
     }
 
-    render () {
-        return(
+};
+
+//REMOVED SUBMUIT FROM FORM TAG - MAY NEED TO GO BACK IN
+const JoinMatch = (props) => {
+    return(
+        <form onSubmit={props.onSubmit}>
+            <h2>Join Match</h2>
             <div>
-                {/* <this.renderPlayerChoice /> */}
-                <this.createMatch />
-                <this.joinMatch />
-            </div>  
-        ); 
-    }
+                <label>
+                    Player Name:
+                    <input type="text" value={props.playerName} onChange={props.onChangePlayerName} /> 
+                </label>
+            </div>
+            <div>
+                <label>
+                    match ID:
+                    <input type="text" value={props.matchID} onChange={props.onChangeMatchID} />
+                    <input type="submit" value="Join" onSubmit={props.onSubmit} />
+                </label>
+            </div>
+    </form>
+);
+}
+
+const CreateMatch = (props) => {
+    return(
+    <div>
+        <h2>Create Match</h2>
+        <button onClick={props.onChangeCreateMatch}>
+            <h2>Create match</h2>
+        </button>
+    </div>
+    );
 }
 
 
-
-//legacy
-// renderPlayerChoice = () => {
-       
-//     if (this.state.playerID === null) {
-//         return (
-//             <div>
-//             <h1>Lobby</h1>    
-//             <p>Play as</p>
-//             <button onClick={() => this.setState({ playerID: "0"})}>
-//                 Player 0
-//             </button>
-//             <button onClick={() => this.setState({ playerID: "1"})}>
-//                 Player 1
-//             </button>
-//             </div>
-//         );
-//     }
-//     return (
-//         <div>
-//             <SHEDClient playerID={this.state.playerID} />
-//         </div>
-//     );
-// }

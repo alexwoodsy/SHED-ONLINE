@@ -554,3 +554,4 @@ function MoveIsMagic(G, ctx) {
 
 
 
+export default SHED;
