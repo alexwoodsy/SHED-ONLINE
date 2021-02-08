@@ -15,7 +15,7 @@ import { SHEDtable } from '../game/Table';
 
 
 
-const PORT = process.env.PORT || 80; // was in use on local depoloy
+const PORT = process.env.PORT || 403; // was in use on local depoloy
 const { origin, protocol, hostname} = window.location;
 //const SERVER = `${protocol}//${hostname}:${PORT}`;
 const SERVER = `${protocol}//${hostname}`
@@ -27,7 +27,15 @@ const SHEDClient = Client({
     game: SHED,
     board: SHEDtable,
     debug: true,
-    multiplayer: SocketIO({server: `http://${hostname}:${PORT}`}),
+    multiplayer: SocketIO({server: `https://${hostname}:${PORT}`}),
+    loading: loading,
+  });
+
+  const SHEDClient2 = Client({
+    game: SHED,
+    board: SHEDtable,
+    debug: true,
+    multiplayer: SocketIO({server: `https://${hostname}$`}),
     loading: loading,
   });
 
@@ -152,10 +160,17 @@ export const Lobby = () => {
 
     if (canJoin) {
         return (
+            <div>
             <SHEDClient 
             playerID={playerID} 
             matchID={matchID} 
             credentials={playerCredentials} />
+            <SHEDClient2 
+            playerID={playerID} 
+            matchID={matchID} 
+            credentials={playerCredentials} />
+            </div>
+            
         );
     } else {
         return (
