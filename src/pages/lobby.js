@@ -171,7 +171,6 @@ export const Lobby = () => {
     } else {
         return (
             <div>
-                <h1>porcess env port: {process.env.PORT} and PORT using {PORT}</h1>
                 <CreateMatch
                 onChangeCreateMatch={handleCreateMatch}
                 />
