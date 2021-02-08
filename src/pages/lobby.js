@@ -25,7 +25,7 @@ const SERVER = `${protocol}//${hostname}`
 
 const SHEDClient = Client({
     game: SHED,
-    board: SHEDtable,
+    board: faketable,
     debug: true,
     multiplayer: SocketIO({server: `https://${hostname}`}),
     loading: loading,
@@ -37,6 +37,12 @@ function loading () {
   return element;
   
 }
+
+function faketable () { 
+    const element = (<h1> i am a fake table</h1>)
+    return element;
+    
+  }
 
 export const Lobby = () => {
     
