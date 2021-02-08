@@ -24,7 +24,7 @@ const { origin, protocol, hostname} = window.location;
 
 const port = process.env.PORT || 8000;
 
-const SERVER = `${protocol}//${hostname}`;
+const SERVER = `https://${window.location.hostname}`;
 
 
 
@@ -54,7 +54,7 @@ export const Lobby = () => {
        
     
     
-    let lobbyClient = useMemo(()=> new LobbyClient({ server: origin }), [])//empty dependency means init once
+    let lobbyClient = useMemo(()=> new LobbyClient({ server: SERVER }), [])//empty dependency means init once
 
     useEffect(()=>{
         const ConnectClient = async () => {
@@ -156,16 +156,16 @@ export const Lobby = () => {
     }
 
 
-    function testingConnection (adress) {
-        console.log('trying server:', adress)
-        let testcon = new LobbyClient({ server: adress })
-        testcon.listGames().then(console.log).catch(console.error);
-    }
+    // function testingConnection (adress) {
+    //     console.log('trying server:', adress)
+    //     let testcon = new LobbyClient({ server: adress })
+    //     testcon.listGames().then(console.log).catch(console.error);
+    // }
 
-    testingConnection(origin)
-    testingConnection(`${protocol}//${hostname}:${port}`)
-    testingConnection(`${protocol}//${hostname}`)
-    testingConnection(`${protocol}//${hostname}:${80}`)
+    // testingConnection(origin)
+    // testingConnection(`${protocol}//${hostname}:${port}`)
+    // testingConnection(`${protocol}//${hostname}`)
+    // testingConnection(`${protocol}//${hostname}:${80}`)
 
     if (canJoin) {
         return (
