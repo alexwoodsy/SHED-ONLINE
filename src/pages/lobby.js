@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import  Client  from 'boardgame.io/react';
+import { Client }  from 'boardgame.io/react';
 import { LobbyClient } from 'boardgame.io/client';
 import { SocketIO } from 'boardgame.io/multiplayer';
 import { SHED } from '../game/Game';
