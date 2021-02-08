@@ -7,7 +7,7 @@ const server = Server({
   games: [SHED]
  });
 
- const PORT = process.env.PORT || 403;
+ const PORT = process.env.PORT;
 
 const lobbyConfig = {
   apiCallback: () => console.log('Running Lobby API on port ...'),
