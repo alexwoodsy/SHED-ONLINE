@@ -21,21 +21,13 @@ const { origin, protocol, hostname} = window.location;
 const SERVER = `${protocol}//${hostname}`
 
 
-//const importedGames = [{ game: SHED, board: SHEDtable }];
-
-// const { origin, protocol, hostname} = window.location;
-
-// const port = process.env.PORT || 8000;
-
-// const SERVER = `https://${window.location.hostname}`;
-
 
 
 const SHEDClient = Client({
     game: SHED,
     board: SHEDtable,
     debug: true,
-    multiplayer: SocketIO({server: SERVER}),
+    multiplayer: SocketIO({server: `${SERVER}:${PORT}`}),
     loading: loading,
   });
 
@@ -58,12 +50,7 @@ export const Lobby = () => {
     
     
     let lobbyClient = useMemo(()=> new LobbyClient({ server: SERVER }), [])//empty dependency means init once
-    console.log("first lobby ", lobbyClient, SERVER)
-    lobbyClient.listGames()
-  .then(console.log) // => ['chess', 'tic-tac-toe']
-  .catch(console.error);
     
-
 
     useEffect(()=>{
         const ConnectClient = async () => {
