@@ -25,6 +25,6 @@ const lobbyConfig = {
      )
    )
  },
-  lobbyConfig
+  //lobbyConfig
 );
 
