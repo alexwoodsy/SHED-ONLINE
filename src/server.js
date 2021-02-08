@@ -10,7 +10,7 @@ const server = Server({
  const PORT = process.env.PORT || 403;
 
 const lobbyConfig = {
-  apiCallback: () => console.log('Running Lobby API on port 80...'),
+  apiCallback: () => console.log('Running Lobby API on port ...'),
 };
 
  // Build path relative to the server.js file

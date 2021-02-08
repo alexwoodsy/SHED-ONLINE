@@ -31,13 +31,6 @@ const SHEDClient = Client({
     loading: loading,
   });
 
-  const SHEDClient2 = Client({
-    game: SHED,
-    board: SHEDtable,
-    debug: true,
-    multiplayer: SocketIO({server: `https://${hostname}$`}),
-    loading: loading,
-  });
 
 function loading () { 
   const element = (<h1> put loading screen here</h1>)
@@ -160,21 +153,15 @@ export const Lobby = () => {
 
     if (canJoin) {
         return (
-            <div>
             <SHEDClient 
             playerID={playerID} 
             matchID={matchID} 
             credentials={playerCredentials} />
-            <SHEDClient2 
-            playerID={playerID} 
-            matchID={matchID} 
-            credentials={playerCredentials} />
-            </div>
-            
         );
     } else {
         return (
             <div>
+                <h1>porcess env port: {process.env.PORT} and PORT using {PORT}</h1>
                 <CreateMatch
                 onChangeCreateMatch={handleCreateMatch}
                 />
