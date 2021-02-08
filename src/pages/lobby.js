@@ -17,7 +17,8 @@ import { SHEDtable } from '../game/Table'
 
 const PORT = process.env.PORT || 8000; // was in use on local depoloy
 const { origin, protocol, hostname} = window.location;
-const SERVER = `${protocol}//${hostname}:${PORT}`;
+//const SERVER = `${protocol}//${hostname}:${PORT}`;
+const SERVER = `${protocol}//${hostname}`
 
 
 //const importedGames = [{ game: SHED, board: SHEDtable }];
@@ -61,11 +62,7 @@ export const Lobby = () => {
     lobbyClient.listGames()
   .then(console.log) // => ['chess', 'tic-tac-toe']
   .catch(console.error);
-    let lobbyClient2 = useMemo(()=> new LobbyClient({ server: `${protocol}//${hostname}`}), [])//empty dependency means init once
-    console.log("second without the port lobby ", lobbyClient2, `${protocol}//${hostname}`)
-    lobbyClient2.listGames()
-  .then(console.log) // => ['chess', 'tic-tac-toe']
-  .catch(console.error);
+    
 
 
     useEffect(()=>{
