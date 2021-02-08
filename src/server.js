@@ -1,4 +1,5 @@
 const Server = require("boardgame.io/server").Server;
+import { DEFAULT_PORT } from "./config";
 import path from 'path';
 import serve from 'koa-static';
 const SHED = require("./game/Game").SHED;
@@ -7,7 +8,7 @@ const server = Server({
   games: [SHED]
  });
 
- const PORT = process.env.PORT;
+ const PORT = process.env.PORT || DEFAULT_PORT;
 
 const lobbyConfig = {
   apiCallback: () => console.log('Running Lobby API on port ...'),

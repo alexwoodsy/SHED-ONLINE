@@ -4,6 +4,7 @@ import { LobbyClient } from 'boardgame.io/client';
 import { SocketIO } from 'boardgame.io/multiplayer';
 import  SHED  from '../game/Game';
 import  SHEDtable  from '../game/Table';
+import { DEFAULT_PORT, APP_PRODUCTION } from "../config";
 
 
 // import {
@@ -15,19 +16,22 @@ import  SHEDtable  from '../game/Table';
 
 
 
-const PORT = process.env.PORT || 403; // was in use on local depoloy
-const { origin, protocol, hostname} = window.location;
-//const SERVER = `${protocol}//${hostname}:${PORT}`;
-const SERVER = `${protocol}//${hostname}`
+//const PORT = process.env.PORT || 403; // was in use on local depoloy
+// const { origin, protocol, hostname} = window.location;
+// //const SERVER = `${protocol}//${hostname}:${PORT}`;
+// const SERVER = `${protocol}//${hostname}`
 
+//old server above
 
+const { origin, protocol, hostname } = window.location;
+const SERVER = APP_PRODUCTION ? origin : `${protocol}//${hostname}:${DEFAULT_PORT}`;
 
 
 const SHEDClient = Client({
     game: SHED,
     board: SHEDtable,
     debug: true,
-    multiplayer: SocketIO({server: `https://${hostname}`}),
+    multiplayer: SocketIO({server: SERVER}),
     loading: loading,
   });
 
