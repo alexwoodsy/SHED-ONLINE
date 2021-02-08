@@ -17,21 +17,18 @@ import reportWebVitals from './reportWebVitals';
 
 class App extends React.Component {
     render() {
-      
-      return <h1>checking router not the issue</h1>
-
-      // return (
-      //   <Router>
-      //       <Switch>
-      //         <Route path="/lobby">
-      //           <Lobby />
-      //         </Route>
-      //         <Route path="/">
-      //           <Homescreen />
-      //         </Route>
-      //       </Switch>
-      //   </Router>
-      // );
+      return (
+        <Router>
+            <Switch>
+              <Route path="/lobby">
+                <Lobby />
+              </Route>
+              <Route path="/">
+                <Homescreen />
+              </Route>
+            </Switch>
+        </Router>
+      );
   } 
 }
 
