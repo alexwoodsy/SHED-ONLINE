@@ -403,6 +403,7 @@ export class SHEDtable extends React.Component {
     }
 }
 
+export default SHEDtable
 /*
 <this.renderPlayerLayer x={padx} y={screeny-pady} orientation={'left'} player={0}/>
  */

@@ -25,7 +25,7 @@ const SERVER = `${protocol}//${hostname}`
 
 const SHEDClient = Client({
     game: SHED,
-    board: faketable,
+    board: SHEDtable,
     debug: true,
     multiplayer: SocketIO({server: `https://${hostname}`}),
     loading: loading,
