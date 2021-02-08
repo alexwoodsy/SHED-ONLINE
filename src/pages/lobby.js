@@ -57,6 +57,16 @@ export const Lobby = () => {
     
     
     let lobbyClient = useMemo(()=> new LobbyClient({ server: SERVER }), [])//empty dependency means init once
+    console.log("first lobby ", lobbyClient, SERVER)
+    lobbyClient.listGames()
+  .then(console.log) // => ['chess', 'tic-tac-toe']
+  .catch(console.error);
+    let lobbyClient2 = useMemo(()=> new LobbyClient({ server: `${protocol}//${hostname}`}), [])//empty dependency means init once
+    console.log("second without the port lobby ", lobbyClient2, `${protocol}//${hostname}`)
+    lobbyClient2.listGames()
+  .then(console.log) // => ['chess', 'tic-tac-toe']
+  .catch(console.error);
+
 
     useEffect(()=>{
         const ConnectClient = async () => {
