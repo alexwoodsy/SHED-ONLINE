@@ -27,8 +27,8 @@ const SHEDClient = Client({
     game: SHED,
     board: SHEDtable,
     debug: true,
-    multiplayer: SocketIO({server: `${SERVER}:${PORT}`}),
-    loading: loading,
+    multiplayer: SocketIO({server: SERVER}),
+    //loading: loading,
   });
 
 function loading () { 
