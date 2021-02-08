@@ -7,10 +7,10 @@ const server = Server({
   games: [SHED]
  });
 
- const PORT = process.env.PORT || 8000;
+ const PORT = process.env.PORT || 80;
 
 const lobbyConfig = {
-  apiCallback: () => console.log('Running Lobby API on port 8000...'),
+  apiCallback: () => console.log('Running Lobby API on port 80...'),
 };
 
  // Build path relative to the server.js file

@@ -15,7 +15,7 @@ import { SHEDtable } from '../game/Table';
 
 
 
-const PORT = process.env.PORT || 8000; // was in use on local depoloy
+const PORT = process.env.PORT || 80; // was in use on local depoloy
 const { origin, protocol, hostname} = window.location;
 //const SERVER = `${protocol}//${hostname}:${PORT}`;
 const SERVER = `${protocol}//${hostname}`
