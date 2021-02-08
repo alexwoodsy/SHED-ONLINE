@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Client } from 'boardgame.io/react';
+import  Client  from 'boardgame.io/react';
 import { LobbyClient } from 'boardgame.io/client';
-import { SocketIO } from 'boardgame.io/multiplayer'
+import { SocketIO } from 'boardgame.io/multiplayer';
 import { SHED } from '../game/Game';
-import { SHEDtable } from '../game/Table'
+import { SHEDtable } from '../game/Table';
 
 
 // import {
@@ -26,9 +26,9 @@ const SERVER = `${protocol}//${hostname}`
 const SHEDClient = Client({
     game: SHED,
     board: SHEDtable,
-    debug: true,
+    debug: false,
     multiplayer: SocketIO({server: SERVER}),
-    //loading: loading,
+    loading: loading,
   });
 
 function loading () { 
