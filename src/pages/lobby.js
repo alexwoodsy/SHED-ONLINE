@@ -26,8 +26,8 @@ const SERVER = `${protocol}//${hostname}`
 const SHEDClient = Client({
     game: SHED,
     board: SHEDtable,
-    debug: false,
-    multiplayer: SocketIO({server: SERVER}),
+    debug: true,
+    multiplayer: SocketIO({server: `${protocol}//${hostname}:${PORT}`}),
     loading: loading,
   });
 
@@ -44,7 +44,6 @@ export const Lobby = () => {
     const [matchID, setmatchID] = useState('')
     const [playerName, setplayerName] = useState('')
     const [playerCredentials, setplayerCredentials] = useState(null)
-    //const gettingSeat = useRef(false);
     const connectingClient = useRef(false);
        
     
@@ -150,18 +149,6 @@ export const Lobby = () => {
         Create(numPlayers)
         //event.preventDefault();
     }
-
-
-    // function testingConnection (adress) {
-    //     console.log('trying server:', adress)
-    //     let testcon = new LobbyClient({ server: adress })
-    //     testcon.listGames().then(console.log).catch(console.error);
-    // }
-
-    // testingConnection(origin)
-    // testingConnection(`${protocol}//${hostname}:${port}`)
-    // testingConnection(`${protocol}//${hostname}`)
-    // testingConnection(`${protocol}//${hostname}:${80}`)
 
     if (canJoin) {
         return (
