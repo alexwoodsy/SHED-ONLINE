@@ -6,7 +6,8 @@ import {
   Route,
 } from "react-router-dom";
 import './index.css';
-import {  Homescreen, Lobby } from "./pages";
+import Homescreen from "./pages/homescreen";
+import Lobby from "./pages/lobby";
 import reportWebVitals from './reportWebVitals';
 
 

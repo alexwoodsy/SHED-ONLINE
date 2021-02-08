@@ -43,3 +43,4 @@ export class Homescreen extends React.Component {
 }
 
 
+export default Homescreen;
