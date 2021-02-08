@@ -1,5 +1,4 @@
-//import React from 'react'
-//import {Rect, Text} from 'react-konva';
+
 
 function Instructions(G, ctx, player) {
     let stage = ctx.activePlayers[player];

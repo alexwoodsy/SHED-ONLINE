@@ -1,7 +1,7 @@
 import React from 'react';
 import { Image } from 'react-konva';
 import useImage from 'use-image';
-import {CardImages} from './CardImages';
+import CardImages from './CardImages';
 
 
 

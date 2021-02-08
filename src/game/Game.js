@@ -106,7 +106,7 @@ export const SHED = {
 
 
 //card class
-export class Card {
+class Card {
     constructor(suit, rank) {
         this.suit = suit;
         this.rank = rank;
