@@ -217,4 +217,4 @@ const CreateMatch = (props) => {
     );
 }
 
-
+export default Lobby
