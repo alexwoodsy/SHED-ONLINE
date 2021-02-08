@@ -18,7 +18,7 @@ import reportWebVitals from './reportWebVitals';
 class App extends React.Component {
     render() {
       
-      return <H1>checking router not the issue</H1>
+      return <h1>checking router not the issue</h1>
 
       // return (
       //   <Router>
