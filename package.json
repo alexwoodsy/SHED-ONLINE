@@ -3,11 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "@node-loader/babel": "^1.0.0",
     "@testing-library/jest-dom": "^5.11.8",
     "@testing-library/react": "^11.2.3",
     "@testing-library/user-event": "^12.6.0",
-    "babel-preset-react": "^6.24.1",
     "boardgame.io": "^0.42.2",
     "esm": "^3.2.25",
     "koa-static": "^5.0.0",
