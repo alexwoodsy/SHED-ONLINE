@@ -1,5 +1,5 @@
 import React from 'react';
-import {Layer, Rect, Stage, Text} from 'react-konva';
+import {Layer, Rect, Stage, Text, Image} from 'react-konva';
 import tablebackground from '../images/tabletop.jpg'
 import Instructions from './player';
 import { CardImage } from './card';
@@ -16,20 +16,21 @@ const cardheight = 84;
 export class SHEDtable extends React.Component {
     onClickCard = () => {console.log('card clicked')}
     render () {
-        testcard = this.props.G.deck[this.props.G.deck.length-1];
+        let testcard = this.props.G.deck[this.props.G.deck.length-1];
+        console.log('testcard from table', testcard)
         return(
             <div>
                 <h1>{this.props.matchID}</h1>
                 <h1>{this.props.playerID}</h1>
                 <CardImage 
                 card={testcard}
-                x={props.x} 
-                y={props.y} 
-                width={props.width} 
-                opacity={opacity} 
-                rotation = {props.rotation} 
-                height={props.height} 
-                shadowBlur={props.shadowBlur} 
+                x={100} 
+                y={100} 
+                width={cardwidth} 
+                opacity={1} 
+                rotation = {0} 
+                height={cardheight} 
+                shadowBlur={15} 
                 player={this.props.playerID} 
                 onClick={()=>this.onClickCard}/>
             </div>

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Image } from 'react-konva';
+import { Card } from '../game/Game'
+import { Image, Text } from 'react-konva';
 import useImage from 'use-image';
 import CardImages from './CardImages';
 
@@ -8,6 +9,7 @@ import CardImages from './CardImages';
 
 //retrun index in CradImages.Faces of corresponding cards
 function GetFace(card) {
+    console.log('getface card', card)
     let image;
     switch (card.suit) {
         case "hearts":
@@ -31,13 +33,16 @@ function GetFace(card) {
 
 
 
-export function CardImage(props) {  
+export const CardImage = (props) => {  
     const [back] = useImage(CardImages.Back);
     
     let card = props.card;
+    let CardName = card.rank;
     let cardImg = GetFace(card);
+    console.log(cardImg)
     const [front] = useImage(cardImg)
 
+    console.log('card.js card recieved', card)
     
     //let cardtext = card.name()
     let opacity = 1;
@@ -50,24 +55,37 @@ export function CardImage(props) {
    
 
     
-    if (props.reverse===true) {
+    // if (props.reverse===true) {
+    //     return (
+    //         <React.Fragment>
+    //             <Image image={back} x={props.x} y={props.y}
+    //         width={props.width} rotation = {props.rotation} 
+    //         height={props.height} shadowBlur={15} 
+    //         player={props.player} onClick={props.onClick}
+    //         />
+    //         </React.Fragment>
+
+    //       );
+    // } else {
+        
         return (
-            <Image image={back} x={props.x} y={props.y}
-            width={props.width} rotation = {props.rotation} 
-            height={props.height} shadowBlur={15} 
-            player={props.player} onClick={props.onClick}
-            
-            />
-          );
-    } else {
-        return (
-            <Image image={front} x={props.x} y={props.y} width={props.width} opacity={opacity} rotation = {props.rotation} height={props.height} shadowBlur={props.shadowBlur} player={props.player} onClick={props.onClick}/>
+            <h1>{card.rank}</h1>
             );
-    }
-  }
+//     }
+}
 //old react component for text:
 
 //<Text x={props.x} y={props.y} rotation={props.rotation-90} opacity={opacity} text={cardtext} fontSize={18} />
 
-export default CardImage
-  
+//export default CardImage
+//<Image 
+//   image={front} 
+//   x={props.x} 
+//   y={props.y} 
+//   width={props.width} 
+//   opacity={opacity} 
+//   rotation = {props.rotation} 
+//   height={props.height} 
+//   shadowBlur={props.shadowBlur} 
+//   player={props.player} 
+//   onClick={props.onClick} />
