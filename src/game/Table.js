@@ -69,7 +69,7 @@ export class SHEDtable extends React.Component {
             } else {
                 rotation=0
             }; 
-            
+            console.log('ABOUT TO RENDER', card)
             return(
                 <CardImage
                 card={card} 
