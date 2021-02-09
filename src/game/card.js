@@ -36,7 +36,7 @@ export function CardImage(props) {
     
     let card = props.card;
     let cardImg = GetFace(card);
-    const [front] =useImage(cardImg)
+    const [front] = useImage(cardImg)
 
     
     //let cardtext = card.name()

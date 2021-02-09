@@ -14,11 +14,24 @@ const cardheight = 84;
 
 
 export class SHEDtable extends React.Component {
+    onClickCard = () => {console.log('card clicked')}
     render () {
+        testcard = this.props.G.deck[this.props.G.deck.length-1];
         return(
             <div>
                 <h1>{this.props.matchID}</h1>
                 <h1>{this.props.playerID}</h1>
+                <CardImage 
+                card={testcard}
+                x={props.x} 
+                y={props.y} 
+                width={props.width} 
+                opacity={opacity} 
+                rotation = {props.rotation} 
+                height={props.height} 
+                shadowBlur={props.shadowBlur} 
+                player={this.props.playerID} 
+                onClick={()=>this.onClickCard}/>
             </div>
         )
     }
