@@ -1,5 +1,5 @@
 import React from 'react';
-import {Layer,Group, Rect, Stage, Text} from 'react-konva';
+import {Layer, Group, Rect, Stage, Text} from 'react-konva';
 //import tablebackground from '../images/tabletop.jpg'
 import Instructions from './player';
 import { CardImage } from './card';
@@ -384,9 +384,9 @@ export class SHEDtable extends React.Component {
                             <this.sevenChoiceButton />
                             <this.renderInstructions/>
                         </Layer>
-                        <Layer>
+                        {/*<Layer>
                             <this.renderAllPlayers/>
-                        </Layer>
+                        </Layer>*/}
                     </Stage>
                );
          }
