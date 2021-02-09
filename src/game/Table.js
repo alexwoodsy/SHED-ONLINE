@@ -70,7 +70,7 @@ export class SHEDtable extends React.Component {
                 rotation=0
             }; 
             return(
-                <CardImage card={props.card} x={x} y={y} width={cardwidth} height={cardheight} rotation={rotation} fill={'blue'} shadowBlur={15} reverse={props.reverse} player={props.player} onClick={props.onClick} />
+                <CardImage card={card} x={x} y={y} width={cardwidth} height={cardheight} rotation={rotation} fill={'blue'} shadowBlur={15} reverse={props.reverse} player={props.player} onClick={props.onClick} />
                 )
             
         };
