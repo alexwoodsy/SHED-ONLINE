@@ -4,7 +4,7 @@ import { Image, Text } from 'react-konva';
 import useImage from 'use-image';
 import CardImages from './CardImages';
 
-const DEBUG = false;
+const DEBUG = true;
 
 
 
