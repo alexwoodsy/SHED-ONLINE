@@ -69,8 +69,19 @@ export class SHEDtable extends React.Component {
             } else {
                 rotation=0
             }; 
+            
             return(
-                <CardImage card={card} x={x} y={y} width={cardwidth} height={cardheight} rotation={rotation} fill={'blue'} shadowBlur={15} reverse={props.reverse} player={props.player} onClick={props.onClick} />
+                <CardImage
+                card={card} 
+                x={x} 
+                y={y} 
+                width={cardwidth} 
+                height={cardheight} 
+                rotation={rotation}  
+                shadowBlur={15} 
+                reverse={props.reverse} 
+                player={props.player} 
+                onClick={props.onClick} />
                 )
             
         };
@@ -177,10 +188,11 @@ export class SHEDtable extends React.Component {
         let x = props.x;
         let y = props.y;
         let topcard = deck[deck.length -1]
+        console.log('deck',topcard)
         if (deck.length > 0) {
-            return <this.renderCard card={topcard} reverse={true} x={x} y={y} onClick={()=>this.clickCard('draw')}/>
+            return (<this.renderCard card={topcard} reverse={true} x={x} y={y} onClick={()=>this.clickCard('draw')}/>);
         } else {
-            return <Text x={x} y={y+50} text={"deck\n(empty)"} fontSize={20} />
+            return (<Text x={x} y={y+50} text={"deck\n(empty)"} fontSize={20} />);
         };
     };
 
