@@ -52,13 +52,18 @@ export const CardImage = (props) => {
 
     
     if (props.reverse===true) {
-        return (
-            <Image image={back} x={props.x} y={props.y}
-            width={props.width} rotation = {props.rotation} 
-            height={props.height} shadowBlur={15} 
-            player={props.player} onClick={props.onClick}
-            />
-          );
+        if (DEBUG) {
+            return null
+        } else {
+            return (
+                <Image image={back} x={props.x} y={props.y}
+                width={props.width} rotation = {props.rotation} 
+                height={props.height} shadowBlur={15} 
+                player={props.player} onClick={props.onClick}
+                />
+              );
+        }
+
     } else {
 
         if (DEBUG) {
