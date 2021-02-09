@@ -9,7 +9,6 @@ import CardImages from './CardImages';
 
 //retrun index in CradImages.Faces of corresponding cards
 function GetFace(card) {
-    console.log('getface card', card)
     let image;
     switch (card.suit) {
         case "hearts":
@@ -37,14 +36,10 @@ export const CardImage = (props) => {
     const [back] = useImage(CardImages.Back);
     
     let card = props.card;
-    let CardName = card.rank;
     let cardImg = GetFace(card);
     console.log(cardImg)
     const [front] = useImage(cardImg)
 
-    console.log('card.js card recieved', card)
-    
-    //let cardtext = card.name()
     let opacity = 1;
 
     if (card.invisible && props.reverse===false) {
