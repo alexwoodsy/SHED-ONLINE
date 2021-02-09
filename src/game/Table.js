@@ -4,6 +4,7 @@ import tablebackground from '../images/tabletop.jpg'
 import Instructions from './player';
 import { CardImage } from './card';
 
+
 const screenx = 1200;
 const screeny = 800;
 const padx = 50;
@@ -22,17 +23,22 @@ export class SHEDtable extends React.Component {
             <div>
                 <h1>{this.props.matchID}</h1>
                 <h1>{this.props.playerID}</h1>
-                <CardImage 
-                card={testcard}
-                x={100} 
-                y={100} 
-                width={cardwidth} 
-                opacity={1} 
-                rotation = {0} 
-                height={cardheight} 
-                shadowBlur={15} 
-                player={this.props.playerID} 
-                onClick={()=>this.onClickCard}/>
+                <Stage width={screenx} height={screeny}>
+                    <Layer>
+                    <CardImage 
+                        card={testcard}
+                        x={100} 
+                        y={0} 
+                        width={cardwidth} 
+                        opacity={1} 
+                        rotation = {0} 
+                        height={cardheight} 
+                        shadowBlur={15} 
+                        player={this.props.playerID} 
+                        onClick={()=>this.onClickCard}
+                        />
+                    </Layer>
+                </Stage>
             </div>
         )
     }

@@ -50,42 +50,39 @@ export const CardImage = (props) => {
     if (card.invisible && props.reverse===false) {
         opacity = 0.5
     }; 
-
-    //can remove this when I have card picks in
-   
-
     
-    // if (props.reverse===true) {
-    //     return (
-    //         <React.Fragment>
-    //             <Image image={back} x={props.x} y={props.y}
-    //         width={props.width} rotation = {props.rotation} 
-    //         height={props.height} shadowBlur={15} 
-    //         player={props.player} onClick={props.onClick}
-    //         />
-    //         </React.Fragment>
+    if (props.reverse===true) {
+        return (
+            <React.Fragment>
+                <Image image={back} x={props.x} y={props.y}
+            width={props.width} rotation = {props.rotation} 
+            height={props.height} shadowBlur={15} 
+            player={props.player} onClick={props.onClick}
+            />
+            </React.Fragment>
 
-    //       );
-    // } else {
+          );
+    } else {
         
         return (
-            <h1>{card.rank}</h1>
+            <Image 
+                image={front} 
+                x={props.x} 
+                y={props.y} 
+                width={props.width} 
+                opacity={opacity} 
+                rotation = {props.rotation} 
+                height={props.height} 
+                shadowBlur={props.shadowBlur} 
+                player={props.player} 
+                onClick={props.onClick}
+                />
             );
-//     }
+    }
 }
 //old react component for text:
 
 //<Text x={props.x} y={props.y} rotation={props.rotation-90} opacity={opacity} text={cardtext} fontSize={18} />
 
 //export default CardImage
-//<Image 
-//   image={front} 
-//   x={props.x} 
-//   y={props.y} 
-//   width={props.width} 
-//   opacity={opacity} 
-//   rotation = {props.rotation} 
-//   height={props.height} 
-//   shadowBlur={props.shadowBlur} 
-//   player={props.player} 
-//   onClick={props.onClick} />
+//
