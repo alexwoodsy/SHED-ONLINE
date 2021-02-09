@@ -1,6 +1,6 @@
 import React from 'react';
-import {Layer, Rect, Stage, Text, Image} from 'react-konva';
-import tablebackground from '../images/tabletop.jpg'
+import {Layer,Group, Rect, Stage, Text} from 'react-konva';
+//import tablebackground from '../images/tabletop.jpg'
 import Instructions from './player';
 import { CardImage } from './card';
 
@@ -212,16 +212,16 @@ export class SHEDtable extends React.Component {
         };
     };
 
-    renderPlayerUI = (props) => {
-        let playerUIelements = null;
+    // renderPlayerUI = (props) => {
+    //     let playerUIelements = null;
         
-        if (this.props.ctx.currentPlayer===0) {
-            playerUIelements = <React.Fragment> 
+    //     if (this.props.ctx.currentPlayer===0) {
+    //         playerUIelements = <React.Fragment> 
                 
-                </React.Fragment> 
-        }
-        return playerUIelements;
-    };
+    //             </React.Fragment> 
+    //     }
+    //     return playerUIelements;
+    // };
     
 
     
@@ -235,10 +235,10 @@ export class SHEDtable extends React.Component {
         
 
         return (
-            <React.Fragment>
+            <Group>
                 <this.renderHand x={x} y={y} orientation={orientation} player={props.player}/> 
                 <this.renderBench x={x} y={y} orientation={orientation} player={props.player}/>
-            </React.Fragment> 
+            </Group> 
         )
     };
     
@@ -279,12 +279,12 @@ export class SHEDtable extends React.Component {
             colour = '#14ff76'
         }
         if (phase==='StartPhase' && benchTot === 6) {
-            return (<React.Fragment>
+            return (<Group>
                 <Rect x={screenx/2 - 60} y={screeny/2-cardheight/2 + 150} width={100} height={50} fontSize={25}
                     fill={colour} cornerRadius={20} onClick={()=>this.clickReadyButton(props.player)}
                     />
                     <Text x={screenx/2 - 60} y={screeny/2-cardheight/2 + 150} align={'center'} text={'Ready'} fontSize={25} fill={'black'} />
-            </React.Fragment>)
+            </Group>)
         } else {
             return null;
         };;
@@ -306,12 +306,12 @@ export class SHEDtable extends React.Component {
         let colour = 'white';
         
         if ((stage==='play' || stage==='playBench') && numMoves >=1 && benchTot >3 && this.props.playerID === this.props.ctx.currentPlayer) {
-            return (<React.Fragment>
+            return (<Group>
                 <Rect x={x} y={y} width={100} height={50} fontSize={25}
                     fill={colour} cornerRadius={20} onClick={()=>this.clickendTurnButton(props.player)}
                     />
                     <Text x={x} y={y+10} align={'center'} text={'End Turn'} fontSize={25} fill={'black'} />
-            </React.Fragment>)
+            </Group>)
         } else {
             return null;
         }
@@ -328,7 +328,7 @@ export class SHEDtable extends React.Component {
         let colour = 'white';
         
         if (stage==='sevenChoice' && this.props.playerID === this.props.ctx.currentPlayer) {
-            return (<React.Fragment>
+            return (<Group>
                     <Rect x={x+sep+width} y={y} width={width} height={height} fontSize={fontsize}
                     fill={colour} cornerRadius={20} onClick={()=>this.clicksevenChoiceButton('higher', props.player)}/>
                     <Text x={x+sep+width} y={y+10} align={'center'} text={'higher'} fontSize={25} fill={'black'} />
@@ -336,7 +336,7 @@ export class SHEDtable extends React.Component {
                     <Rect x={x} y={y} width={100} height={50} fontSize={25}
                     fill={colour} cornerRadius={20} onClick={()=>this.clicksevenChoiceButton('lower', props.player)}/>
                     <Text x={x} y={y+10} align={'center'} text={'lower'} fontSize={25} fill={'black'} />
-            </React.Fragment>)
+            </Group>)
         } else {
             return null;
         }
@@ -353,12 +353,12 @@ export class SHEDtable extends React.Component {
         let fontsize = 25;
         let colour = 'white';
         
-        return(<React.Fragment>
+        return(<Group >
             <Rect x={x} y={y} width={width} height={height}
                 fill={colour} cornerRadius={10}
                 />
                 <Text x={x} y={y+10} align={'center'} text={text} fontSize={fontsize} fill={'black'} />
-        </React.Fragment>)
+        </Group>)
     };
     
     render() {
@@ -374,15 +374,8 @@ export class SHEDtable extends React.Component {
 
          } else {
             return (
-                <React.Fragment>
-                <div style = {{
-                    backgroundImage: `url(${tablebackground})`,
-                    width: {screenx},
-                    height: {screeny}
-                    }}>
                     <Stage width={screenx} height={screeny}>
                         <Layer>
-                            <React.Fragment>
                             <Text x={10} y={10} text={thisPlayerNumber} fontSize={25}/>  
                             <this.renderDeck x={screenx/2 - 60} y={screeny/2-cardheight/2} rotation={0} /> 
                             <this.renderTable x={screenx/2 + 60} y={screeny/2-cardheight/2} rotation={0} />
@@ -390,14 +383,11 @@ export class SHEDtable extends React.Component {
                             <this.endTurnButton />
                             <this.sevenChoiceButton />
                             <this.renderInstructions/>
-                            </React.Fragment >
                         </Layer>
                         <Layer>
                             <this.renderAllPlayers/>
                         </Layer>
                     </Stage>
-                </div>
-                </React.Fragment>
                );
          }
 
@@ -442,4 +432,15 @@ export default SHEDtable
         )
     }
 }
+
+
+
+
+
+table style div
+<div style = {{
+    backgroundImage: `url(${tablebackground})`,
+    width: {screenx},
+    height: {screeny}
+}}></div>
  */
