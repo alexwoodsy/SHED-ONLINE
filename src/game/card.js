@@ -31,7 +31,7 @@ function GetFace(card) {
 
 
 
-function CardImage(props) {  
+export function CardImage(props) {  
     const [back] = useImage(CardImages.Back);
     
     let card = props.card;
@@ -61,10 +61,7 @@ function CardImage(props) {
           );
     } else {
         return (
-            <React.Fragment>
-                <Image image={front} x={props.x} y={props.y} width={props.width} opacity={opacity} rotation = {props.rotation} height={props.height} shadowBlur={15} player={props.player} onClick={props.onClick}/>
-                
-            </React.Fragment>
+            <Image image={front} x={props.x} y={props.y} width={props.width} opacity={opacity} rotation = {props.rotation} height={props.height} shadowBlur={props.shadowBlur} player={props.player} onClick={props.onClick}/>
             );
     }
   }

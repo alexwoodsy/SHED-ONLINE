@@ -2,7 +2,7 @@ import React from 'react';
 import {Layer, Rect, Stage, Text} from 'react-konva';
 import tablebackground from '../images/tabletop.jpg'
 import Instructions from './player';
-import CardImage from './card';
+import { CardImage } from './card';
 
 const screenx = 1200;
 const screeny = 800;
@@ -14,24 +14,13 @@ const cardheight = 84;
 
 
 export class SHEDtable extends React.Component {
-    renderDeck = (props) => {
-        let deck = this.props.G.deck
-        let x = props.x;
-        let y = props.y;
-        let topcard = deck[deck.length -1]
-        if (deck.length > 0) {
-            return <this.renderCard card={topcard} reverse={true} x={x} y={y} />
-        } else {
-            return <Text x={x} y={y+50} text={"deck\n(empty)"} fontSize={20} />
-        };
-    };
-
     render () {
-        console.log('Game state:', this.props.G)
-        console.log('Game state:', this.props.G)
         return(
-            <this.renderDeck x={300} y={300}/>
-        );
+            <div>
+                <h1>{this.props.matchID}</h1>
+                <h1>{this.props.playerID}</h1>
+            </div>
+        )
     }
 }
 

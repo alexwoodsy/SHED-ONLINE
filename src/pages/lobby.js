@@ -42,11 +42,6 @@ function loading () {
   
 }
 
-function faketable () { 
-    const element = (<h1> i am a fake table</h1>)
-    return element;
-    
-  }
 
 export const Lobby = () => {
     
