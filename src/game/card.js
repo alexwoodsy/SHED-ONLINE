@@ -30,12 +30,11 @@ function GetFace(card) {
 
 export const CardImage = (props) => { 
     let card = props.card
-    let orientation = props.orientation
-
+    
     let rotation=0;
-    if (orientation==='left'|| orientation==='right') {
+    if (props.player===2 || props.player===3) {
         rotation=90
-    } else if (orientation==='bottom' || orientation==='top'){
+    } else if (props.player===0 || props.player===1){
         rotation=0
     } else {
         rotation=0

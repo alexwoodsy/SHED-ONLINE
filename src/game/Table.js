@@ -51,52 +51,58 @@ export class SHEDtable extends React.Component {
     };
     
     renderHand = (props) => {
-        let player = props.player; //player who's hand is being rendered
         let thisPlayerNumber = parseInt(this.props.playerID); //the current player
-        let hand = this.props.G.hands[player];
-        let x = props.x; let y = props.y; 
-        let orientation=props.orientation;
+        let x = props.x; 
+        let y = props.y; 
         let cards = [];
-
         let space = 20
 
-        for (let i= 0; i < hand.length; i++) {
-            let xcord; let ycord;
-            if (orientation==='left') {
-                xcord = x + padx
-                ycord = y+(i*space) - screeny/2 
-            } else if (orientation==='right') {
-                xcord = x + screenx - cardheight
-                ycord = y+(i*-space) - screeny/2 + pady
-            } else if (orientation==='bottom') {
-                xcord = x+(i*space) + screenx/2 -cardwidth*i -padx
-                ycord = y
-            } else if (orientation==='top') {
-                xcord = x+(i*space) + screenx/2 -cardwidth*i -padx
-                ycord = y+pady-screeny+cardheight/2
-            } else {
-                xcord = x+(i*space)
-                ycord = y
-            };
+        //get player order to render the cards in
+        //let playerOrder = this.playerOrder()
 
-            //define click type for bench setting stage and normal game play
-            let phase = this.props.ctx.phase;
-            let clickAction;
-            if (phase === 'StartPhase') {clickAction = 'addBench'} else {clickAction = 'play'};
-           
-            cards.push(
-            <CardImage
-            card={hand[i]}
-            key = {hand[i]}
-            orientation={orientation}
-            reverse={player!==thisPlayerNumber}
-            player={player}
-            width={cardwidth} 
-            height={cardheight}
-            x={xcord}
-            y={ycord}
-            onClick={()=>this.clickCard(clickAction, i, player)}
-            />)
+        let numPlayers = this.props.ctx.numPlayers
+        for (let i=0; i<numPlayers; i++) {
+            let player = i;
+            let hand = this.props.G.hands[player];
+            for (let i= 0; i < hand.length; i++) {
+                let xcord; let ycord;
+                if (player===2) {
+                    xcord = x + padx
+                    ycord = y+(i*space) - screeny/2 
+                } else if (player===4) {
+                    xcord = x + screenx - cardheight
+                    ycord = y+(i*-space) - screeny/2 + pady
+                } else if (player===0) {
+                    xcord = x+(i*space) + screenx/2 -cardwidth*i -padx
+                    ycord = y
+                } else if (player===1) {
+                    xcord = x+(i*space) + screenx/2 -cardwidth*i -padx
+                    ycord = y+pady-screeny+cardheight/2
+                } else {
+                    xcord = x+(i*space)
+                    ycord = y
+                };
+    
+                //define click type for bench setting stage and normal game play
+                let phase = this.props.ctx.phase;
+                let clickAction;
+                if (phase === 'StartPhase') {clickAction = 'addBench'} else {clickAction = 'play'};
+               
+                cards.push(
+                <CardImage
+                    card={hand[i]}
+                    key = {hand[i].name.toString().concat(player.toString())}
+                    reverse={player!==thisPlayerNumber}
+                    player={player}
+                    width={cardwidth} 
+                    height={cardheight}
+                    x={xcord}
+                    y={ycord}
+                    onClick={()=>this.clickCard(clickAction, i, player)}
+                />)
+            }
+            
+
         }
         return cards
     };
@@ -105,10 +111,11 @@ export class SHEDtable extends React.Component {
         let player = props.player; //the players cards being rendered
         let bench = this.props.G.benchs[player]
 
-        let x = props.x; let y = props.y; let xspace = cardwidth+20; let yspace = 20; let orientation=props.orientation
+        let x = props.x; let y = props.y; let xspace = cardwidth+20; let yspace = 20; 
         let padbench = 20;
         let cards=[];
-
+        
+    
         //define click type for bench setting stage and normal game play
         let phase = this.props.ctx.phase;
         let clickAction;
@@ -120,16 +127,16 @@ export class SHEDtable extends React.Component {
         
             for (let i=0; i<numAtPos; i++) {
                 let xcord; let ycord;
-                if (orientation==='bottom') {
+                if (player===0) {
                     xcord = x + (j*xspace) + screenx/2 - xspace -padx -cardwidth 
                     ycord = y + (i*yspace) - pady - padbench
-                } else if (orientation==='top') {
+                } else if (player===1) {
                     xcord = x + (j*xspace) + screenx/2 - xspace -padx -cardwidth 
                     ycord = y + (i*-yspace) + pady - screeny + cardheight + xspace +padbench
-                } else if (orientation==='left') {
+                } else if (player===2) {
                     xcord = x + (i*-yspace) + 200
                     ycord = y + (j*xspace) -screeny/2
-                } else if (orientation==='right') {
+                } else if (player===3) {
                     xcord = x + (i*yspace) + screenx - padx - cardheight -xspace - padbench
                     ycord = y + (j*xspace) -screeny/2
                 };
@@ -143,7 +150,6 @@ export class SHEDtable extends React.Component {
                     y={ycord} 
                     width={cardwidth} 
                     height={cardheight}
-                    orientation={orientation} 
                     player={player}
                     onClick={()=>this.clickCard(clickAction, j, player)}/>)
             };
@@ -224,33 +230,10 @@ export class SHEDtable extends React.Component {
     //     }
     //     return playerUIelements;
     // };
-    
+
 
     
-    renderAllPlayers = () => {
-        let numPlayers = this.props.ctx.numPlayers
-        let thisPlayerNumber = parseInt(this.props.playerID);
-        let playerCards = [];
-        let zones =['bottom', 'top', 'left', 'right'];
-        
-        //get player order to render the cards in
-        let playerOrder = [0, 1, 2, 3].slice(0, numPlayers);
-        for (let i=0; i<thisPlayerNumber; i++) {
-            let front = playerOrder.shift()
-            playerOrder.push(front)
-        };
-
-        //now render using the player order
-        for (let i=0; i<numPlayers; i++) {
-            playerCards.push(
-            <Group key={playerOrder[i]}>
-                <this.renderHand key={zones[i].concat("hand")} x={padx} y={screeny-pady} orientation={zones[i]} player={playerOrder[i]}/> 
-                {/* <this.renderBench key={zones[i].concat("bench")} x={padx} y={screeny-pady} orientation={zones[i]} player={playerOrder[i]}/> */}
-            </Group>
-            )
-        };
-        return playerCards
-    };
+   /* <this.renderBench key={zones[i].toString().concat("bench")} x={padx} y={screeny-pady} orientation={zones[i]} player={playerOrder[i]}/> */
 
     readyButton = (props) => {
         let phase = this.props.ctx.phase;
@@ -373,7 +356,7 @@ export class SHEDtable extends React.Component {
                             <this.renderInstructions/>
                         </Layer>
                         <Layer>
-                            <this.renderAllPlayers/>
+                            <this.renderHand x={padx} y={screeny-pady}/>
                         </Layer>
                     </Stage>
                );
