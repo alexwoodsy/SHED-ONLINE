@@ -50,41 +50,6 @@ export class SHEDtable extends React.Component {
         this.props.moves.PickupTable()
     };
     
-  
-    // renderCard =  (props) => {
-    //     let card = props.card
-    //     if (card === null) {
-    //         console.alarm('null card render attmepted')
-    //         return null
-    //     } else {
-    //         let x = props.x;
-    //         let y = props.y;
-    //         let orientation = props.orientation
-
-    //         let rotation;
-    //         if (orientation==='left'|| orientation==='right') {
-    //             rotation=90
-    //         } else if (orientation==='bottom' || orientation==='top'){
-    //             rotation=0
-    //         } else {
-    //             rotation=0
-    //         }; 
-    //         return(
-    //             <CardImage key={card.name}
-    //             card={card} 
-    //             x={x} 
-    //             y={y} 
-    //             width={cardwidth} 
-    //             height={cardheight} 
-    //             rotation={rotation}  
-    //             shadowBlur={15} 
-    //             reverse={props.reverse} 
-    //             player={props.player} 
-    //             onClick={props.onClick} />
-    //             )
-    //     };
-    // };
-
     renderHand = (props) => {
         let player = props.player; //player who's hand is being rendered
         let thisPlayerNumber = parseInt(this.props.playerID); //the current player
@@ -270,9 +235,9 @@ export class SHEDtable extends React.Component {
         let orientation = props.orientation;
         
         return (
-            <Group>
-                <this.renderHand x={x} y={y} orientation={orientation} player={props.player}/> 
-                <this.renderBench x={x} y={y} orientation={orientation} player={props.player}/>
+            <Group key={props.player}>
+                <this.renderHand key={props.player.toString().concat("hand")} x={x} y={y} orientation={orientation} player={props.player}/> 
+                <this.renderBench key={props.player.toString().concat("bench")} x={x} y={y} orientation={orientation} player={props.player}/>
             </Group> 
         )
     };
@@ -293,7 +258,10 @@ export class SHEDtable extends React.Component {
         //now render using the player order
         for (let i=0; i<numPlayers; i++) {
             playerCards.push(
-                <this.renderPlayerLayer x={padx} y={screeny-pady} orientation={zones[i]} player={playerOrder[i]}/>  
+            <Group key={playerOrder[i]}>
+                <this.renderHand key={zones[i].concat("hand")} x={padx} y={screeny-pady} orientation={zones[i]} player={playerOrder[i]}/> 
+                <this.renderBench key={zones[i].concat("bench")} x={padx} y={screeny-pady} orientation={zones[i]} player={playerOrder[i]}/>
+            </Group>
             )
         };
         return playerCards
@@ -419,9 +387,9 @@ export class SHEDtable extends React.Component {
                             <this.sevenChoiceButton />
                             <this.renderInstructions/>
                         </Layer>
-                        {/*<Layer>
+                        <Layer>
                             <this.renderAllPlayers/>
-                        </Layer>*/}
+                        </Layer>
                     </Stage>
                );
          }
@@ -431,64 +399,15 @@ export class SHEDtable extends React.Component {
 }
 
 export default SHEDtable
-/*
-<this.renderPlayerLayer x={padx} y={screeny-pady} orientation={'left'} player={0}/>
- */
-
-
- /* testing code that does render a card in the deck
- 
- export class SHEDtable extends React.Component {
-    onClickCard = () => {console.log('card clicked')}
-
-    showAcard = (props) => {
-        let testcard = this.props.G.deck[this.props.G.deck.length-1];
-        console.log('testcard from table', testcard)
-        return(
-            <CardImage 
-                card={testcard}
-                x={props.x} 
-                y={0} 
-                width={cardwidth} 
-                opacity={1} 
-                rotation = {0} 
-                height={cardheight} 
-                shadowBlur={15} 
-                player={this.props.playerID} 
-                onClick={()=>this.onClickCard}
-            />
-        );
-    }
-
-
-    render () {
-        
-        return(
-            <div>
-                <h1>{this.props.matchID}</h1>
-                <h1>{this.props.playerID}</h1>
-                <Stage width={screenx} height={screeny}>
-                    <Layer>
-                        <this.showAcard x={100}/>
-                        <this.showAcard x={150} />
-                        <this.showAcard x={200} />
-                        <this.showAcard x={250} />
-                        <this.showAcard x={300} />
-                    </Layer>
-                </Stage>
-            </div>
-        )
-    }
-}
 
 
 
-
-
+/* 
 table style div
 <div style = {{
     backgroundImage: `url(${tablebackground})`,
     width: {screenx},
     height: {screeny}
 }}></div>
+
  */
