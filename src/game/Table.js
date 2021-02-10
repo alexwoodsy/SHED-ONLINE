@@ -227,21 +227,6 @@ export class SHEDtable extends React.Component {
     
 
     
-
-    renderPlayerLayer = (props) => {
-        //choose what player to render 
-        let x = props.x;
-        let y = props.y;
-        let orientation = props.orientation;
-        
-        return (
-            <Group key={props.player}>
-                <this.renderHand key={props.player.toString().concat("hand")} x={x} y={y} orientation={orientation} player={props.player}/> 
-                <this.renderBench key={props.player.toString().concat("bench")} x={x} y={y} orientation={orientation} player={props.player}/>
-            </Group> 
-        )
-    };
-    
     renderAllPlayers = () => {
         let numPlayers = this.props.ctx.numPlayers
         let thisPlayerNumber = parseInt(this.props.playerID);
@@ -260,7 +245,7 @@ export class SHEDtable extends React.Component {
             playerCards.push(
             <Group key={playerOrder[i]}>
                 <this.renderHand key={zones[i].concat("hand")} x={padx} y={screeny-pady} orientation={zones[i]} player={playerOrder[i]}/> 
-                <this.renderBench key={zones[i].concat("bench")} x={padx} y={screeny-pady} orientation={zones[i]} player={playerOrder[i]}/>
+                {/* <this.renderBench key={zones[i].concat("bench")} x={padx} y={screeny-pady} orientation={zones[i]} player={playerOrder[i]}/> */}
             </Group>
             )
         };
