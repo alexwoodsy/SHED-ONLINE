@@ -1,18 +1,31 @@
 const Server = require("boardgame.io/server").Server;
+import { DEFAULT_PORT } from "./config";
+import path from 'path';
+import serve from 'koa-static';
 const SHED = require("./game/Game").SHED;
 
 const server = Server({ 
-  games: [SHED],
+  games: [SHED]
  });
 
-const PORT = process.env.PORT || 8000;
+ const PORT = process.env.PORT || DEFAULT_PORT;
 
 const lobbyConfig = {
-    apiCallback: () => console.log('Running Lobby API on port 8080...'),
-  };
+  apiCallback: () => console.log('Running Lobby API on port ...'),
+};
 
-server.run({
-    port:PORT,
-    apiCallback: () => console.log('Running Server API on port 8080...'),
-    lobbyConfig,
-});
+ // Build path relative to the server.js file
+ const frontEndAppBuildPath = path.resolve(__dirname, '../build');
+ server.app.use(serve(frontEndAppBuildPath))
+ 
+ server.run(PORT, () => {
+   server.app.use(
+     async (ctx, next) => await serve(frontEndAppBuildPath)(
+       Object.assign(ctx, { path: 'index.html' }),
+       next
+     )
+   )
+ },
+  //lobbyConfig
+);
+

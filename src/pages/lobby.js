@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Client } from 'boardgame.io/react';
+import { Client }  from 'boardgame.io/react';
 import { LobbyClient } from 'boardgame.io/client';
-import { SocketIO } from 'boardgame.io/multiplayer'
-import { SHED } from '../game/Game';
-import { SHEDtable } from '../game/Table'
-//import { Async } from 'boardgame.io/dist/types/src/server/db/base';
+import { SocketIO } from 'boardgame.io/multiplayer';
+import  SHED  from '../game/Game';
+import  SHEDtable  from '../game/Table';
+import { DEFAULT_PORT, APP_PRODUCTION } from "../config";
+
 
 // import {
 //     BrowserRouter as Router,
@@ -15,26 +16,32 @@ import { SHEDtable } from '../game/Table'
 
 
 
-const PORT = process.env.PORT || 8000;
-const { protocol, hostname,} = window.location;
-const SERVER = `${protocol}//${hostname}:${PORT}`;
-// const SERVER = `${protocol}//${hostname}:${port}`;
-//const SERVER = 'localhost:8000'
+//const PORT = process.env.PORT || 403; // was in use on local depoloy
+// const { origin, protocol, hostname} = window.location;
+// //const SERVER = `${protocol}//${hostname}:${PORT}`;
+// const SERVER = `${protocol}//${hostname}`
+
+//old server above
+
+const { origin, protocol, hostname } = window.location;
+const SERVER = APP_PRODUCTION ? origin : `${protocol}//${hostname}:${DEFAULT_PORT}`;
 
 
 const SHEDClient = Client({
     game: SHED,
     board: SHEDtable,
-    debug: true,
+    debug: false,
     multiplayer: SocketIO({server: SERVER}),
     loading: loading,
   });
+
 
 function loading () { 
   const element = (<h1> put loading screen here</h1>)
   return element;
   
 }
+
 
 export const Lobby = () => {
     
@@ -43,12 +50,12 @@ export const Lobby = () => {
     const [matchID, setmatchID] = useState('')
     const [playerName, setplayerName] = useState('')
     const [playerCredentials, setplayerCredentials] = useState(null)
-    //const gettingSeat = useRef(false);
     const connectingClient = useRef(false);
        
     
     
     let lobbyClient = useMemo(()=> new LobbyClient({ server: SERVER }), [])//empty dependency means init once
+    
 
     useEffect(()=>{
         const ConnectClient = async () => {
@@ -112,6 +119,7 @@ export const Lobby = () => {
             setmatchID(matchID)
         } catch(err) {
             alert('could no create match - check connection')
+            console.error(err)
         }
         
     };
@@ -204,4 +212,4 @@ const CreateMatch = (props) => {
     );
 }
 
-
+export default Lobby

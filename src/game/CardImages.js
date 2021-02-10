@@ -73,3 +73,4 @@ export const CardImages = {
 
 //function that gets the image from the card
 
+export default CardImages;
