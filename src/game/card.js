@@ -44,7 +44,7 @@ export const CardImage = (props) => {
 
 
     let cardImg = GetFace(card);
-    console.log(cardImg)
+
     const [front] = useImage(cardImg)
 
     let opacity = 1;
