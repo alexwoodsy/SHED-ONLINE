@@ -122,6 +122,7 @@ export class SHEDtable extends React.Component {
             cards.push(
             <CardImage
             card={hand[i]}
+            key = {hand[i]}
             orientation={orientation}
             reverse={player!==thisPlayerNumber}
             player={player}
@@ -172,6 +173,7 @@ export class SHEDtable extends React.Component {
                     <CardImage
                     reverse={i===0}
                     card={ bench[j][i] }
+                    key = { bench[j][i].name }
                     x={xcord} 
                     y={ycord} 
                     width={cardwidth} 
