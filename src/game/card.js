@@ -1,13 +1,9 @@
 import React from 'react';
-import { Card } from '../game/Game'
 import { Image, Text } from 'react-konva';
 import useImage from 'use-image';
 import CardImages from './CardImages';
 
 const DEBUG = false;
-
-
-
 
 //retrun index in CradImages.Faces of corresponding cards
 function GetFace(card) {
@@ -32,12 +28,22 @@ function GetFace(card) {
     return image
 }
 
+export const CardImage = (props) => { 
+    let card = props.card
+    let orientation = props.orientation
 
+    let rotation=0;
+    if (orientation==='left'|| orientation==='right') {
+        rotation=90
+    } else if (orientation==='bottom' || orientation==='top'){
+        rotation=0
+    } else {
+        rotation=0
+    }; 
 
-export const CardImage = (props) => {  
     const [back] = useImage(CardImages.Back);
-    
-    let card = props.card;
+
+
     let cardImg = GetFace(card);
     console.log(cardImg)
     const [front] = useImage(cardImg)
@@ -48,20 +54,24 @@ export const CardImage = (props) => {
         opacity = 0.5
     }; 
 
-
-
     
     if (props.reverse===true) {
         if (DEBUG) {
             return null
         } else {
             return (
-                <Image image={back} x={props.x} y={props.y}
-                width={props.width} rotation = {props.rotation} 
-                height={props.height} shadowBlur={15} 
-                player={props.player} onClick={props.onClick}
+                <Image 
+                    image={back} 
+                    x={props.x} 
+                    y={props.y}
+                    width={props.width} 
+                    rotation = {rotation} 
+                    height={props.height}
+                    shadowBlur={15} 
+                    player={props.player} 
+                    onClick={props.onClick}
                 />
-              );
+            );
         }
 
     } else {
@@ -69,7 +79,7 @@ export const CardImage = (props) => {
         if (DEBUG) {
             let cardtext = card.rank.toString().concat(card.suit);
             return(
-                <Text x={props.x} y={props.y} rotation={props.rotation-90} opacity={opacity} text={cardtext} fontSize={18} />
+                <Text x={props.x} y={props.y} rotation={rotation-90} opacity={opacity} text={cardtext} fontSize={18} />
             )
         } else {
             return (
@@ -79,13 +89,13 @@ export const CardImage = (props) => {
                     y={props.y} 
                     width={props.width} 
                     opacity={opacity} 
-                    rotation = {props.rotation} 
+                    rotation = {rotation} 
                     height={props.height} 
                     shadowBlur={props.shadowBlur} 
                     player={props.player} 
                     onClick={props.onClick}
-                    />
-                );
+                />
+            );
         }
     }
 }

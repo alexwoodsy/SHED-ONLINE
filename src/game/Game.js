@@ -113,6 +113,7 @@ export class Card {
         this.invisible = (this.rank===3);
         this.magic = this.magic()
         this.playedBy = null;
+        this.name = this.name()
     }  
     name() {
         return this.rank.toString().concat(" ",this.suit);

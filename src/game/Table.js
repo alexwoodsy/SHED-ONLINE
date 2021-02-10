@@ -51,41 +51,39 @@ export class SHEDtable extends React.Component {
     };
     
   
-    renderCard =  (props) => {
-        let card = props.card
-        if (card === null) {
-            console.alarm('null card render attmepted')
-            return null
-        } else {
-            let x = props.x;
-            let y = props.y;
-            let orientation = props.orientation
+    // renderCard =  (props) => {
+    //     let card = props.card
+    //     if (card === null) {
+    //         console.alarm('null card render attmepted')
+    //         return null
+    //     } else {
+    //         let x = props.x;
+    //         let y = props.y;
+    //         let orientation = props.orientation
 
-            let rotation;
-            if (orientation==='left'|| orientation==='right') {
-                rotation=90
-            } else if (orientation==='bottom' || orientation==='top'){
-                rotation=0
-            } else {
-                rotation=0
-            }; 
-            console.log('ABOUT TO RENDER', card)
-            return(
-                <CardImage
-                card={card} 
-                x={x} 
-                y={y} 
-                width={cardwidth} 
-                height={cardheight} 
-                rotation={rotation}  
-                shadowBlur={15} 
-                reverse={props.reverse} 
-                player={props.player} 
-                onClick={props.onClick} />
-                )
-            
-        };
-    };
+    //         let rotation;
+    //         if (orientation==='left'|| orientation==='right') {
+    //             rotation=90
+    //         } else if (orientation==='bottom' || orientation==='top'){
+    //             rotation=0
+    //         } else {
+    //             rotation=0
+    //         }; 
+    //         return(
+    //             <CardImage key={card.name}
+    //             card={card} 
+    //             x={x} 
+    //             y={y} 
+    //             width={cardwidth} 
+    //             height={cardheight} 
+    //             rotation={rotation}  
+    //             shadowBlur={15} 
+    //             reverse={props.reverse} 
+    //             player={props.player} 
+    //             onClick={props.onClick} />
+    //             )
+    //     };
+    // };
 
     renderHand = (props) => {
         let player = props.player; //player who's hand is being rendered
@@ -122,12 +120,13 @@ export class SHEDtable extends React.Component {
             if (phase === 'StartPhase') {clickAction = 'addBench'} else {clickAction = 'play'};
            
             cards.push(
-            <this.renderCard
-            key={i}
+            <CardImage
             card={hand[i]}
             orientation={orientation}
             reverse={player!==thisPlayerNumber}
             player={player}
+            width={cardwidth} 
+            height={cardheight}
             x={xcord}
             y={ycord}
             onClick={()=>this.clickCard(clickAction, i, player)}
@@ -170,11 +169,13 @@ export class SHEDtable extends React.Component {
                 };
 
                 cards.push(
-                    <this.renderCard 
+                    <CardImage
                     reverse={i===0}
                     card={ bench[j][i] }
                     x={xcord} 
                     y={ycord} 
+                    width={cardwidth} 
+                    height={cardheight}
                     orientation={orientation} 
                     player={player}
                     onClick={()=>this.clickCard(clickAction, j, player)}/>)
@@ -190,7 +191,18 @@ export class SHEDtable extends React.Component {
         let topcard = deck[deck.length -1]
         console.log('deck',topcard)
         if (deck.length > 0) {
-            return (<this.renderCard card={topcard} reverse={true} x={x} y={y} onClick={()=>this.clickCard('draw')}/>);
+            return (
+                <CardImage 
+                    key = {topcard.name}
+                    card={topcard}
+                    reverse={true} 
+                    x={x} 
+                    y={y} 
+                    width={cardwidth} 
+                    height={cardheight}
+                    onClick={()=>this.clickCard('draw')}
+                />
+            );
         } else {
             return (<Text x={x} y={y+50} text={"deck\n(empty)"} fontSize={20} />);
         };
@@ -216,7 +228,18 @@ export class SHEDtable extends React.Component {
             //getTableCards(table, (table.length-1))
             let renderedCards = [];
             for (let i=0; i<tableCardsToRender.length; i++) {
-                renderedCards.push( <this.renderCard card={tableCardsToRender[i]} reverse={false} onClick={()=>this.clickTable()} x={x} y={y}/> );
+                renderedCards.push( 
+                    <CardImage 
+                        card={tableCardsToRender[i]} 
+                        key ={tableCardsToRender[i].name}
+                        reverse={false} 
+                        onClick={()=>this.clickTable()} 
+                        width={cardwidth} 
+                        height={cardheight}
+                        x={x} 
+                        y={y} 
+                    />
+                );
             }
             return renderedCards.reverse();
         } else {
@@ -244,8 +267,6 @@ export class SHEDtable extends React.Component {
         let y = props.y;
         let orientation = props.orientation;
         
-        
-
         return (
             <Group>
                 <this.renderHand x={x} y={y} orientation={orientation} player={props.player}/> 
@@ -390,15 +411,15 @@ export class SHEDtable extends React.Component {
                         <Layer>
                             <Text x={10} y={10} text={thisPlayerNumber} fontSize={25}/>  
                             <this.renderDeck x={screenx/2 - 60} y={screeny/2-cardheight/2} rotation={0} /> 
-                            {/*<this.renderTable x={screenx/2 + 60} y={screeny/2-cardheight/2} rotation={0} />*/}
+                            {<this.renderTable x={screenx/2 + 60} y={screeny/2-cardheight/2} rotation={0} />}
                             <this.readyButton player={ thisPlayerNumber} />
                             <this.endTurnButton />
                             <this.sevenChoiceButton />
                             <this.renderInstructions/>
                         </Layer>
-                        {/*<Layer>
+                        {<Layer>
                             <this.renderAllPlayers/>
-                        </Layer>*/}
+                        </Layer>}
                     </Stage>
                );
          }
@@ -423,17 +444,17 @@ export default SHEDtable
         console.log('testcard from table', testcard)
         return(
             <CardImage 
-                        card={testcard}
-                        x={props.x} 
-                        y={0} 
-                        width={cardwidth} 
-                        opacity={1} 
-                        rotation = {0} 
-                        height={cardheight} 
-                        shadowBlur={15} 
-                        player={this.props.playerID} 
-                        onClick={()=>this.onClickCard}
-                        />
+                card={testcard}
+                x={props.x} 
+                y={0} 
+                width={cardwidth} 
+                opacity={1} 
+                rotation = {0} 
+                height={cardheight} 
+                shadowBlur={15} 
+                player={this.props.playerID} 
+                onClick={()=>this.onClickCard}
+            />
         );
     }
 
