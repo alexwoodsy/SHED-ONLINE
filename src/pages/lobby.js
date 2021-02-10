@@ -113,9 +113,6 @@ export const Lobby = () => {
 
     const Create  = async (numPlayers) => {
         try {
-            console.log('lobby client',lobbyClient)
-            console.log('server', SERVER)
-            console.log('window loc', origin, protocol, hostname)
             const { matchID } = await lobbyClient.createMatch('SHED', {
                 numPlayers: numPlayers
                 });

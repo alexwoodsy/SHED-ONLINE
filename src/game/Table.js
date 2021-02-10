@@ -50,29 +50,44 @@ export class SHEDtable extends React.Component {
         this.props.moves.PickupTable()
     };
     
+    getPlayerOrder = () =>{
+        let thisPlayerNumber = parseInt(this.props.playerID);
+        let numPlayers = this.props.ctx.numPlayers
+        let playerOrder = [0, 1, 2, 3].slice(0, numPlayers);
+        for (let i=0; i<thisPlayerNumber; i++) {
+            let front = playerOrder.shift()
+            playerOrder.push(front)
+        };
+        return playerOrder;
+    }
+
+
     renderHand = (props) => {
         let thisPlayerNumber = parseInt(this.props.playerID); //the current player
         let x = props.x; 
         let y = props.y; 
         let cards = [];
         let space = 20
+        let zones =['bottom', 'top', 'left', 'right'];
+        let playerOrder = this.getPlayerOrder()
 
         let numPlayers = this.props.ctx.numPlayers
         for (let i=0; i<numPlayers; i++) {
-            let player = i;
+            let player = playerOrder[i]; //ensure current player is always at the bottom of screen
+            let zone = zones[i];
             let hand = this.props.G.hands[player];
             for (let i= 0; i < hand.length; i++) {
                 let xcord; let ycord;
-                if (player===2) {
+                if (zone==='left') {
                     xcord = x + padx
                     ycord = y+(i*space) - screeny/2 
-                } else if (player===4) {
+                } else if (zone==='right') {
                     xcord = x + screenx - cardheight
                     ycord = y+(i*-space) - screeny/2 + pady
-                } else if (player===0) {
+                } else if (zone==='bottom') {
                     xcord = x+(i*space) + screenx/2 -cardwidth*i -padx
                     ycord = y
-                } else if (player===1) {
+                } else if (zone==='top') {
                     xcord = x+(i*space) + screenx/2 -cardwidth*i -padx
                     ycord = y+pady-screeny+cardheight/2
                 } else {
@@ -109,11 +124,13 @@ export class SHEDtable extends React.Component {
         let yspace = 20; 
         let padbench = 20;
         let cards=[];
-        
-    
+
+        let zones =['bottom', 'top', 'left', 'right'];
+        let playerOrder = this.getPlayerOrder()
         let numPlayers = this.props.ctx.numPlayers
         for (let i=0; i<numPlayers; i++) {
-            let player = i;
+            let player = playerOrder[i]; //ensure current player is always at the bottom of screen
+            let zone = zones[i]
             let bench = this.props.G.benchs[player]
             //define click type for bench setting stage and normal game play
             let phase = this.props.ctx.phase;
@@ -125,16 +142,16 @@ export class SHEDtable extends React.Component {
             
                 for (let i=0; i<numAtPos; i++) {
                     let xcord; let ycord;
-                    if (player===0) {
+                    if (zone==='bottom') {
                         xcord = x + (j*xspace) + screenx/2 - xspace -padx -cardwidth 
                         ycord = y + (i*yspace) - pady - padbench
-                    } else if (player===1) {
+                    } else if (zone==='top') {
                         xcord = x + (j*xspace) + screenx/2 - xspace -padx -cardwidth 
                         ycord = y + (i*-yspace) + pady - screeny + cardheight + xspace +padbench
-                    } else if (player===2) {
+                    } else if (zone==='left') {
                         xcord = x + (i*-yspace) + 200
                         ycord = y + (j*xspace) -screeny/2
-                    } else if (player===3) {
+                    } else if (zone==='right') {
                         xcord = x + (i*yspace) + screenx - padx - cardheight -xspace - padbench
                         ycord = y + (j*xspace) -screeny/2
                     };
