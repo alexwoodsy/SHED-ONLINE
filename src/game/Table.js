@@ -413,7 +413,7 @@ export class SHEDtable extends React.Component {
                         <Layer>
                             <Text x={10} y={10} text={thisPlayerNumber} fontSize={25}/>  
                             <this.renderDeck x={screenx/2 - 60} y={screeny/2-cardheight/2}  /> 
-                            {/*<this.renderTable x={screenx/2 + 60} y={screeny/2-cardheight/2} />*/}
+                            <this.renderTable x={screenx/2 + 60} y={screeny/2-cardheight/2} />
                             <this.readyButton player={ thisPlayerNumber } />
                             <this.endTurnButton />
                             <this.sevenChoiceButton />
