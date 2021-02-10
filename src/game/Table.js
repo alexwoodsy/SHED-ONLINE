@@ -173,7 +173,7 @@ export class SHEDtable extends React.Component {
                     <CardImage
                     reverse={i===0}
                     card={ bench[j][i] }
-                    key = { bench[j][i].name }
+                    key = { bench[j][i].name}
                     x={xcord} 
                     y={ycord} 
                     width={cardwidth} 
@@ -412,16 +412,16 @@ export class SHEDtable extends React.Component {
                     <Stage width={screenx} height={screeny}>
                         <Layer>
                             <Text x={10} y={10} text={thisPlayerNumber} fontSize={25}/>  
-                            <this.renderDeck x={screenx/2 - 60} y={screeny/2-cardheight/2} rotation={0} /> 
-                            {<this.renderTable x={screenx/2 + 60} y={screeny/2-cardheight/2} rotation={0} />}
-                            <this.readyButton player={ thisPlayerNumber} />
+                            <this.renderDeck x={screenx/2 - 60} y={screeny/2-cardheight/2}  /> 
+                            {/*<this.renderTable x={screenx/2 + 60} y={screeny/2-cardheight/2} />*/}
+                            <this.readyButton player={ thisPlayerNumber } />
                             <this.endTurnButton />
                             <this.sevenChoiceButton />
                             <this.renderInstructions/>
                         </Layer>
-                        {<Layer>
+                        {/*<Layer>
                             <this.renderAllPlayers/>
-                        </Layer>}
+                        </Layer>*/}
                     </Stage>
                );
          }
