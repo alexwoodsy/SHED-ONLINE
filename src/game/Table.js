@@ -9,8 +9,10 @@ const screenx = 1200;
 const screeny = 800;
 const padx = 50;
 const pady = 100;
-const cardwidth = 60;
-const cardheight = 84;
+const cardScale = 13;
+const cardwidth = 5*cardScale;
+const cardheight = 7*cardScale;
+const dropShadow = 20;
 
 
 
@@ -111,6 +113,7 @@ export class SHEDtable extends React.Component {
                     x={xcord}
                     y={ycord}
                     onClick={()=>this.clickCard(clickAction, i, player)}
+                    shadowBlur={dropShadow}
                 />)
             }
         }
@@ -167,6 +170,7 @@ export class SHEDtable extends React.Component {
                             height={cardheight}
                             player={player}
                             onClick={()=>this.clickCard(clickAction, j, player)}
+                            shadowBlur={dropShadow}
                         />
                     )
                 };
@@ -191,6 +195,7 @@ export class SHEDtable extends React.Component {
                     width={cardwidth} 
                     height={cardheight}
                     onClick={()=>this.clickCard('draw')}
+                    shadowBlur={dropShadow}
                 />
             );
         } else {
@@ -228,6 +233,7 @@ export class SHEDtable extends React.Component {
                         height={cardheight}
                         x={x} 
                         y={y} 
+                        shadowBlur={dropShadow}
                     />
                 );
             }
