@@ -245,6 +245,13 @@ function PlayCard(G, ctx, position) {
             EndPlay(G, ctx); 
        }; 
 
+       //burn instantly deck if card was a 10
+       if (G.table.length > 0) {
+           if (G.table[G.table.length-1].rank === 10) {
+            burnTable();
+           }
+       }
+
     } else {
         return INVALID_MOVE;
     };
@@ -332,7 +339,7 @@ function PlayBench(G, ctx, position) {
         } else if (StartLayer===0) {
             card.playedBy = ctx.currentPlayer;
             card.turnPlayed = ctx.turn;
-            //G.lastPlayed = null; done alreadty in pikcup
+            
             G.table.push( G.benchs[ctx.currentPlayer][position].pop() ) 
             //do not do magic in this case
             ctx.events.setStage('pickup')
@@ -565,8 +572,7 @@ function MoveIsMagic(G, ctx) {
     switch(movetype) {
         case 10:
         case 'burn':
-            G.table = [];
-            G.magicEvent = 'burning'
+            burnTable(G, ctx)
             break;
         case 7:
             G.magicEvent('Higher or lower')
@@ -588,6 +594,10 @@ function MoveIsMagic(G, ctx) {
     return movetype;
 };
 
+function burnTable(G, ctx) {
+    G.table = [];
+    G.magicEvent = 'burning'
+}
 
 
 
