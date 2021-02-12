@@ -114,6 +114,7 @@ export class Card {
         this.magic = this.magic()
         this.name = this.name()
         this.LastPlayedBy = null;
+        this.turnPlayedOn = null;
         this.currentLocation = null;
         this.LastLocation=null;
     }  
@@ -134,6 +135,9 @@ export class Card {
    
     set playedBy (player) {
         this.LastPlayedBy = player;
+    }
+    set turnPlayed (turn) {
+        this.turnPlayedOn = turn;
     }
 
    set location (newLocation) {
@@ -222,6 +226,7 @@ function PlayCard(G, ctx, position) {
     let card = G.hands[ctx.currentPlayer][position]
     if ( MoveValid(G, ctx, card) ) {
         card.playedBy = ctx.currentPlayer;
+        card.turnPlayed = ctx.turn;
         card.location = 'table'
         //add to last played for movevalid / ui decision checks
         G.lastPlayed = card;
@@ -296,6 +301,7 @@ function PlayBench(G, ctx, position) {
     if ( MoveValid(G, ctx, card) && correctLayer) {
         //play the card
         card.playedBy = ctx.currentPlayer;
+        card.turnPlayed = ctx.turn;
         G.lastPlayed = card;
         G.table.push( G.benchs[ctx.currentPlayer][position].pop() ) 
         //next step logic
@@ -325,6 +331,7 @@ function PlayBench(G, ctx, position) {
             return INVALID_MOVE;
         } else if (StartLayer===0) {
             card.playedBy = ctx.currentPlayer;
+            card.turnPlayed = ctx.turn;
             //G.lastPlayed = null; done alreadty in pikcup
             G.table.push( G.benchs[ctx.currentPlayer][position].pop() ) 
             //do not do magic in this case
@@ -427,9 +434,8 @@ function MoveValid(G, ctx, card) {
             i--;
         };
         
-        //CHANGE THIS TOO CHECK THAT IF A PLAYER PLAYS AND NO ONE ELSE DOES (A ROUND AFTER) THAT THEY CAN STILL GO 
-        //MIGHT NEED TO LOOK AT THE TABLE - AS THIS WONT BE AN ISSUE THEN
-        if (G.lastPlayed.LastPlayedBy===ctx.currentPlayer) {//needs to be last played incase burns
+        
+        if ((G.lastPlayed.LastPlayedBy===ctx.currentPlayer) && (G.lastPlayed.turnPlayedOn===ctx.turn) ) {//needs to be last played incase burns
             if (G.lastPlayed.rank !== card.rank) {checkval = false}
 
         } else if (card.magic === false) {
