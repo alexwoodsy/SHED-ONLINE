@@ -112,8 +112,10 @@ export class Card {
         this.rank = rank;
         this.invisible = (this.rank===3);
         this.magic = this.magic()
-        this.playedBy = null;
         this.name = this.name()
+        this.LastPlayedBy = null;
+        this.currentLocation = null;
+        this.LastLocation=null;
     }  
     name() {
         return this.rank.toString().concat(" ",this.suit);
@@ -129,9 +131,27 @@ export class Card {
         }
         return magicCheck
     }; 
+   
+    set playedBy (player) {
+        this.LastPlayedBy = player;
+    }
 
-    
+   set location (newLocation) {
+        switch(newLocation){
+            case 'deck':    
+            case 'table':
+            case 'bench':
+            case 'hand':
+                this.LastLocation = this.currentLocation;
+                this.currentLocation = newLocation
+                break;
+            default:
+                console.error('card moved to an unknown location', newLocation)
+        };
+    }
 }
+
+
 function GameOver(G, ctx) {
     //game is over
     ctx.events.endGame({winner: ctx.currentPlayer})
@@ -144,7 +164,9 @@ function GetDeck() {
     let deck = []
         for (let i=0; i < suits.length; i++) {
             for (let j=0; j < ranks.length; j++) {
-                deck.push(new Card(suits[i], ranks[j]))
+                let card = new Card(suits[i], ranks[j]);
+                card.location = 'deck'
+                deck.push( card ) 
             }
         }
         return deck
@@ -154,7 +176,9 @@ function initBench (G, ctx) {
    for (let id=0; id < ctx.numPlayers; id++){
        for (let pos=0; pos < 3; pos++) {
         for (let order=0; order < 2; order++) {
-            G.benchs[id][pos][order] = G.deck.pop();   
+            let card = G.deck.pop(); 
+            card.location = 'bench';
+            G.benchs[id][pos][order] = card;
         };
        }; 
    };
@@ -162,14 +186,20 @@ function initBench (G, ctx) {
 
 function initHand (G, ctx) {
     for (let id=0; id < ctx.numPlayers; id++){
-        for (let pos=0; pos < cardsInHand; pos++) { //DEBUGGING: SET TO 1
-        G.hands[id].push( G.deck.pop() )
+        for (let pos=0; pos < cardsInHand; pos++) {
+            let card = G.deck.pop();
+            card.location = 'hand';
+            G.hands[id].push( card )
         };
     };
 };
 
 function PickupTable(G, ctx) {
-    G.hands[ctx.currentPlayer] = G.hands[ctx.currentPlayer].concat(G.table);
+    let cards = G.table;
+    cards.forEach(card => {
+        card.location= 'hand'
+    });
+    G.hands[ctx.currentPlayer] = G.hands[ctx.currentPlayer].concat(cards);
     G.table = [];
     G.lastPlayed = null; //Incase someone picks up -------------------------------------was changed - if stuff is broke then comment out again
     ctx.events.endTurn();
@@ -178,7 +208,9 @@ function PickupTable(G, ctx) {
 
 //draw the card from deck and add the end of hand
 function DrawCard(G, ctx) {
-    G.hands[ctx.currentPlayer].push( G.deck.pop() )  
+    let card = G.deck.pop();
+    card.location = 'hand'
+    G.hands[ctx.currentPlayer].push( G.deck.pop( card ) )  
     //console.log("added to hand")
 
     if (G.hands[ctx.currentPlayer].length >=3) {ctx.events.endTurn()}
@@ -190,7 +222,7 @@ function PlayCard(G, ctx, position) {
     let card = G.hands[ctx.currentPlayer][position]
     if ( MoveValid(G, ctx, card) ) {
         card.playedBy = ctx.currentPlayer;
-
+        card.location = 'table'
         //add to last played for movevalid / ui decision checks
         G.lastPlayed = card;
         
@@ -220,9 +252,8 @@ function TakeBench(G, ctx, player, position) {
     let benchPoslen = G.benchs[player][position].length
     if (benchPoslen !== 1) {
         let card = G.benchs[player][position].pop()
-        card.playedBy = ctx.currentPlayer //used to check if taken from bench
+        // = ctx.currentPlayer //used to check if taken from bench - removed because this behaviour is not right + set last played wrong!
         G.hands[player].push( card ) 
-        //console.log('taking from bench')
     };
 };
 
@@ -237,7 +268,7 @@ function AddBench(G, ctx, player, position) {
         };
     };
     
-    if (freeBenchPos !== null && G.hands[player][position].playedBy===null) {
+    if (freeBenchPos !== null ) { //&& G.hands[player][position].LastPlayedBy===null - removed this functionallity
         G.benchs[player][freeBenchPos].push( G.hands[player][position] )
         G.hands[player].splice(position, 1)
         //console.log('adding to bench')
@@ -394,7 +425,7 @@ function MoveValid(G, ctx, card) {
         
         //CHANGE THIS TOO CHECK THAT IF A PLAYER PLAYS AND NO ONE ELSE DOES (A ROUND AFTER) THAT THEY CAN STILL GO 
         //MIGHT NEED TO LOOK AT THE TABLE - AS THIS WONT BE AN ISSUE THEN
-        if (G.lastPlayed.playedBy===ctx.currentPlayer) {//needs to be last played incase burns
+        if (G.lastPlayed.LastPlayedBy===ctx.currentPlayer) {//needs to be last played incase burns
             if (G.lastPlayed.rank !== card.rank) {checkval = false}
 
         } else if (card.magic === false) {
@@ -416,11 +447,7 @@ function MoveValid(G, ctx, card) {
                 checkval = false; 
             };       
         };
-        
-                         
     
-        //console.log('same player?', G.lastPlayed.playedBy, ctx.currentPlayer, G.lastPlayed.playedBy===ctx.currentPlayer )
-        //console.log('standard case?', topCard.rank > card.rank, topCard.rank, card.rank)
         
     };
    //console.log('move valid', checkval)

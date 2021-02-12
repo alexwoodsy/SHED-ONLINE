@@ -219,7 +219,7 @@ export class SHEDtable extends React.Component {
                 }
                 index--
             }
-            
+            console.log('table cards', tableCardsToRender)
             //getTableCards(table, (table.length-1))
             let renderedCards = [];
             for (let i=0; i<tableCardsToRender.length; i++) {
