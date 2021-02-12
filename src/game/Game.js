@@ -403,8 +403,12 @@ function SevenChoice(G, ctx, choice) {
     G.sevenHighLow = choice;
     if (G.deck.length === 0) {
         ctx.events.endTurn();
+    } else if (G.hands[ctx.currentPlayer].length >=3) {
+        ctx.events.endTurn();
+    } else {
+        ctx.events.setStage('draw');
     }
-    ctx.events.setStage('draw');
+    
 };
 
 function MoveValid(G, ctx, card) {
