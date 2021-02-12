@@ -331,6 +331,12 @@ function PlayBench(G, ctx, position) {
             EndPlay(G, ctx);
         } else {
             //console.log('can PLAY Again from the TOP row ') ///DEBUGGING
+            //burn instantly deck if card was a 10
+            if (G.table.length > 0) {
+                if (G.table[G.table.length-1].rank === 10) {
+                    burnTable();
+                }
+            };
         };
     } else {
         if (StartLayer===1) {
