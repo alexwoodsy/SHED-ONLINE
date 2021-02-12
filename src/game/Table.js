@@ -299,7 +299,7 @@ export class SHEDtable extends React.Component {
         let y =screeny - pady -cardheight;
         let colour = 'white';
         
-        if ((stage==='play' || stage==='playBench') && numMoves >=1 && benchTot >3 && this.props.playerID === this.props.ctx.currentPlayer) {
+        if ((stage==='play' || stage==='playBench') && numMoves >=1 && this.props.playerID === this.props.ctx.currentPlayer) { 
             return (<Group>
                 <Rect x={x} y={y} width={100} height={50} fontSize={25}
                     fill={colour} cornerRadius={20} onClick={()=>this.clickendTurnButton(props.player)}
