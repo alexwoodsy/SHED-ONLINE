@@ -448,7 +448,7 @@ function MoveValid(G, ctx, card) {
         };
         
         
-        if ((G.lastPlayed.LastPlayedBy===ctx.currentPlayer) && (G.lastPlayed.turnPlayedOn===ctx.turn) ) {//needs to be last played incase burns
+        if ((G.lastPlayed.LastPlayedBy===ctx.currentPlayer)  ) {//needs to be last played incase burns && (G.lastPlayed.turnPlayedOn===ctx.turn)
             if (G.lastPlayed.rank !== card.rank) {checkval = false}
 
         } else if (card.magic === false) {
