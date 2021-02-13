@@ -30,7 +30,7 @@ const SERVER = APP_PRODUCTION ? origin : `${protocol}//${hostname}:${DEFAULT_POR
 const SHEDClient = Client({
     game: SHED,
     board: SHEDtable,
-    debug: false,
+    debug: true,
     multiplayer: SocketIO({server: SERVER}),
     loading: loading,
   });

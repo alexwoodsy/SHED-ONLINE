@@ -66,7 +66,7 @@ export const CardImage = (props) => {
                     width={props.width} 
                     rotation = {rotation} 
                     height={props.height}
-                    shadowBlur={15} 
+                    shadowBlur={props.shadowBlur} 
                     player={props.player} 
                     onClick={props.onClick}
                 />

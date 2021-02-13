@@ -9,8 +9,10 @@ const screenx = 1200;
 const screeny = 800;
 const padx = 50;
 const pady = 100;
-const cardwidth = 60;
-const cardheight = 84;
+const cardScale = 13;
+const cardwidth = 5*cardScale;
+const cardheight = 7*cardScale;
+const dropShadow = 20;
 
 
 
@@ -111,6 +113,7 @@ export class SHEDtable extends React.Component {
                     x={xcord}
                     y={ycord}
                     onClick={()=>this.clickCard(clickAction, i, player)}
+                    shadowBlur={dropShadow}
                 />)
             }
         }
@@ -167,6 +170,7 @@ export class SHEDtable extends React.Component {
                             height={cardheight}
                             player={player}
                             onClick={()=>this.clickCard(clickAction, j, player)}
+                            shadowBlur={dropShadow}
                         />
                     )
                 };
@@ -191,6 +195,7 @@ export class SHEDtable extends React.Component {
                     width={cardwidth} 
                     height={cardheight}
                     onClick={()=>this.clickCard('draw')}
+                    shadowBlur={dropShadow}
                 />
             );
         } else {
@@ -214,7 +219,7 @@ export class SHEDtable extends React.Component {
                 }
                 index--
             }
-            
+            console.log('table cards', tableCardsToRender)
             //getTableCards(table, (table.length-1))
             let renderedCards = [];
             for (let i=0; i<tableCardsToRender.length; i++) {
@@ -228,6 +233,7 @@ export class SHEDtable extends React.Component {
                         height={cardheight}
                         x={x} 
                         y={y} 
+                        shadowBlur={dropShadow}
                     />
                 );
             }
@@ -293,7 +299,7 @@ export class SHEDtable extends React.Component {
         let y =screeny - pady -cardheight;
         let colour = 'white';
         
-        if ((stage==='play' || stage==='playBench') && numMoves >=1 && benchTot >3 && this.props.playerID === this.props.ctx.currentPlayer) {
+        if ((stage==='play' || stage==='playBench') && numMoves >=1 && this.props.playerID === this.props.ctx.currentPlayer) { 
             return (<Group>
                 <Rect x={x} y={y} width={100} height={50} fontSize={25}
                     fill={colour} cornerRadius={20} onClick={()=>this.clickendTurnButton(props.player)}
