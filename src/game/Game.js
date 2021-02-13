@@ -235,6 +235,8 @@ function PlayCard(G, ctx, position) {
         G.table = G.table.concat(G.hands[ctx.currentPlayer].splice(position, 1))
         //console.log("added to table") 
 
+        //burn instantly deck if card was a 10
+        if ( canBurn(G, ctx) ) { burnTable(G, ctx) }
         
         //end of play behaviour
         //console.log('can play again?', CanPlayAgain(G, ctx))
@@ -244,13 +246,6 @@ function PlayCard(G, ctx, position) {
             MoveIsMagic(G, ctx)
             EndPlay(G, ctx); 
        }; 
-
-       //burn instantly deck if card was a 10
-       if (G.table.length > 0) {
-           if (G.table[G.table.length-1].rank === 10) {
-            burnTable();
-           }
-       }
 
     } else {
         return INVALID_MOVE;
@@ -311,6 +306,10 @@ function PlayBench(G, ctx, position) {
         card.turnPlayed = ctx.turn;
         G.lastPlayed = card;
         G.table.push( G.benchs[ctx.currentPlayer][position].pop() ) 
+
+        //burn instantly deck if card was a 10
+        if ( canBurn(G, ctx) ) { burnTable(G, ctx) }
+
         //next step logic
         //dont let play again if played last card in top layer
         let CurrentLayer = BenchPlayable(G, ctx).layer;
@@ -518,7 +517,7 @@ function CanPlay(G, ctx) {
 function CanPlayBench(G, ctx) {
     let checkval = false;
 
-    if (G.lastPlayed === null) {
+    if (G.lastPlayed === null ) {
         checkval = true;
     } else {
         let postions = BenchPlayable(G, ctx).positions;
@@ -562,17 +561,8 @@ function MoveIsMagic(G, ctx) {
         movetype = topCard.rank
     };
 
-    //check if there are 4 of the same played - burn if so 
-    let tableRanks = [];
-    for (let i=0; i < table.length; i++) {
-        tableRanks.push( table[i].rank );
-    }
-
-    const countOccurrences = (arr, val) => arr.reduce((a, v) => (v === val ? a + 1 : a), 0);
-    let ranks =[2,3,4,5,6,7,8,9,10,11,12,13,14];
-    for (let i=0; i < ranks.length; i++) {
-        if(countOccurrences(tableRanks, ranks[i]) === 4) {movetype='burn'};
-    }
+    
+    if (canBurn(G, ctx)===true ) { movetype ='burn'}
  
     
     switch(movetype) {
@@ -605,6 +595,25 @@ function burnTable(G, ctx) {
     G.magicEvent = 'burning'
 }
 
+function canBurn(G, ctx) {
+    //check if there are 4 of the same played - burn if so 
+    let table = G.table;
+
+    if (table[table.length-1].rank===10) {
+        return true;
+    }
+
+    let tableRanks = [];
+    for (let i=0; i < table.length; i++) {
+        tableRanks.push( table[i].rank );
+    }
+    const countOccurrences = (arr, val) => arr.reduce((a, v) => (v === val ? a + 1 : a), 0);
+    let ranks =[2,3,4,5,6,7,8,9,10,11,12,13,14];
+    for (let i=0; i < ranks.length; i++) {
+        if(countOccurrences(tableRanks, ranks[i]) === 4) {return true;};
+    }
+    return false;
+}
 
 
 
