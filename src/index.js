@@ -5,6 +5,7 @@ import {
   Switch,
   Route,
 } from "react-router-dom";
+import { DEBUGING_UI } from './config';
 import './index.css';
 import Homescreen from "./pages/homescreen";
 import Lobby from "./pages/lobby";
@@ -18,6 +19,11 @@ import reportWebVitals from './reportWebVitals';
 
 class App extends React.Component {
     render() {
+      if (DEBUGING_UI) {
+        return (
+          <Lobby />
+        )
+      }
       return (
         <Router>
             <Switch>

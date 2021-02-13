@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Client }  from 'boardgame.io/react';
 import { LobbyClient } from 'boardgame.io/client';
-import { SocketIO } from 'boardgame.io/multiplayer';
+import { SocketIO, Local } from 'boardgame.io/multiplayer';
 import  SHED  from '../game/Game';
 import  SHEDtable  from '../game/Table';
-import { DEFAULT_PORT, APP_PRODUCTION } from "../config";
+import { DEFAULT_PORT, APP_PRODUCTION, DEBUGING_UI } from "../config";
 
 
 // import {
@@ -30,8 +30,8 @@ const SERVER = APP_PRODUCTION ? origin : `${protocol}//${hostname}:${DEFAULT_POR
 const SHEDClient = Client({
     game: SHED,
     board: SHEDtable,
-    debug: false,
-    multiplayer: SocketIO({server: SERVER}),
+    debug: DEBUGING_UI,
+    multiplayer: DEBUGING_UI ? Local() : SocketIO({server: SERVER}),
     loading: loading,
   });
 
@@ -152,8 +152,14 @@ export const Lobby = () => {
         Create(numPlayers)
         //event.preventDefault();
     }
-
-    if (canJoin) {
+    if (DEBUGING_UI) {
+        return(
+            <div>
+                <SHEDClient playerID="0"/>
+                <SHEDClient playerID="1"/>
+            </div>
+        );
+    } else if (canJoin) {
         return (
             <SHEDClient 
             playerID={playerID} 

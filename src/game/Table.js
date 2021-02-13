@@ -3,6 +3,7 @@ import {Layer, Group, Rect, Stage, Text} from 'react-konva';
 //import tablebackground from '../images/tabletop.jpg'
 import Instructions from './player';
 import { CardImage } from './card';
+import { DEBUGING_UI } from '../config';
 
 
 const screenx = 1200;
@@ -360,6 +361,9 @@ export class SHEDtable extends React.Component {
         let playerID = this.props.playerID;
         let matchID = this.props.matchID;
 
+        if (DEBUGING_UI) {
+            return null;
+        }
         return (
             <Group>
                 <Text x={10} y={10} text={"player: ".concat(matchData[playerID].name)} fontSize={15} />
