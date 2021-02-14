@@ -2,7 +2,7 @@ import { INVALID_MOVE } from 'boardgame.io/core';
 
 
 // VARS TO CHNAGE FOR DEBUGGING 
-var cardsInHand = 3;
+var cardsInHand = 6;
 var emptyDeck = false;
 
 
@@ -557,6 +557,7 @@ function MoveIsMagic(G, ctx) {
     let movetype = null //default 
     
     //determinie movetype from top card on table
+    //console.log
     if (topCard.magic) {
         movetype = topCard.rank
     };
