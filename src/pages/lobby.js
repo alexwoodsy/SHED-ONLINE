@@ -30,8 +30,17 @@ const SERVER = APP_PRODUCTION ? origin : `${protocol}//${hostname}:${DEFAULT_POR
 const SHEDClient = Client({
     game: SHED,
     board: SHEDtable,
-    debug: DEBUGING_UI,
-    multiplayer: DEBUGING_UI ? Local() : SocketIO({server: SERVER}),
+    debug: false, 
+    multiplayer: SocketIO({server: SERVER}),
+    loading: loading,
+  });
+
+const DebugSHEDClient = Client({
+    game: SHED,
+    board: SHEDtable,
+    debug: true, //DEBUGING_UI,
+    numPlayers: 4,
+    multiplayer: Local(),
     loading: loading,
   });
 
@@ -153,10 +162,13 @@ export const Lobby = () => {
         //event.preventDefault();
     }
     if (DEBUGING_UI) {
+        
         return(
             <div>
-                <SHEDClient playerID="0"/>
-                <SHEDClient playerID="1"/>
+                <DebugSHEDClient playerID="0"/>
+                <DebugSHEDClient playerID="1"/>
+                <DebugSHEDClient playerID="2"/>
+                <DebugSHEDClient playerID="3"/>
             </div>
         );
     } else if (canJoin) {
