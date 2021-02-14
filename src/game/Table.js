@@ -18,19 +18,22 @@ export class SHEDtable extends React.Component {
         screeny: window.innerHeight,
         padx: 15,
         pady: 15,
+        cardScale: cardScale(),
         cardwidth: 5*cardScale(),
         cardheight: 7*cardScale(),
         dropShadow: 20,
     }
 
     updateDimensions = () => {
+        let scale = cardScale()
         this.setState({
             screenx: window.innerWidth,
             screeny: window.innerHeight,
             padx: 15,
             pady: 15,
-            cardwidth: 5*cardScale(),
-            cardheight: 7*cardScale(),
+            cardScale: scale,
+            cardwidth: 5*scale,
+            cardheight: 7*scale,
             dropShadow: 20,
             });
       };
@@ -195,6 +198,7 @@ export class SHEDtable extends React.Component {
         let deck = this.props.G.deck
         let x = this.state.screenx/2 - 3*this.state.cardwidth/2;
         let y = this.state.screeny/2-this.state.cardheight/2;
+        let fontsize = 2*this.state.cardScale;
         let topcard = deck[deck.length -1]
         if (deck.length > 0) {
             return (
@@ -212,7 +216,7 @@ export class SHEDtable extends React.Component {
                 />
             );
         } else {
-            return (<Text x={x} y={y+50} text={"deck\n(empty)"} fontSize={20} />);
+            return (<Text x={x} y={y+this.state.cardheight/4} text={"deck\n(empty)"} fontSize={fontsize} />);
         };
     };
 
@@ -220,7 +224,7 @@ export class SHEDtable extends React.Component {
         let table = this.props.G.table
         let x = this.state.screenx/2 + 3*this.state.cardwidth/2;
         let y = this.state.screeny/2-this.state.cardheight/2;
-        let fontsize = 2*cardScale()
+        let fontsize = 2*this.state.cardScale
         if (table.length > 0) {
             let tableCardsToRender = [];
             let index = table.length-1
@@ -276,9 +280,9 @@ export class SHEDtable extends React.Component {
         let phase = this.props.ctx.phase;
         let state = this.props.G.Ready[props.player]
         let colour = 'white'
-        let width = 9*cardScale();
-        let height = 3*cardScale();
-        let fontsize = 2*cardScale()
+        let width = 9*this.state.cardScale;
+        let height = 3*this.state.cardScale;
+        let fontsize = 2*this.state.cardScale
         let x = this.state.screenx/2 -width - 2* this.state.cardwidth - this.state.padx;
         let y = this.state.screeny - this.state.pady - 2*this.state.cardheight;
 
@@ -314,9 +318,9 @@ export class SHEDtable extends React.Component {
         }
         
         let numMoves = this.props.ctx.numMoves;
-        let width = 9*cardScale();
-        let height = 3*cardScale();
-        let fontsize = 2*cardScale()
+        let width = 9*this.state.cardScale;
+        let height = 3*this.state.cardScale;
+        let fontsize = 2*this.state.cardScale
         let x = this.state.screenx/2 -width - 2* this.state.cardwidth - this.state.padx;
         let y = this.state.screeny - this.state.pady - 2*this.state.cardheight;
         let colour = 'white';
@@ -335,12 +339,12 @@ export class SHEDtable extends React.Component {
 
     sevenChoiceButton = (props) => {
         let stage = this.props.ctx.activePlayers[this.props.ctx.currentPlayer];
-        let width = 6*cardScale();
-        let height = 3*cardScale();
-        let sep = cardScale();
+        let width = 6*this.state.cardScale;
+        let height = 3*this.state.cardScale;
+        let sep = this.state.cardScale;
         let x = this.state.screenx/2 - 2*width - 2* this.state.cardwidth - this.state.padx;
         let y = this.state.screeny - this.state.pady - 2*this.state.cardheight;
-        let fontsize = 2*cardScale();
+        let fontsize = 2*this.state.cardScale;
         let colour = 'white';
         
         if (stage==='sevenChoice' && this.props.playerID === this.props.ctx.currentPlayer) {
@@ -368,11 +372,11 @@ export class SHEDtable extends React.Component {
         let player = parseInt(this.props.playerID)
         let text = Instructions(this.props.G, this.props.ctx, player);
         
-        let width = 16*cardScale();
-        let height = 3*cardScale();
+        let width = 16*this.state.cardScale;
+        let height = 3*this.state.cardScale;
         let x = this.state.screenx/2 + this.state.padx + 3*this.state.cardwidth/2;
         let y = this.state.screeny - this.state.pady - this.state.cardheight*2;
-        let fontsize = 2*cardScale();
+        let fontsize = 2*this.state.cardScale;
         let colour = 'white';
         
         return(<Group >
