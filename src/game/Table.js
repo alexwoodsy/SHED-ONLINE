@@ -37,7 +37,7 @@ export class SHEDtable extends React.Component {
 
     componentDidMount() {
         window.addEventListener('resize', this.updateDimensions);
-        console.log(this.state.screenx, this.state.screeny)
+
     }
 
     componentWillUnmount() {
@@ -153,7 +153,7 @@ export class SHEDtable extends React.Component {
             let player = playerOrder[k]; //ensure current player is always at the bottom of screen
             let zone = zones[k]
             let bench = this.props.G.benchs[player]
-            
+            //console.log('bench', bench)
             //define click type for bench setting stage and normal game play
             let phase = this.props.ctx.phase;
             let clickAction;
@@ -165,7 +165,6 @@ export class SHEDtable extends React.Component {
                 for (let i=0; i<numAtPos; i++) {
                     let cardParams = CardRenderParam(x, y-i*yspace, this.state.cardwidth, this.state.cardheight, this.state.screenx, this.state.screeny, this.state.padx, this.state.pady, range, 3, zone) //hard coded as 3 on purpose
                     let xcord; let ycord;
-                    //console.log('rendering:', bench[j], 'player', player, `at x:${xcord} y:${ycord} in zone ${zone}`)
                     xcord=cardParams[j][0]
                     ycord=cardParams[j][1]
                     let rotation = cardParams[j][2];
@@ -322,7 +321,7 @@ export class SHEDtable extends React.Component {
         let y = this.state.screeny - this.state.pady - 2*this.state.cardheight;
         let colour = 'white';
         
-        if ((stage==='play' || stage==='playBench') && numMoves >=1 && this.props.playerID === this.props.ctx.currentPlayer) { 
+        if ((stage==='play' || stage==='playBench') && numMoves >=1 && this.props.playerID === this.props.ctx.currentPlayer && this.props.G.table.length>0) { 
             return (<Group onClick={()=>this.clickendTurnButton(props.player)} onTap={()=>this.clickendTurnButton(props.player)}>
                 <Rect x={x} y={y} width={width} height={height} fontSize={fontsize}
                     fill={colour} cornerRadius={20} 

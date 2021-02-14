@@ -39,7 +39,7 @@ const DebugSHEDClient = Client({
     game: SHED,
     board: SHEDtable,
     debug: true, //DEBUGING_UI,
-    numPlayers: 4,
+    numPlayers: 2,
     multiplayer: Local(),
     loading: loading,
   });
@@ -167,8 +167,8 @@ export const Lobby = () => {
             <div>
                 <DebugSHEDClient playerID="0"/>
                 <DebugSHEDClient playerID="1"/>
-                <DebugSHEDClient playerID="2"/>
-                <DebugSHEDClient playerID="3"/>
+                {/* <DebugSHEDClient playerID="2"/>
+                <DebugSHEDClient playerID="3"/> */}
             </div>
         );
     } else if (canJoin) {

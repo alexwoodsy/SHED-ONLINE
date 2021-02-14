@@ -2,8 +2,9 @@ import { INVALID_MOVE } from 'boardgame.io/core';
 
 
 // VARS TO CHNAGE FOR DEBUGGING 
-var cardsInHand = 6;
-var emptyDeck = false;
+var cardsInHand = 3;
+var emptyDeck = true;
+var handOf = null;
 
 
 export const SHED = {
@@ -31,8 +32,8 @@ export const SHED = {
             next:'MainPhase',
             onBegin: (G, ctx) => {
                 G.deck = ctx.random.Shuffle(G.deck);
-                initBench(G, ctx);
                 initHand(G, ctx);
+                initBench(G, ctx);
                 if (emptyDeck===true) {G.deck = []};//DEBUGGING: SET TO empty}
                 ctx.events.setActivePlayers({
                     all: 'settingBench'
@@ -190,11 +191,22 @@ function initBench (G, ctx) {
 
 function initHand (G, ctx) {
     for (let id=0; id < ctx.numPlayers; id++){
-        for (let pos=0; pos < cardsInHand; pos++) {
-            let card = G.deck.pop();
-            card.location = 'hand';
-            G.hands[id].push( card )
-        };
+        if (handOf !== null && id===0) { //for debugging player zero hand all to one suit
+            for (let i=0; i<G.deck.length; i++) {
+                if (G.deck[i].rank === handOf) {
+                    let card = G.deck.splice(i, 1)[0]
+                    card.location = 'hand';
+                    console.log(card)
+                    G.hands[id].push( card )
+                }
+            }
+        } else {
+            for (let pos=0; pos < cardsInHand; pos++) {
+                let card = G.deck.pop();
+                card.location = 'hand';
+                G.hands[id].push( card )
+            };
+        }
     };
 };
 
@@ -242,7 +254,7 @@ function PlayCard(G, ctx, position) {
         //console.log('can play again?', CanPlayAgain(G, ctx))
        if (CanPlayAgain(G, ctx) === false) {
            //let topCard = G.table[G.table.length-1]
-            //update gamestate if card(s) played have magic behaviour
+           //update gamestate if card(s) played have magic behaviour
             MoveIsMagic(G, ctx)
             EndPlay(G, ctx); 
        }; 
@@ -295,7 +307,7 @@ function PlayBench(G, ctx, position) {
     
     let correctLayer = false;
     for (let i=0; i<PlayablePositions.length; i++) {
-        //console.log('bench playable checking', position, PlayablePositions[i] )
+        console.log('bench playable checking', position, PlayablePositions[i] )
         if (position===PlayablePositions[i]) {correctLayer = true}
     }
 
@@ -314,11 +326,13 @@ function PlayBench(G, ctx, position) {
         //dont let play again if played last card in top layer
         let CurrentLayer = BenchPlayable(G, ctx).layer;
         let currentPlayablePositions = BenchPlayable(G, ctx).positions;
-        //console.log('bench playable after',position, currentPlayablepos )
-
+        console.log('bench playable after',position, currentPlayablePositions )
+        console.log('currentlayer', CurrentLayer, 'startlayer', StartLayer)
         if (CurrentLayer!==StartLayer) { //check if the move should end
             //console.log('ending turn as cant play from top and bottom')
             MoveIsMagic(G, ctx)
+            EndPlay(G, ctx);
+        } else if (G.table.length === 0) { //accounts for last move being a burn 
             EndPlay(G, ctx);
         } else if (CurrentLayer===0 && currentPlayablePositions.length ===0) {
             GameOver(G, ctx);
@@ -552,48 +566,49 @@ function CanPlayAgainBench(G, ctx) {
 
 //return event type to log the moves made - needed for the invisible check when checking move validity
 function MoveIsMagic(G, ctx) {
+    let movetype = null //default
     let table=G.table
-    let topCard = table[table.length-1]
-    let movetype = null //default 
-    
-    //determinie movetype from top card on table
-    //console.log
-    if (topCard.magic) {
-        movetype = topCard.rank
-    };
+    if (table.length !==0) {
+        let topCard = table[table.length-1]
+        console.log('table',table,'topcard',topCard)
+        //determinie movetype from top card on table
+        //console.log
+        if (topCard.magic) {
+            movetype = topCard.rank
+        };
 
+        if (canBurn(G, ctx)===true ) { movetype ='burn'}
     
-    if (canBurn(G, ctx)===true ) { movetype ='burn'}
- 
+        switch(movetype) {
+            case 10:
+            case 'burn':
+                burnTable(G, ctx)
+                break;
+            case 7:
+                G.magicEvent('Higher or lower')
+                //dont need to do anything - handled by game logic
+                break;
+            case 3:
+                G.magicEvent = 'Invisible'
+                break;
+            case 2:
+                //no action needed for 2 reset as no cards lower than 2
+                G.magicEvent = 'reset'
+                break
+            default: //when movetype is null due card being normal
+                //console.log('standard')
+                G.magicEvent = null
+                break // do nothing - allow us to track magic events 
+        };
+    }
     
-    switch(movetype) {
-        case 10:
-        case 'burn':
-            burnTable(G, ctx)
-            break;
-        case 7:
-            G.magicEvent('Higher or lower')
-            //dont need to do anything - handled by game logic
-            break;
-        case 3:
-            G.magicEvent = 'Invisible'
-            break;
-        case 2:
-            //no action needed for 2 reset as no cards lower than 2
-            G.magicEvent = 'reset'
-            break
-        default: //when movetype is null due card being normal
-            //console.log('standard')
-            G.magicEvent = null
-            break // do nothing - allow us to track magic events 
-    };
-
     return movetype;
 };
 
 function burnTable(G, ctx) {
     G.table = [];
     G.magicEvent = 'burning'
+    console.log(G.magicEvent)
 }
 
 function canBurn(G, ctx) {
