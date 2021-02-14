@@ -3,7 +3,7 @@ import { INVALID_MOVE } from 'boardgame.io/core';
 
 // VARS TO CHNAGE FOR DEBUGGING 
 var cardsInHand = 3;
-var emptyDeck = true;
+var emptyDeck = false;
 var handOf = null;
 
 
