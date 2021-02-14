@@ -69,6 +69,7 @@ export const CardImage = (props) => {
                     shadowBlur={props.shadowBlur} 
                     player={props.player} 
                     onClick={props.onClick}
+                    onTap={props.onTap}
                 />
             );
         }
@@ -93,6 +94,7 @@ export const CardImage = (props) => {
                     shadowBlur={props.shadowBlur} 
                     player={props.player} 
                     onClick={props.onClick}
+                    onTap={props.onTap}
                 />
             );
         }

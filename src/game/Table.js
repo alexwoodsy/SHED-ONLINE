@@ -130,6 +130,7 @@ export class SHEDtable extends React.Component {
                     y={ycord}
                     rotation={cardParams[i][2]}
                     onClick={()=>this.clickCard(clickAction, i, player)}
+                    onTap={()=>this.clickCard(clickAction, i, player)}
                     shadowBlur={this.state.dropShadow}
                 />)
             }
@@ -181,6 +182,7 @@ export class SHEDtable extends React.Component {
                             height={this.state.cardheight}
                             player={player}
                             onClick={()=>this.clickCard(clickAction, j, player)}
+                            onTap={()=>this.clickCard(clickAction, j, player)}
                             shadowBlur={this.state.dropShadow}
                         />
                     )
@@ -206,6 +208,7 @@ export class SHEDtable extends React.Component {
                     width={this.state.cardwidth} 
                     height={this.state.cardheight}
                     onClick={()=>this.clickCard('draw')}
+                    onTap={()=>this.clickCard('draw')}
                     shadowBlur={this.state.dropShadow}
                 />
             );
@@ -240,6 +243,7 @@ export class SHEDtable extends React.Component {
                         key ={tableCardsToRender[i].name}
                         reverse={false} 
                         onClick={()=>this.clickTable()} 
+                        onTap={()=>this.clickTable()}
                         width={this.state.cardwidth} 
                         height={this.state.cardheight}
                         x={x} 
@@ -289,9 +293,9 @@ export class SHEDtable extends React.Component {
             colour = '#14ff76'
         }
         if (phase==='StartPhase' && benchTot === 6) {
-            return (<Group>
+            return (<Group onClick={()=>this.clickReadyButton(props.player)} onTap={()=>this.clickReadyButton(props.player)}>
                 <Rect x={x} y={y} width={width} height={height}
-                    fill={colour} cornerRadius={20} onClick={()=>this.clickReadyButton(props.player)}
+                    fill={colour} cornerRadius={20} 
                     />
                     <Text x={x+width/6} y={y+height/4} align={'center'} text={'Ready'} fontSize={fontsize} fill={'black'} />
             </Group>)
@@ -319,9 +323,9 @@ export class SHEDtable extends React.Component {
         let colour = 'white';
         
         if ((stage==='play' || stage==='playBench') && numMoves >=1 && this.props.playerID === this.props.ctx.currentPlayer) { 
-            return (<Group>
+            return (<Group onClick={()=>this.clickendTurnButton(props.player)} onTap={()=>this.clickendTurnButton(props.player)}>
                 <Rect x={x} y={y} width={width} height={height} fontSize={fontsize}
-                    fill={colour} cornerRadius={20} onClick={()=>this.clickendTurnButton(props.player)}
+                    fill={colour} cornerRadius={20} 
                     />
                     <Text x={x} y={y+height/4} align={'center'} text={'End Turn'} fontSize={fontsize} fill={'black'} />
             </Group>)
@@ -341,14 +345,20 @@ export class SHEDtable extends React.Component {
         let colour = 'white';
         
         if (stage==='sevenChoice' && this.props.playerID === this.props.ctx.currentPlayer) {
-            return (<Group>
+            return (
+            <Group>
+                <Group onClick={()=>this.clicksevenChoiceButton('higher', props.player)} onTap={()=>this.clicksevenChoiceButton('higher', props.player)}>
                     <Rect x={x+sep+width} y={y} width={width} height={height} 
-                    fill={colour} cornerRadius={20} onClick={()=>this.clicksevenChoiceButton('higher', props.player)}/>
+                    fill={colour} cornerRadius={20} />
                     <Text x={x+sep+width} y={y+height/4} align={'center'} text={'higher'} fontSize={fontsize} fill={'black'} />
-
+                </Group>
+                
+                <Group onClick={()=>this.clicksevenChoiceButton('lower', props.player)} onTap={()=>this.clicksevenChoiceButton('lower', props.player)}>
                     <Rect x={x} y={y} width={width} height={height} 
-                    fill={colour} cornerRadius={20} onClick={()=>this.clicksevenChoiceButton('lower', props.player)}/>
+                    fill={colour} cornerRadius={20} />
                     <Text x={x} y={y+height/4} align={'center'} text={'lower'} fontSize={fontsize} fill={'black'} />
+                </Group>
+
             </Group>)
         } else {
             return null;
