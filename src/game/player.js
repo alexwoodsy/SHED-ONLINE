@@ -21,6 +21,8 @@ function Instructions(G, ctx, player) {
 
 
 
+
+
 // function renderMagic() {
 
 // }

@@ -222,7 +222,7 @@ export class SHEDtable extends React.Component {
 
     renderTable = (props) => {
         let table = this.props.G.table
-        let x = this.state.screenx/2 + 3*this.state.cardwidth/2;
+        let x = this.state.screenx/2 + this.state.cardwidth/2;
         let y = this.state.screeny/2-this.state.cardheight/2;
         let fontsize = 2*this.state.cardScale
         if (table.length > 0) {
@@ -236,7 +236,7 @@ export class SHEDtable extends React.Component {
                 }
                 index--
             }
-            console.log('table cards', tableCardsToRender)
+            //console.log('table cards', tableCardsToRender)
             //getTableCards(table, (table.length-1))
             let renderedCards = [];
             for (let i=0; i<tableCardsToRender.length; i++) {
@@ -257,7 +257,7 @@ export class SHEDtable extends React.Component {
             }
             return renderedCards.reverse();
         } else {
-           return <Text x={x-this.state.cardwidth} y={y+this.state.cardheight/4} text={"table\n(empty)"} fontSize={fontsize} />
+           return <Text x={x} y={y+this.state.cardheight/4} text={"table\n(empty)"} fontSize={fontsize} />
         };
     };
 
@@ -311,12 +311,7 @@ export class SHEDtable extends React.Component {
 
     endTurnButton = (props) => {
         let stage = this.props.ctx.activePlayers[this.props.ctx.currentPlayer];
-        let bench = this.props.G.benchs[this.props.ctx.currentPlayer]
-        let benchTot=0;
-        for (let j=0; j<3; j++) {
-            benchTot = benchTot + bench[j].length;  
-        }
-        
+        let hasTen = this.props.G.hasTen;
         let numMoves = this.props.ctx.numMoves;
         let width = 9*this.state.cardScale;
         let height = 3*this.state.cardScale;
@@ -324,8 +319,12 @@ export class SHEDtable extends React.Component {
         let x = this.state.screenx/2 -width - 2* this.state.cardwidth - this.state.padx;
         let y = this.state.screeny - this.state.pady - 2*this.state.cardheight;
         let colour = 'white';
-        
-        if ((stage==='play' || stage==='playBench') && numMoves >=1 && this.props.playerID === this.props.ctx.currentPlayer && this.props.G.table.length>0) { 
+    
+        if ((stage==='play' || stage==='playBench') &&
+            numMoves >=1 && 
+            this.props.playerID === this.props.ctx.currentPlayer 
+            && (this.props.G.magicEvent!=='burning' || hasTen)
+            ) { 
             return (<Group onClick={()=>this.clickendTurnButton(props.player)} onTap={()=>this.clickendTurnButton(props.player)}>
                 <Rect x={x} y={y} width={width} height={height} fontSize={fontsize}
                     fill={colour} cornerRadius={20} 

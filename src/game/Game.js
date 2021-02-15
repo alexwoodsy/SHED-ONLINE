@@ -2,9 +2,9 @@ import { INVALID_MOVE } from 'boardgame.io/core';
 
 
 // VARS TO CHNAGE FOR DEBUGGING 
-var cardsInHand = 3;
-var emptyDeck = false;
-var handOf = null;
+var cardsInHand = 3; //default 3
+var emptyDeck = false; //false
+var handOf = null; //default null
 
 
 export const SHED = {
@@ -18,7 +18,8 @@ export const SHED = {
         sevenHighLow: 'default', //can be: default - higher - lower
         lastPlayed: null,
         magicEvent: null,
-        
+        hasTen: false,
+                
      }),
 
     turn: {
@@ -196,7 +197,6 @@ function initHand (G, ctx) {
                 if (G.deck[i].rank === handOf) {
                     let card = G.deck.splice(i, 1)[0]
                     card.location = 'hand';
-                    console.log(card)
                     G.hands[id].push( card )
                 }
             }
@@ -235,6 +235,7 @@ function DrawCard(G, ctx) {
   
   //later need to update to allow playing of more than 1 card - should be anmother function that calls this one
 function PlayCard(G, ctx, position) {
+    G.magicEvent = null//reset before turn 
     let card = G.hands[ctx.currentPlayer][position]
     if ( MoveValid(G, ctx, card) ) {
         card.playedBy = ctx.currentPlayer;
@@ -250,14 +251,24 @@ function PlayCard(G, ctx, position) {
         //burn instantly deck if card was a 10
         if ( canBurn(G, ctx) ) { burnTable(G, ctx) }
         
+        //update whether the player has a ten in his hand for later checks
+        G.hasTen = hasTen(G, ctx)
+
+        
         //end of play behaviour
         //console.log('can play again?', CanPlayAgain(G, ctx))
        if (CanPlayAgain(G, ctx) === false) {
            //let topCard = G.table[G.table.length-1]
            //update gamestate if card(s) played have magic behaviour
-            MoveIsMagic(G, ctx)
             EndPlay(G, ctx); 
        }; 
+
+       //hanle playing last card in hand 
+       if (G.hands[ctx.currentPlayer].length===0) {
+           ctx.events.setStage('playBench')
+       }
+
+       
 
     } else {
         return INVALID_MOVE;
@@ -297,6 +308,7 @@ function AddBench(G, ctx, player, position) {
 };
 
 function PlayBench(G, ctx, position) {
+    G.magicEvent = null//reset before turn 
     let PlayablePositions = BenchPlayable(G, ctx).positions;
     //console.log('playable pos', PlayablePositions)
     let StartLayer = BenchPlayable(G, ctx).layer;
@@ -322,35 +334,15 @@ function PlayBench(G, ctx, position) {
         //burn instantly deck if card was a 10
         if ( canBurn(G, ctx) ) { burnTable(G, ctx) }
 
-        //next step logic
-        //dont let play again if played last card in top layer
-        let CurrentLayer = BenchPlayable(G, ctx).layer;
-        let currentPlayablePositions = BenchPlayable(G, ctx).positions;
-        console.log('bench playable after',position, currentPlayablePositions )
-        console.log('currentlayer', CurrentLayer, 'startlayer', StartLayer)
-        if (CurrentLayer!==StartLayer) { //check if the move should end
-            //console.log('ending turn as cant play from top and bottom')
-            MoveIsMagic(G, ctx)
-            EndPlay(G, ctx);
-        } else if (G.table.length === 0) { //accounts for last move being a burn 
-            EndPlay(G, ctx);
-        } else if (CurrentLayer===0 && currentPlayablePositions.length ===0) {
+        //update whether the player has a ten in his hand for later checks
+        G.hasTen = hasTen(G, ctx)
+
+        if (BenchPlayable(G, ctx).layer===0 && BenchPlayable(G, ctx).positions.length ===0) {
             GameOver(G, ctx);
-        } else if (CanPlayAgainBench(G, ctx) === false && CurrentLayer===1) { //only do this check if in the top layer
-            MoveIsMagic(G, ctx)
-            EndPlay(G, ctx);
-        } else if (CurrentLayer===0) {
-            MoveIsMagic(G, ctx)
-            EndPlay(G, ctx);
-        } else {
-            //console.log('can PLAY Again from the TOP row ') ///DEBUGGING
-            //burn instantly deck if card was a 10
-            if (G.table.length > 0) {
-                if (G.table[G.table.length-1].rank === 10) {
-                    burnTable();
-                }
-            };
-        };
+        } else if (CanPlayAgainBench(G, ctx) === false) {
+            EndPlay(G, ctx); 
+        }
+
     } else {
         if (StartLayer===1) {
             //console.log('move on top layer is invalid')
@@ -412,6 +404,7 @@ function ReadyUp(G, ctx, readyPlayer) {
 };
 
 function EndPlay(G, ctx) {
+    MoveIsMagic(G, ctx)
     let stage = ctx.activePlayers[ctx.currentPlayer];
     if (stage==='play') {
         if (G.lastPlayed.rank === 7) {
@@ -498,7 +491,7 @@ function CanPlayAgain(G, ctx) {
     let cards=G.hands[ctx.currentPlayer]
     //let hand = G.hands[ctx.currentPlayer];
     let chekval = false;
-    if (G.lastPlayed === null) {
+    if (G.lastPlayed === null || G.magicEvent==='burning') {
         chekval = true;
     } else {
         for (let i=0; i < cards.length; i++) {
@@ -545,14 +538,18 @@ function CanPlayBench(G, ctx) {
 }
 
 function CanPlayAgainBench(G, ctx) {
-    let table = G.table;
+    let postions = BenchPlayable(G, ctx).positions;
+    let layer = BenchPlayable(G, ctx).layer;
     let checkval = false;
 
-    if (table.length === 0) {
+    if (G.lastPlayed === null ) { //changed from table check
         checkval = true;
+    }else if (layer===0) {
+        if (G.magicEvent==='burning') {
+            checkval = true;
+        }
     } else {
-        let postions = BenchPlayable(G, ctx).positions;
-        let layer = BenchPlayable(G, ctx).layer;
+        
         for (let i=0; i<postions.length; i++) {
             let card = G.benchs[ctx.currentPlayer][postions[i]][layer];
             if ( MoveValid(G, ctx, card) ) {checkval = true}
@@ -608,8 +605,10 @@ function MoveIsMagic(G, ctx) {
 function burnTable(G, ctx) {
     G.table = [];
     G.magicEvent = 'burning'
+    
     console.log(G.magicEvent)
 }
+
 
 function canBurn(G, ctx) {
     //check if there are 4 of the same played - burn if so 
@@ -631,6 +630,44 @@ function canBurn(G, ctx) {
     return false;
 }
 
+function hasTen (G, ctx) {
+    if (G.hands[ctx.currentPlayer].length > 0) {
+        let cards=G.hands[ctx.currentPlayer]
+            for (let i=0; i < cards.length; i++) {
+                let card = cards[i];
+                if ( card.rank===10 ) {return true}
+            }
+    } else { //check the bench for a ten
+        //if on top layer - look on to layer
+        if (BenchPlayable(G, ctx).layer===1) {
+            let postions = BenchPlayable(G, ctx).positions;
+            for (let i=0; i<postions.length; i++) {
+                let card = G.benchs[ctx.currentPlayer][postions[i]][1];
+                if ( card.rank===10 ) {return true}
+            };
+        }     
+    }
+    return false;
+}
+// function canEndTurnAfterBurn (G, ctx) {//returns true when the button for ending play should be shown
+//     let haveTen = false; //return true ONLY if they just burnt and have a 10
+
+
+
+
+
+//     
+
+
+//         //if on the bottom - do nothing
+//     }  
+    
+//     let notBurningCheck = !(G.magicEvent==='burning') || haveTen
+//     console.log('haveTen',haveTen,'noBurning',notBurningCheck)
+
+//     G.canEndTurnAfterBurn = (notBurningCheck)
+ 
+// }
 
 
 export default SHED;
