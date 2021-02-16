@@ -1,5 +1,5 @@
 import React from 'react';
-import {Layer, Group, Rect, Stage, Text, Line} from 'react-konva';
+import {Layer, Group, Rect, Stage, Text, Line } from 'react-konva';
 //import tablebackground from '../images/tabletop.jpg'
 import Instructions from './player';
 import { CardImage, CardRenderParam } from './card';
@@ -46,6 +46,7 @@ export class SHEDtable extends React.Component {
     componentWillUnmount() {
         window.removeEventListener('resize', this.updateDimensions);
     }
+
 
 
     clickCard = (type, position, player) => {
@@ -120,7 +121,7 @@ export class SHEDtable extends React.Component {
                 let phase = this.props.ctx.phase;
                 let clickAction;
                 if (phase === 'StartPhase') {clickAction = 'addBench'} else {clickAction = 'play'};
-               
+                console.log('hand ',hand[i])
                 cards.push(
                 <CardImage
                     card={hand[i]}
@@ -222,6 +223,7 @@ export class SHEDtable extends React.Component {
 
     renderTable = (props) => {
         let table = this.props.G.table
+        console.log('table', table)
         let x = this.state.screenx/2 + this.state.cardwidth/2;
         let y = this.state.screeny/2-this.state.cardheight/2;
         let fontsize = 2*this.state.cardScale

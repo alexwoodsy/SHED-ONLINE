@@ -143,17 +143,23 @@ export class Card {
     }
 
    set location (newLocation) {
-        switch(newLocation){
-            case 'deck':    
-            case 'table':
-            case 'bench':
-            case 'hand':
-                this.LastLocation = this.currentLocation;
-                this.currentLocation = newLocation
-                break;
-            default:
-                console.error('card moved to an unknown location', newLocation)
-        };
+    let curLoc = this.currentLocation
+    this.currentLocation= newLocation
+    this.LastLocation = curLoc;
+        
+
+        // switch(newLocation){
+        //     case 'deck':    
+        //     case 'table':
+        //     case 'bench':
+        //     case 'hand':
+        //         let current = this.currentLocation;
+        //         this.LastLocation = current;
+        //         this.currentLocation = newLocation
+        //         break;
+        //     default:
+        //         console.error('card moved to an unknown location', newLocation)
+        // };
     }
 }
 
@@ -283,6 +289,7 @@ function TakeBench(G, ctx, player, position) {
     if (benchPoslen !== 1) {
         let card = G.benchs[player][position].pop()
         // = ctx.currentPlayer //used to check if taken from bench - removed because this behaviour is not right + set last played wrong!
+        card.location='hand'
         G.hands[player].push( card ) 
     };
 };
@@ -299,7 +306,9 @@ function AddBench(G, ctx, player, position) {
     };
     
     if (freeBenchPos !== null ) { //&& G.hands[player][position].LastPlayedBy===null - removed this functionallity
-        G.benchs[player][freeBenchPos].push( G.hands[player][position] )
+        let card = G.hands[player][position]
+        card.location = 'bench'
+        G.benchs[player][freeBenchPos].push( card )
         G.hands[player].splice(position, 1)
         //console.log('adding to bench')
     } else {
@@ -326,10 +335,12 @@ function PlayBench(G, ctx, position) {
     //console.log('correct layer:', correctLayer)
     if ( MoveValid(G, ctx, card) && correctLayer) {
         //play the card
+        let card = G.benchs[ctx.currentPlayer][position].pop()
+        card.location = 'table'
         card.playedBy = ctx.currentPlayer;
         card.turnPlayed = ctx.turn;
         G.lastPlayed = card;
-        G.table.push( G.benchs[ctx.currentPlayer][position].pop() ) 
+        G.table.push( card ) 
 
         //burn instantly deck if card was a 10
         if ( canBurn(G, ctx) ) { burnTable(G, ctx) }
@@ -567,7 +578,7 @@ function MoveIsMagic(G, ctx) {
     let table=G.table
     if (table.length !==0) {
         let topCard = table[table.length-1]
-        console.log('table',table,'topcard',topCard)
+        //console.log('table',table,'topcard',topCard)
         //determinie movetype from top card on table
         //console.log
         if (topCard.magic) {
@@ -630,8 +641,9 @@ function canBurn(G, ctx) {
     return false;
 }
 
-function hasTen (G, ctx) {
-    if (G.hands[ctx.currentPlayer].length > 0) {
+function hasTen (G, ctx) { //has a ten in the same collection as intially played from
+    console.log('ten last played', G.lastPlayed.LastLocation)
+    if (G.hands[ctx.currentPlayer].length > 0 && G.lastPlayed.LastLocation === 'hand') {
         let cards=G.hands[ctx.currentPlayer]
             for (let i=0; i < cards.length; i++) {
                 let card = cards[i];
@@ -639,7 +651,7 @@ function hasTen (G, ctx) {
             }
     } else { //check the bench for a ten
         //if on top layer - look on to layer
-        if (BenchPlayable(G, ctx).layer===1) {
+        if (BenchPlayable(G, ctx).layer===1 && G.lastPlayed.LastLocation === 'bench') {
             let postions = BenchPlayable(G, ctx).positions;
             for (let i=0; i<postions.length; i++) {
                 let card = G.benchs[ctx.currentPlayer][postions[i]][1];

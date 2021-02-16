@@ -171,3 +171,6 @@ export function CardRenderParam (rangeX, rangeY, cardwidth, cardheight, screenX,
     }
     return Params;
 }
+
+
+
