@@ -6,6 +6,9 @@ import {
     Route,
     Link
   } from "react-router-dom";
+import "./Style.css"
+import ShedLogo from '../images/Logo.png'
+import wood from '../images/UI/wood.png'
 
 
 export class Homescreen extends React.Component {
@@ -15,12 +18,16 @@ export class Homescreen extends React.Component {
         if (this.state.playing === false) {
             return(
                 <div>
-                    <h1>{props.title}</h1>
-                    <Link to="/lobby">
-                        <button onClick={() => this.setState({ playing: true})}>
-                            Play
-                        </button>
-                    </Link>
+                    <div>
+                        <img src={ShedLogo} alt={wood} className="ShedLogo"/>
+                    </div>
+                    <div>
+                        <Link to="/lobby">
+                            <button className="playButton" onClick={() => this.setState({ playing: true})}>
+                                Play
+                            </button>
+                        </Link>
+                    </div>
                 </div>
             )
         }
