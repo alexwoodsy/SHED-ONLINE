@@ -3,12 +3,14 @@ import {Layer, Group, Rect, Stage, Text, Line } from 'react-konva';
 //import tablebackground from '../images/tabletop.jpg'
 import Instructions from './player';
 import { CardImage, CardRenderParam } from './card';
+import { MagicEvent } from './gameUI'
 import { DEBUGING_UI } from '../config';
 
 const cardScale = () => {
     let factor = 50;
     return (window.innerWidth > window.innerHeight) ?  window.innerHeight/factor : window.innerWidth/factor
 }
+
 
 
 export class SHEDtable extends React.Component {
@@ -40,15 +42,14 @@ export class SHEDtable extends React.Component {
 
     componentDidMount() {
         window.addEventListener('resize', this.updateDimensions);
-
+        
     }
 
     componentWillUnmount() {
         window.removeEventListener('resize', this.updateDimensions);
     }
 
-
-
+    
     clickCard = (type, position, player) => {
         let thisPlayerNumber = parseInt(this.props.playerID); //the current player
         //player = card thats has been clicked
@@ -121,7 +122,6 @@ export class SHEDtable extends React.Component {
                 let phase = this.props.ctx.phase;
                 let clickAction;
                 if (phase === 'StartPhase') {clickAction = 'addBench'} else {clickAction = 'play'};
-                console.log('hand ',hand[i])
                 cards.push(
                 <CardImage
                     card={hand[i]}
@@ -223,7 +223,6 @@ export class SHEDtable extends React.Component {
 
     renderTable = (props) => {
         let table = this.props.G.table
-        console.log('table', table)
         let x = this.state.screenx/2 + this.state.cardwidth/2;
         let y = this.state.screeny/2-this.state.cardheight/2;
         let fontsize = 2*this.state.cardScale
@@ -263,20 +262,7 @@ export class SHEDtable extends React.Component {
         };
     };
 
-    // renderPlayerUI = (props) => {
-    //     let playerUIelements = null;
-        
-    //     if (this.props.ctx.currentPlayer===0) {
-    //         playerUIelements = <React.Fragment> 
-                
-    //             </React.Fragment> 
-    //     }
-    //     return playerUIelements;
-    // };
-
-
-
-   
+ 
 
     readyButton = (props) => {
         let phase = this.props.ctx.phase;
@@ -325,7 +311,7 @@ export class SHEDtable extends React.Component {
         if ((stage==='play' || stage==='playBench') &&
             numMoves >=1 && 
             this.props.playerID === this.props.ctx.currentPlayer 
-            && (this.props.G.magicEvent!=='burning' || hasTen)
+            && (this.props.G.magicEvent.type!=='burning' || hasTen)
             ) { 
             return (<Group onClick={()=>this.clickendTurnButton(props.player)} onTap={()=>this.clickendTurnButton(props.player)}>
                 <Rect x={x} y={y} width={width} height={height} fontSize={fontsize}
@@ -369,6 +355,7 @@ export class SHEDtable extends React.Component {
         }
     }
 
+    
     renderInstructions = (props) => {
         let player = parseInt(this.props.playerID)
         let text = Instructions(this.props.G, this.props.ctx, player);
@@ -387,6 +374,16 @@ export class SHEDtable extends React.Component {
                 <Text x={x} y={y+height/4} align={'center'} text={text} fontSize={fontsize} fill={'black'} />
         </Group>)
     };
+
+    renderSevenInstruction = (props) => {
+        let choice = (this.props.G.sevenHighLow === 'default') ? "" : this.props.G.sevenHighLow
+        let x = this.state.screenx/2 + this.state.padx + 4*this.state.cardwidth/2;
+        let y = this.state.screeny/2 ;
+        let fontsize = 2*this.state.cardScale;
+        return(
+            <Text x={x} y={y} align={'center'} text={choice} fontSize={fontsize} fill={'black'} />
+        )
+    }
 
     renderGameInfo = () => {
         let matchData = this.props.matchData;
@@ -422,7 +419,8 @@ export class SHEDtable extends React.Component {
     }
     
     render() {
-        
+       
+               
         //loop over all 4 players and render them accordingly
         let thisPlayerNumber = parseInt(this.props.playerID);
         let Gameover = this.props.ctx.gameover;
@@ -449,6 +447,17 @@ export class SHEDtable extends React.Component {
                     <Layer>
                         <this.renderHand />
                         <this.renderBench />
+                    </Layer>
+                    <Layer>
+                        <this.renderSevenInstruction />
+                    </Layer>
+                    <Layer>
+                        <MagicEvent 
+                        magicEvent={this.props.G.magicEvent} 
+                        x={this.state.screenx/2} 
+                        y={this.state.screeny/2}
+                        scale={this.state.cardScale}
+                        />
                     </Layer>
                 </Stage>
             );

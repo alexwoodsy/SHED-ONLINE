@@ -3,8 +3,8 @@ import { INVALID_MOVE } from 'boardgame.io/core';
 
 // VARS TO CHNAGE FOR DEBUGGING 
 var cardsInHand = 3; //default 3
-var emptyDeck = false; //false
-var handOf = null; //default null
+var emptyDeck = true; //false
+var handOf = 2; //default null
 
 
 export const SHED = {
@@ -17,7 +17,7 @@ export const SHED = {
         Ready: Array(ctx.numPlayers).fill(0),
         sevenHighLow: 'default', //can be: default - higher - lower
         lastPlayed: null,
-        magicEvent: null,
+        magicEvent: {"type": null, "count":0},
         hasTen: false,
                 
      }),
@@ -59,6 +59,7 @@ export const SHED = {
         MainPhase:{
             turn: { //if this doesnt work, try moving all logic away and just calling a function that sets this
                 onBegin: (G, ctx) => { 
+                   
                     if (G.hands[ctx.currentPlayer].length > 0) {
                         if ( CanPlay(G, ctx) ) {
                             ctx.events.setActivePlayers({currentPlayer: 'play'});
@@ -241,17 +242,22 @@ function DrawCard(G, ctx) {
   
   //later need to update to allow playing of more than 1 card - should be anmother function that calls this one
 function PlayCard(G, ctx, position) {
-    G.magicEvent = null//reset before turn 
+    G.magicEvent.type = null//reset before turn 
     let card = G.hands[ctx.currentPlayer][position]
     if ( MoveValid(G, ctx, card) ) {
+        let card = G.hands[ctx.currentPlayer].splice(position, 1)[0]
         card.playedBy = ctx.currentPlayer;
         card.turnPlayed = ctx.turn;
         card.location = 'table'
         //add to last played for movevalid / ui decision checks
         G.lastPlayed = card;
+
+        if (card.rank !== 3) {
+            G.sevenHighLow = 'default'
+        }
         
         //add to table
-        G.table = G.table.concat(G.hands[ctx.currentPlayer].splice(position, 1))
+        G.table = G.table.concat( card )
         //console.log("added to table") 
 
         //burn instantly deck if card was a 10
@@ -266,12 +272,17 @@ function PlayCard(G, ctx, position) {
        if (CanPlayAgain(G, ctx) === false) {
            //let topCard = G.table[G.table.length-1]
            //update gamestate if card(s) played have magic behaviour
+          // console.log('cant play again')
             EndPlay(G, ctx); 
        }; 
 
        //hanle playing last card in hand 
-       if (G.hands[ctx.currentPlayer].length===0) {
+       if (G.hands[ctx.currentPlayer].length===0 && (BenchPlayable(G, ctx).layer===0 && BenchPlayable(G, ctx).positions.length ===0)) {
+            GameOver(G, ctx);
+       } else if (G.hands[ctx.currentPlayer].length===0 && G.deck.length===0) {
            ctx.events.setStage('playBench')
+       } else if (G.hands[ctx.currentPlayer].length===0) {
+           EndPlay(G, ctx);
        }
 
        
@@ -306,10 +317,10 @@ function AddBench(G, ctx, player, position) {
     };
     
     if (freeBenchPos !== null ) { //&& G.hands[player][position].LastPlayedBy===null - removed this functionallity
-        let card = G.hands[player][position]
+        let card = G.hands[player].splice(position, 1)[0]
         card.location = 'bench'
         G.benchs[player][freeBenchPos].push( card )
-        G.hands[player].splice(position, 1)
+        
         //console.log('adding to bench')
     } else {
         return INVALID_MOVE;
@@ -317,7 +328,7 @@ function AddBench(G, ctx, player, position) {
 };
 
 function PlayBench(G, ctx, position) {
-    G.magicEvent = null//reset before turn 
+    G.magicEvent.type = null//reset before turn 
     let PlayablePositions = BenchPlayable(G, ctx).positions;
     //console.log('playable pos', PlayablePositions)
     let StartLayer = BenchPlayable(G, ctx).layer;
@@ -341,6 +352,10 @@ function PlayBench(G, ctx, position) {
         card.turnPlayed = ctx.turn;
         G.lastPlayed = card;
         G.table.push( card ) 
+
+        if (card.rank !== 3) {
+            G.sevenHighLow = 'default'
+        }
 
         //burn instantly deck if card was a 10
         if ( canBurn(G, ctx) ) { burnTable(G, ctx) }
@@ -502,7 +517,7 @@ function CanPlayAgain(G, ctx) {
     let cards=G.hands[ctx.currentPlayer]
     //let hand = G.hands[ctx.currentPlayer];
     let chekval = false;
-    if (G.lastPlayed === null || G.magicEvent==='burning') {
+    if (G.lastPlayed === null || (G.magicEvent.type==='burning' )) {
         chekval = true;
     } else {
         for (let i=0; i < cards.length; i++) {
@@ -556,7 +571,7 @@ function CanPlayAgainBench(G, ctx) {
     if (G.lastPlayed === null ) { //changed from table check
         checkval = true;
     }else if (layer===0) {
-        if (G.magicEvent==='burning') {
+        if (G.magicEvent.type==='burning') {
             checkval = true;
         }
     } else {
@@ -581,43 +596,43 @@ function MoveIsMagic(G, ctx) {
         //console.log('table',table,'topcard',topCard)
         //determinie movetype from top card on table
         //console.log
-        if (topCard.magic) {
-            movetype = topCard.rank
-        };
+        // if (topCard.magic) {
+             movetype = topCard.rank
+        // };
+
+        //if its a seven then just set magicevent but dont retrun move is magic
 
         if (canBurn(G, ctx)===true ) { movetype ='burn'}
-    
         switch(movetype) {
             case 10:
             case 'burn':
                 burnTable(G, ctx)
                 break;
             case 7:
-                G.magicEvent('Higher or lower')
+                G.magicEvent.type = 'Higher or lower'
                 //dont need to do anything - handled by game logic
                 break;
             case 3:
-                G.magicEvent = 'Invisible'
+                G.magicEvent.type = 'Invisible'
                 break;
             case 2:
                 //no action needed for 2 reset as no cards lower than 2
-                G.magicEvent = 'reset'
+                G.magicEvent.type = 'reset'
                 break
             default: //when movetype is null due card being normal
                 //console.log('standard')
-                G.magicEvent = null
+                G.magicEvent.type = null
                 break // do nothing - allow us to track magic events 
         };
     }
     
-    return movetype;
+    //return movetype;
 };
 
 function burnTable(G, ctx) {
     G.table = [];
-    G.magicEvent = 'burning'
-    
-    console.log(G.magicEvent)
+    G.magicEvent.type = 'burning'
+    G.magicEvent.count++
 }
 
 
@@ -642,7 +657,7 @@ function canBurn(G, ctx) {
 }
 
 function hasTen (G, ctx) { //has a ten in the same collection as intially played from
-    console.log('ten last played', G.lastPlayed.LastLocation)
+    //console.log('ten last played', G.lastPlayed.LastLocation)
     if (G.hands[ctx.currentPlayer].length > 0 && G.lastPlayed.LastLocation === 'hand') {
         let cards=G.hands[ctx.currentPlayer]
             for (let i=0; i < cards.length; i++) {

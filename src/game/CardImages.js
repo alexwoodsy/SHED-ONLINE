@@ -55,7 +55,7 @@ import diamondsQ from "../images/cards/QD.png";
 import diamondsK from "../images/cards/KD.png";
 import diamondsA from "../images/cards/AD.png";
 //card back
-import cardback from "../images/cards/purple_back.png"
+import cardback from "../images/cards/CardBack.png"
 
 
 const CardFaces = {
