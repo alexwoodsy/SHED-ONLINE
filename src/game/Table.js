@@ -3,7 +3,7 @@ import {Layer, Group, Rect, Stage, Text, Line } from 'react-konva';
 //import tablebackground from '../images/tabletop.jpg'
 import Instructions from './player';
 import { CardImage, CardRenderParam } from './card';
-import { MagicEvent } from './gameUI'
+import { MagicEvent, BenchReadyButton, SevenChoiceInstruction } from './gameUI'
 import { DEBUGING_UI } from '../config';
 
 const cardScale = () => {
@@ -108,7 +108,7 @@ export class SHEDtable extends React.Component {
             let player = playerOrder[i]; //ensure current player is always at the bottom of screen
             let zone = zones[i];
             let hand = this.props.G.hands[player];
-            let range = 300
+            let range = 3*this.state.screenx/4
             let cardParams = CardRenderParam(x, y, this.state.cardwidth, this.state.cardheight, this.state.screenx, this.state.screeny, this.state.padx, this.state.pady, range, hand.length, zone)
             for (let i= 0; i < hand.length; i++) {
                 let xcord; let ycord;
@@ -266,11 +266,8 @@ export class SHEDtable extends React.Component {
 
     readyButton = (props) => {
         let phase = this.props.ctx.phase;
-        let state = this.props.G.Ready[props.player]
-        let colour = 'white'
+        let stage = this.props.G.Ready[props.player]
         let width = 9*this.state.cardScale;
-        let height = 3*this.state.cardScale;
-        let fontsize = 2*this.state.cardScale
         let x = this.state.screenx/2 -width - 2* this.state.cardwidth - this.state.padx;
         let y = this.state.screeny - this.state.pady - 2*this.state.cardheight;
 
@@ -280,16 +277,18 @@ export class SHEDtable extends React.Component {
             benchTot = benchTot + bench[j].length;  
         }
         
-        if (state===1) {
-            colour = '#14ff76'
-        }
         if (phase==='StartPhase' && benchTot === 6) {
-            return (<Group onClick={()=>this.clickReadyButton(props.player)} onTap={()=>this.clickReadyButton(props.player)}>
-                <Rect x={x} y={y} width={width} height={height}
-                    fill={colour} cornerRadius={20} 
-                    />
-                    <Text x={x+width/6} y={y+height/4} align={'center'} text={'Ready'} fontSize={fontsize} fill={'black'} />
-            </Group>)
+            return (
+                <BenchReadyButton 
+                    x={x} 
+                    y={y} 
+                    stage={stage}
+                    scale={this.state.cardScale} 
+                    shadowBlur={this.state.dropShadow}
+                    onClick={()=>this.clickReadyButton(props.player)}
+                    onTap={()=>this.clickReadyButton(props.player)}
+                />
+            )
         } else {
             return null;
         };;
@@ -326,29 +325,29 @@ export class SHEDtable extends React.Component {
 
     sevenChoiceButton = (props) => {
         let stage = this.props.ctx.activePlayers[this.props.ctx.currentPlayer];
-        let width = 6*this.state.cardScale;
-        let height = 3*this.state.cardScale;
-        let sep = this.state.cardScale;
-        let x = this.state.screenx/2 - 2*width - 2* this.state.cardwidth - this.state.padx;
+        let sep = 6*this.state.cardScale;
+        let x = this.state.screenx/2 - 2*sep - 2* this.state.cardwidth - this.state.padx;
         let y = this.state.screeny - this.state.pady - 2*this.state.cardheight;
-        let fontsize = 2*this.state.cardScale;
-        let colour = 'white';
         
         if (stage==='sevenChoice' && this.props.playerID === this.props.ctx.currentPlayer) {
             return (
             <Group>
-                <Group onClick={()=>this.clicksevenChoiceButton('higher', props.player)} onTap={()=>this.clicksevenChoiceButton('higher', props.player)}>
-                    <Rect x={x+sep+width} y={y} width={width} height={height} 
-                    fill={colour} cornerRadius={20} />
-                    <Text x={x+sep+width} y={y+height/4} align={'center'} text={'higher'} fontSize={fontsize} fill={'black'} />
-                </Group>
-                
-                <Group onClick={()=>this.clicksevenChoiceButton('lower', props.player)} onTap={()=>this.clicksevenChoiceButton('lower', props.player)}>
-                    <Rect x={x} y={y} width={width} height={height} 
-                    fill={colour} cornerRadius={20} />
-                    <Text x={x} y={y+height/4} align={'center'} text={'lower'} fontSize={fontsize} fill={'black'} />
-                </Group>
-
+                <SevenChoiceInstruction 
+                    x={x+sep} 
+                    y={y} 
+                    scale={this.state.cardScale} 
+                    choice={'higher'}
+                    onClick={()=>this.clicksevenChoiceButton('higher', props.player)}
+                    onTap={()=>this.clicksevenChoiceButton('higher', props.player)}
+                />
+                <SevenChoiceInstruction 
+                    x={x} 
+                    y={y} 
+                    scale={this.state.cardScale} 
+                    choice={'lower'}
+                    onClick={()=>this.clicksevenChoiceButton('lower', props.player)}
+                    onTap={()=>this.clicksevenChoiceButton('lower', props.player)}
+                />
             </Group>)
         } else {
             return null;
@@ -374,16 +373,6 @@ export class SHEDtable extends React.Component {
                 <Text x={x} y={y+height/4} align={'center'} text={text} fontSize={fontsize} fill={'black'} />
         </Group>)
     };
-
-    renderSevenInstruction = (props) => {
-        let choice = (this.props.G.sevenHighLow === 'default') ? "" : this.props.G.sevenHighLow
-        let x = this.state.screenx/2 + this.state.padx + 4*this.state.cardwidth/2;
-        let y = this.state.screeny/2 ;
-        let fontsize = 2*this.state.cardScale;
-        return(
-            <Text x={x} y={y} align={'center'} text={choice} fontSize={fontsize} fill={'black'} />
-        )
-    }
 
     renderGameInfo = () => {
         let matchData = this.props.matchData;
@@ -449,7 +438,12 @@ export class SHEDtable extends React.Component {
                         <this.renderBench />
                     </Layer>
                     <Layer>
-                        <this.renderSevenInstruction />
+                    <SevenChoiceInstruction 
+                        x={this.state.screenx/2 + this.state.padx + 3*this.state.cardwidth/2} 
+                        y={this.state.screeny/2} 
+                        scale={this.state.cardScale} 
+                        choice={(this.props.G.sevenHighLow === 'default') ? "" : this.props.G.sevenHighLow}
+                    />
                     </Layer>
                     <Layer>
                         <MagicEvent 

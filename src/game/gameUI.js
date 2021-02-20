@@ -1,11 +1,20 @@
 import React from "react"; //, { useEffect, useState }
 import { Image } from 'react-konva';
 import useImage from 'use-image';
+//magic
 import burn from '../images/magicEvents/burn.png'
 import invisible from '../images/magicEvents/Invis.png'
 import HighOrLow from '../images/magicEvents/HighOrLow.png'
 import reset from '../images/magicEvents/reset.png'
+//ui
 import wood from '../images/UI/wood.png'
+//benchui
+import benchReady from '../images/UI/BenchReady.png'
+import benchUnready from '../images/UI/BenchUnready.png'
+//sevenchoices
+import higherArrow from '../images/magicEvents/HigherArrow.png'
+import lowerArrow from '../images/magicEvents/LowerArrow.png'
+
 
 const MagicImages = {
   burn: burn,
@@ -13,6 +22,15 @@ const MagicImages = {
   highOrLow: HighOrLow,
   reset: reset,
   wood: wood,
+}
+
+function imageRatio (image) {
+  //scale image
+  let imgRatio=1; //inni to 1 ao image still renders
+  if (image !== undefined) {
+    imgRatio = image.width/image.height
+  }
+  return imgRatio //default
 }
 
 const MagicImage = (props) => {
@@ -37,14 +55,8 @@ const MagicImage = (props) => {
   }
 
   const [image] = useImage(img);
-  //scale image
-  let imageRatio=1; //inni to 1 ao image still renders
-  if (image !== undefined) {
-    imageRatio = image.width/image.height
-  }
-
   let scale = props.scale*30
-  let width = scale*imageRatio;
+  let width = scale*imageRatio(image);
   let height = scale;
   let x = props.x - width/2;
   let y = props.y - height/2;
@@ -64,9 +76,10 @@ const MagicImage = (props) => {
 
 
 
-//BenchImage - need this for doing these
+//BenchReadyButton - need this for doing these
 
-//SevenChoiceImage
+
+
 
 
 export class MagicEvent extends React.Component {
@@ -124,5 +137,73 @@ export class MagicEvent extends React.Component {
     }
   }
 
+export const BenchReadyButton = (props) => {
+  let [unready] = useImage(benchUnready)
+  let [ready] = useImage(benchReady)
+  let stage = props.stage;
+  let image;
+  let shadowColor;
+    if (stage === 0) {
+      image = unready;
+      shadowColor = "#ff0000" 
+    } else {
+      image = ready;
+      shadowColor = "#4feb34"
+    }
 
+  let scale = props.scale*15
+  let width = scale*imageRatio(image);
+  let height = scale;
+  let x = props.x //- width/2;
+  let y = props.y - height/2;
+  
+  
+  return (
+    <Image 
+        image={image} 
+        x={x} 
+        y={y}
+        width={width} 
+        height={height}
+        shadowBlur={props.shadowBlur} 
+        shadowColor={shadowColor}
+        onClick={props.onClick}
+        onTap={props.onTap}
+    />
+  )
+}
+
+export const SevenChoiceInstruction = (props) => {
+  let [higher] = useImage(higherArrow)
+  let [lower] = useImage(lowerArrow)
+  let choice = props.choice;
+  let image;
+    if (choice === 'higher') {
+      image = higher;
+    } else if (choice === 'lower') {
+      image = lower;
+    } else {
+      return null;
+    }
+
+  let scale = props.scale*7
+  let width = scale*imageRatio(image);
+  let height = scale;
+  let x = props.x //- width/2;
+  let y = props.y - height/2;
+  
+  
+  return (
+    <Image 
+        image={image} 
+        x={x} 
+        y={y}
+        width={width} 
+        height={height}
+        shadowBlur={props.shadowBlur} 
+        onClick={props.onClick}
+        onTap={props.onTap}
+    />
+  )
+}
 

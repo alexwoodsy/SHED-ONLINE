@@ -4,7 +4,7 @@ import { INVALID_MOVE } from 'boardgame.io/core';
 // VARS TO CHNAGE FOR DEBUGGING 
 var cardsInHand = 3; //default 3
 var emptyDeck = false; //false
-var handOf = 7; //default null
+var handOf = null; //default null
 
 
 export const SHED = {
