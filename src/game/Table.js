@@ -274,7 +274,7 @@ export class SHEDtable extends React.Component {
         let x = this.state.screenx/2 -width - 2* this.state.cardwidth - this.state.padx;
         let y = this.state.screeny - this.state.pady - 2*this.state.cardheight;
 
-        let bench = this.props.G.benchs[this.props.ctx.currentPlayer]
+        let bench = this.props.G.benchs[this.props.playerID]
         let benchTot=0;
         for (let j=0; j<3; j++) {
             benchTot = benchTot + bench[j].length;  

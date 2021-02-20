@@ -64,7 +64,7 @@ const MagicImage = (props) => {
 
 
 
-//BenchImage
+//BenchImage - need this for doing these
 
 //SevenChoiceImage
 
@@ -79,7 +79,7 @@ export class MagicEvent extends React.Component {
       this.interval = null;
     }
 
-    getMagicEvent = (props) => {
+    getMagicEvent = () => {
         let magicEvent = this.props.magicEvent
         let magicCheck = magicEvent.type !== null
 
@@ -89,11 +89,10 @@ export class MagicEvent extends React.Component {
             renderChild: magicCheck
         })
             
-        this.interval = setTimeout(() => this.setState({renderChild: false}), 1000);
+        this.interval = setTimeout(() => this.setState({renderChild: false}), 2000);
     }
     
     componentDidMount() {
-        this.getMagicEvent(this.props)
         this.getMagicEvent()
         
     }
