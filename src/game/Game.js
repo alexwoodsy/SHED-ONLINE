@@ -4,7 +4,7 @@ import { INVALID_MOVE } from 'boardgame.io/core';
 // VARS TO CHNAGE FOR DEBUGGING 
 var cardsInHand = 3; //default 3
 var emptyDeck = false; //false
-var handOf = 2; //default null
+var handOf = 7; //default null
 
 
 export const SHED = {
@@ -436,7 +436,7 @@ function EndPlay(G, ctx) {
     MoveIsMagic(G, ctx)
     let stage = ctx.activePlayers[ctx.currentPlayer];
     if (stage==='play') {
-        if (G.lastPlayed.rank === 7) {
+        if (G.lastPlayed.rank === 7 && G.magicEvent.type !== 'burning') {
             ctx.events.setStage('sevenChoice')
         } else if (G.hands[ctx.currentPlayer].length >=3 || G.deck.length===0) {
             ctx.events.endTurn();
@@ -665,19 +665,27 @@ function canBurn(G, ctx) {
 
 function hasTen (G, ctx) { //has a ten in the same collection as intially played from
     //console.log('ten last played', G.lastPlayed.LastLocation)
-    if (G.hands[ctx.currentPlayer].length > 0 && G.lastPlayed.LastLocation === 'hand') {
+    let stage = ctx.activePlayers[ctx.currentPlayer]
+    
+    if (stage === 'play') {
+        console.log('checking hands and player', ctx.currentPlayer)
         let cards=G.hands[ctx.currentPlayer]
             for (let i=0; i < cards.length; i++) {
                 let card = cards[i];
-                if ( card.rank===10 ) {return true}
+                if ( card.rank===10 ) {
+                    console.log('has ten in hand')
+                    return true}
             }
-    } else { //check the bench for a ten
+    } else if (stage === 'playBench'){ //check the bench for a ten
         //if on top layer - look on to layer
+        console.log('checking bench and player',ctx.currentPlayer)
         if (BenchPlayable(G, ctx).layer===1 && G.lastPlayed.LastLocation === 'bench') {
             let postions = BenchPlayable(G, ctx).positions;
             for (let i=0; i<postions.length; i++) {
                 let card = G.benchs[ctx.currentPlayer][postions[i]][1];
-                if ( card.rank===10 ) {return true}
+                if ( card.rank===10 ) {
+                    console.log('has ten in bench')
+                    return true}
             };
         }     
     }

@@ -87,7 +87,7 @@ export class MagicEvent extends React.Component {
             renderMagic: magicCheck
         })
             
-        this.interval = setTimeout(() => this.setState({renderMagic: false}), 2000);
+        this.interval = setTimeout(() => this.setState({renderMagic: false}), 1500);
     }
     
     componentDidMount() {
