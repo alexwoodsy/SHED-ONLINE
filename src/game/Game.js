@@ -2,8 +2,8 @@ import { INVALID_MOVE } from 'boardgame.io/core';
 
 
 // VARS TO CHNAGE FOR DEBUGGING 
-var cardsInHand = 3; //default 3
-var emptyDeck = false; //false
+var cardsInHand = 0; //default 3
+var emptyDeck = true; //false
 var handOf = null; //default null
 
 
@@ -225,6 +225,7 @@ function PickupTable(G, ctx) {
     G.hands[ctx.currentPlayer] = G.hands[ctx.currentPlayer].concat(cards);
     G.table = [];
     G.lastPlayed = null; //Incase someone picks up -------------------------------------was changed - if stuff is broke then comment out again
+    ShouldMagicEventReset(G, ctx)
     ctx.events.endTurn();
 };
 
@@ -246,14 +247,14 @@ function PlayCard(G, ctx, position) {
     let card = G.hands[ctx.currentPlayer][position]
     if ( MoveValid(G, ctx, card) ) {
         let card = G.hands[ctx.currentPlayer].splice(position, 1)[0]
-        ShouldMagicEventReset(G, ctx)
+        
 
         card.playedBy = ctx.currentPlayer;
         card.turnPlayed = ctx.turn;
         card.location = 'table'
         //add to last played for movevalid / ui decision checks
         G.lastPlayed = card;
-       
+        ShouldMagicEventReset(G, ctx)
 
         if (card.rank !== 3) {
             G.sevenHighLow = 'default'
@@ -355,6 +356,7 @@ function PlayBench(G, ctx, position) {
         card.turnPlayed = ctx.turn;
         G.lastPlayed = card;
         G.table.push( card ) 
+        ShouldMagicEventReset(G, ctx)
 
         if (card.rank !== 3) {
             G.sevenHighLow = 'default'
@@ -693,11 +695,13 @@ function hasTen (G, ctx) { //has a ten in the same collection as intially played
 }
 
 function ShouldMagicEventReset (G, ctx) {
-    //reset if 
-
-    
-    G.magicEvent = {type: null, count:0}
-
+    if (G.lastPlayed === null) {
+        G.magicEvent = {type: null, count:0}
+        G.sevenHighLow = 'default'
+    } else if (G.lastPlayed.rank!==3) {
+        G.magicEvent = {type: null, count:0}
+        G.sevenHighLow = 'default'
+    }
 }
 
 
