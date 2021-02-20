@@ -73,7 +73,7 @@ export class MagicEvent extends React.Component {
     constructor(props) {
       super(props);
       this.state = {
-        renderChild: true,
+        renderMagic: true,
       }
       
       this.interval = null;
@@ -84,12 +84,10 @@ export class MagicEvent extends React.Component {
         let magicCheck = magicEvent.type !== null
 
         this.setState({
-            magicEventType: magicEvent.type,
-            magicEventCount: magicEvent.count,
-            renderChild: magicCheck
+            renderMagic: magicCheck
         })
             
-        this.interval = setTimeout(() => this.setState({renderChild: false}), 2000);
+        this.interval = setTimeout(() => this.setState({renderMagic: false}), 2000);
     }
     
     componentDidMount() {
@@ -102,8 +100,10 @@ export class MagicEvent extends React.Component {
     }  
 
     componentDidUpdate (prevProps) {
-        if (this.props.magicEvent !== prevProps.magicEvent) {
-            this.setState({renderChild: true})
+      
+        if (this.props.magicEvent.type !== prevProps.magicEvent.type) {
+          //console.log('prev', prevProps, 'curr', this.props)
+            this.setState({renderMagic: true})
             this.getMagicEvent()
         }
 
@@ -113,7 +113,7 @@ export class MagicEvent extends React.Component {
         
       return (
         <React.Fragment>
-          { this.state.renderChild ? <MagicImage
+          { this.state.renderMagic ? <MagicImage
            magicEvent={this.props.magicEvent}
            x={this.props.x} 
            y={this.props.y} 

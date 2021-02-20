@@ -4,7 +4,7 @@ import { INVALID_MOVE } from 'boardgame.io/core';
 // VARS TO CHNAGE FOR DEBUGGING 
 var cardsInHand = 3; //default 3
 var emptyDeck = false; //false
-var handOf = null; //default null
+var handOf = 2; //default null
 
 
 export const SHED = {
@@ -242,15 +242,18 @@ function DrawCard(G, ctx) {
   
   //later need to update to allow playing of more than 1 card - should be anmother function that calls this one
 function PlayCard(G, ctx, position) {
-    G.magicEvent.type = null//reset before turn 
+    
     let card = G.hands[ctx.currentPlayer][position]
     if ( MoveValid(G, ctx, card) ) {
         let card = G.hands[ctx.currentPlayer].splice(position, 1)[0]
+        ShouldMagicEventReset(G, ctx)
+
         card.playedBy = ctx.currentPlayer;
         card.turnPlayed = ctx.turn;
         card.location = 'table'
         //add to last played for movevalid / ui decision checks
         G.lastPlayed = card;
+       
 
         if (card.rank !== 3) {
             G.sevenHighLow = 'default'
@@ -328,7 +331,7 @@ function AddBench(G, ctx, player, position) {
 };
 
 function PlayBench(G, ctx, position) {
-    G.magicEvent.type = null//reset before turn 
+    //G.magicEvent.type = null//reset before turn 
     let PlayablePositions = BenchPlayable(G, ctx).positions;
     //console.log('playable pos', PlayablePositions)
     let StartLayer = BenchPlayable(G, ctx).layer;
@@ -610,18 +613,22 @@ function MoveIsMagic(G, ctx) {
                 break;
             case 7:
                 G.magicEvent.type = 'Higher or lower'
+                G.magicEvent.count++
                 //dont need to do anything - handled by game logic
                 break;
             case 3:
                 G.magicEvent.type = 'Invisible'
+                G.magicEvent.count++
                 break;
             case 2:
                 //no action needed for 2 reset as no cards lower than 2
                 G.magicEvent.type = 'reset'
+                G.magicEvent.count++
                 break
             default: //when movetype is null due card being normal
                 //console.log('standard')
                 G.magicEvent.type = null
+                G.magicEvent.count = 0
                 break // do nothing - allow us to track magic events 
         };
     }
@@ -676,6 +683,17 @@ function hasTen (G, ctx) { //has a ten in the same collection as intially played
     }
     return false;
 }
+
+function ShouldMagicEventReset (G, ctx) {
+    //reset if 
+
+    
+    G.magicEvent = {type: null, count:0}
+
+}
+
+
+
 // function canEndTurnAfterBurn (G, ctx) {//returns true when the button for ending play should be shown
 //     let haveTen = false; //return true ONLY if they just burnt and have a 10
 
