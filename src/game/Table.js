@@ -1,7 +1,7 @@
 import React from 'react';
 import {Layer, Group, Rect, Stage, Text, Line } from 'react-konva';
 //import tablebackground from '../images/tabletop.jpg'
-import Instructions from './player';
+import { Instructions } from './player';
 import { CardImage, CardRenderParam } from './card';
 import { MagicEvent, BenchReadyButton, SevenChoiceInstruction } from './gameUI'
 import { DEBUGING_UI } from '../config';
@@ -83,6 +83,9 @@ export class SHEDtable extends React.Component {
     clickTable = () => {
         this.props.moves.PickupTable()
     };
+
+    
+
     
     getPlayerOrder = () =>{
         let thisPlayerNumber = parseInt(this.props.playerID);
@@ -294,7 +297,6 @@ export class SHEDtable extends React.Component {
         };;
         
     };
-
 
     endTurnButton = (props) => {
         let stage = this.props.ctx.activePlayers[this.props.ctx.currentPlayer];

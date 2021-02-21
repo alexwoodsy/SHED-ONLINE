@@ -2,8 +2,8 @@ import { INVALID_MOVE } from 'boardgame.io/core';
 
 
 // VARS TO CHNAGE FOR DEBUGGING 
-var cardsInHand = 0; //default 3
-var emptyDeck = true; //false
+var cardsInHand = 3; //default 3
+var emptyDeck = false; //false
 var handOf = null; //default null
 
 
@@ -78,8 +78,11 @@ export const SHED = {
                         };
                     };
                 },
+                onEnd: (G, ctx) => {
+                    orderHand(G, ctx)
+                },
                 
-                stages: {
+                stages: { 
                     pickup:{
                         moveLimit: 1,
                         moves: {PickupTable},
@@ -164,6 +167,11 @@ export class Card {
     }
 }
 
+function orderHand(G, ctx) {
+    G.hands[ctx.currentPlayer] = G.hands[ctx.currentPlayer].sort(function (a, b) {
+        return a.rank - b.rank;
+    }); 
+}
 
 function GameOver(G, ctx) {
     //game is over
@@ -216,6 +224,7 @@ function initHand (G, ctx) {
         }
     };
 };
+
 
 function PickupTable(G, ctx) {
     let cards = G.table;
