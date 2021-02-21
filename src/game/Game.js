@@ -469,7 +469,7 @@ function SevenChoice(G, ctx, choice) {
     G.sevenHighLow = choice;
     if (G.deck.length === 0) {
         ctx.events.endTurn();
-    } else if (G.hands[ctx.currentPlayer].length >=3) {
+    } else if (G.hands[ctx.currentPlayer].length >=3 || G.deck.length===0) {
         ctx.events.endTurn();
     } else {
         ctx.events.setStage('draw');
