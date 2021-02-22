@@ -125,10 +125,11 @@ export class SHEDtable extends React.Component {
                 let phase = this.props.ctx.phase;
                 let clickAction;
                 if (phase === 'StartPhase') {clickAction = 'addBench'} else {clickAction = 'play'};
+                
                 cards.push(
                 <CardImage
                     card={hand[i]}
-                    key = {hand[i].name}
+                    key = {player.toString().concat(hand[i].name)}
                     reverse={player!==thisPlayerNumber}
                     player={player}
                     width={this.state.cardwidth} 

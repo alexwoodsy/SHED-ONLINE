@@ -78,9 +78,7 @@ export const SHED = {
                         };
                     };
                 },
-                onEnd: (G, ctx) => {
-                    orderHand(G, ctx)
-                },
+                
                 
                 stages: { 
                     pickup:{
@@ -125,7 +123,7 @@ export class Card {
         this.LastLocation=null;
     }  
     name() {
-        return this.rank.toString().concat(" ",this.suit);
+        return this.rank.toString().concat(" ",this.suit," ",this.LastPlayedBy);
     };
 
     magic() {
@@ -168,9 +166,11 @@ export class Card {
 }
 
 function orderHand(G, ctx) {
-    G.hands[ctx.currentPlayer] = G.hands[ctx.currentPlayer].sort(function (a, b) {
-        return a.rank - b.rank;
-    }); 
+    if (G.hands[ctx.currentPlayer].length > 1) {
+        G.hands[ctx.currentPlayer] = G.hands[ctx.currentPlayer].sort(function (a, b) {
+            return a.rank - b.rank;
+        });
+    }    
 }
 
 function GameOver(G, ctx) {
@@ -235,6 +235,7 @@ function PickupTable(G, ctx) {
     G.table = [];
     G.lastPlayed = null; //Incase someone picks up -------------------------------------was changed - if stuff is broke then comment out again
     ShouldMagicEventReset(G, ctx)
+    orderHand(G, ctx)
     ctx.events.endTurn();
 };
 
@@ -246,7 +247,10 @@ function DrawCard(G, ctx) {
     G.hands[ctx.currentPlayer].push( G.deck.pop( card ) )  
     //console.log("added to hand")
 
-    if (G.hands[ctx.currentPlayer].length >=3) {ctx.events.endTurn()}
+    if (G.hands[ctx.currentPlayer].length >=3) {
+        orderHand(G, ctx)
+        ctx.events.endTurn()
+    }
     
 }
   

@@ -157,7 +157,7 @@ export const Lobby = () => {
     };
 
     function handleCreateMatch (event) {
-        let numPlayers = 3;
+        let numPlayers = 2;
         //create the game and assign match ID to state:
         Create(numPlayers)
         //event.preventDefault();
