@@ -5,6 +5,8 @@ import { SocketIO, Local } from 'boardgame.io/multiplayer';
 import  SHED  from '../game/Game';
 import  SHEDtable  from '../game/Table';
 import { DEFAULT_PORT, APP_PRODUCTION, DEBUGING_UI } from "../config";
+import Slider from '@material-ui/core/Slider';
+import "./Style.css"
 
 
 
@@ -59,6 +61,7 @@ export const Lobby = () => {
     const [playerID, setplayerID] = useState(null);
     const [matchID, setmatchID] = useState('')
     const [playerName, setplayerName] = useState('')
+    const [numberOfPlayers, setnumberOfPlayers] = useState(2)
     const [playerCredentials, setplayerCredentials] = useState(null)
     const connectingClient = useRef(false);
        
@@ -121,10 +124,11 @@ export const Lobby = () => {
         
     };
 
-    const Create  = async (numPlayers) => {
+    const Create  = async () => {
+        console.log(numberOfPlayers)
         try {
             const { matchID } = await lobbyClient.createMatch('SHED', {
-                numPlayers: numPlayers
+                numPlayers: numberOfPlayers
                 });
             setmatchID(matchID)
         } catch(err) {
@@ -142,6 +146,11 @@ export const Lobby = () => {
         setplayerName(event.target.value)
     };
 
+    function handleChangeNumberOfPlayers (event, value) {
+        
+        setnumberOfPlayers(value)
+    }
+
     function handleJoin (event) {
         if (playerName.length!==0) {
             if (matchID.length === 9) {
@@ -157,9 +166,8 @@ export const Lobby = () => {
     };
 
     function handleCreateMatch (event) {
-        let numPlayers = 2;
         //create the game and assign match ID to state:
-        Create(numPlayers)
+        Create()
         //event.preventDefault();
     }
     if (DEBUGING_UI) {
@@ -181,9 +189,10 @@ export const Lobby = () => {
         );
     } else {
         return (
-            <div>
+            <div className="lobby">
                 <CreateMatch
                 onChangeCreateMatch={handleCreateMatch}
+                onChangeNumberOfPlayers={handleChangeNumberOfPlayers}
                 />
                 <JoinMatch
                 playerName={playerName} 
@@ -224,6 +233,20 @@ const CreateMatch = (props) => {
     return(
     <div>
         <h2>Create Match</h2>
+        <label>
+            Number of Players:
+            <Slider 
+                defaultValue={2}
+                onChange={props.onChangeNumberOfPlayers}
+                aria-labelledby="discrete-slider"
+                valueLabelDisplay="auto"
+                step={1}
+                marks
+                min={2}
+                max={4}
+            />
+        </label>
+        
         <button onClick={props.onChangeCreateMatch}>
             <h2>Create match</h2>
         </button>
