@@ -287,6 +287,7 @@ function PlayCard(G, ctx, position) {
            //let topCard = G.table[G.table.length-1]
            //update gamestate if card(s) played have magic behaviour
           // console.log('cant play again')
+            MoveIsMagic(G, ctx)
             EndPlay(G, ctx); 
        }; 
 
@@ -304,7 +305,7 @@ function PlayCard(G, ctx, position) {
             }
        } else if (G.hands[ctx.currentPlayer].length===0 && G.lastPlayed.playedBy!==ctx.currentPlayer) {
             MoveIsMagic(G, ctx)
-           EndPlay(G, ctx);
+            EndPlay(G, ctx);
        }
 
        
@@ -389,6 +390,7 @@ function PlayBench(G, ctx, position) {
         if (BenchPlayable(G, ctx).layer===0 && BenchPlayable(G, ctx).positions.length ===0) {
             GameOver(G, ctx);
         } else if (CanPlayAgainBench(G, ctx) === false) {
+            MoveIsMagic(G, ctx)
             EndPlay(G, ctx); 
         }
 
@@ -719,7 +721,7 @@ function ShouldMagicEventReset (G, ctx) {
     } else if (G.lastPlayed.rank!==3) {
         G.magicEvent = {type: null, count:0}
         G.sevenHighLow = 'default'
-    } else if (G.lastPlayed.rank===3 && G.lastPlayed.playedBy===ctx.currentPlayer) {
+    } else if (G.lastPlayed.rank===3 && G.magicEvent.type==="burning") {
         G.magicEvent = {type: null, count:0}
         G.sevenHighLow = 'default'
     }
