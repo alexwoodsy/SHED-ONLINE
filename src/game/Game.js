@@ -3,8 +3,9 @@ import { INVALID_MOVE } from 'boardgame.io/core';
 
 // VARS TO CHNAGE FOR DEBUGGING 
 var cardsInHand = 3; //default 3
-var emptyDeck = true; //false
-var handOf = 10; //default null
+var emptyDeck = false; //false
+var handOf = null; //default null
+var endGame = false; //default false
 
 
 export const SHED = {
@@ -256,6 +257,8 @@ function DrawCard(G, ctx) {
   
   //later need to update to allow playing of more than 1 card - should be anmother function that calls this one
 function PlayCard(G, ctx, position) {
+    if (endGame) { 
+        GameOver(G, ctx)}
     
     let card = G.hands[ctx.currentPlayer][position]
     if ( MoveValid(G, ctx, card) ) {
@@ -351,6 +354,8 @@ function AddBench(G, ctx, player, position) {
 };
 
 function PlayBench(G, ctx, position) {
+    if (endGame) { 
+        GameOver(G, ctx)}
     //G.magicEvent.type = null//reset before turn 
     let PlayablePositions = BenchPlayable(G, ctx).positions;
     //console.log('playable pos', PlayablePositions)
@@ -362,7 +367,7 @@ function PlayBench(G, ctx, position) {
     
     let correctLayer = false;
     for (let i=0; i<PlayablePositions.length; i++) {
-        console.log('bench playable checking', position, PlayablePositions[i] )
+        //console.log('bench playable checking', position, PlayablePositions[i] )
         if (position===PlayablePositions[i]) {correctLayer = true}
     }
 
@@ -690,23 +695,23 @@ function hasTen (G, ctx) { //has a ten in the same collection as intially played
     let stage = ctx.activePlayers[ctx.currentPlayer]
     
     if (stage === 'play') {
-        console.log('checking hands and player', ctx.currentPlayer)
+        //console.log('checking hands and player', ctx.currentPlayer)
         let cards=G.hands[ctx.currentPlayer]
             for (let i=0; i < cards.length; i++) {
                 let card = cards[i];
                 if ( card.rank===10 ) {
-                    console.log('has ten in hand')
+                    //('has ten in hand')
                     return true}
             }
     } else if (stage === 'playBench'){ //check the bench for a ten
         //if on top layer - look on to layer
-        console.log('checking bench and player',ctx.currentPlayer)
+        //console.log('checking bench and player',ctx.currentPlayer)
         if (BenchPlayable(G, ctx).layer===1 && G.lastPlayed.LastLocation === 'bench') {
             let postions = BenchPlayable(G, ctx).positions;
             for (let i=0; i<postions.length; i++) {
                 let card = G.benchs[ctx.currentPlayer][postions[i]][1];
                 if ( card.rank===10 ) {
-                    console.log('has ten in bench')
+                    //console.log('has ten in bench')
                     return true}
             };
         }     

@@ -3,7 +3,7 @@ import {Layer, Group, Rect, Stage, Text, Line } from 'react-konva';
 //import tablebackground from '../images/tabletop.jpg'
 import { Instructions } from './player';
 import { CardImage, CardRenderParam } from './card';
-import { MagicEvent, BenchReadyButton, SevenChoiceInstruction } from './gameUI'
+import { MagicEvent, BenchReadyButton, SevenChoiceInstruction, GameOver } from './gameUI'
 import { DEBUGING_UI } from '../config';
 
 const cardScale = () => {
@@ -377,6 +377,7 @@ export class SHEDtable extends React.Component {
         </Group>)
     };
 
+    
     renderGameInfo = () => {
         let matchData = this.props.matchData;
         let playerID = this.props.playerID;
@@ -416,12 +417,35 @@ export class SHEDtable extends React.Component {
         //loop over all 4 players and render them accordingly
         let thisPlayerNumber = parseInt(this.props.playerID);
         let Gameover = this.props.ctx.gameover;
-        if (Gameover !== undefined) {
-             return (
+        if (Gameover !== undefined && DEBUGING_UI) {
+            return (
                 <div>
                  <h1> player {Gameover.winner}  won! </h1>
              </div>
-             );
+            )
+        }
+        
+        if (Gameover !== undefined) {
+            return (
+                <Stage width={this.state.screenx} height={this.state.screeny}>
+                    <this.renderGrid />
+                    <Layer>
+                        <this.renderGameInfo />
+                        <this.renderDeck /> 
+                        <this.renderTable />
+                    </Layer>
+                    <Layer>
+                        <this.renderHand />
+                        <this.renderBench />
+                        <GameOver
+                            gameOverState={Gameover}
+                            matchData={this.props.matchData}
+                            playerID={thisPlayerNumber}
+                            tableState={this.state}
+                        />
+                    </Layer>
+                </Stage>
+            );
 
          } else {
             return (
