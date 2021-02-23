@@ -3,8 +3,8 @@ import { INVALID_MOVE } from 'boardgame.io/core';
 
 // VARS TO CHNAGE FOR DEBUGGING 
 var cardsInHand = 3; //default 3
-var emptyDeck = false; //false
-var handOf = null; //default null
+var emptyDeck = true; //false
+var handOf = 10; //default null
 
 
 export const SHED = {
@@ -269,10 +269,7 @@ function PlayCard(G, ctx, position) {
         G.lastPlayed = card;
         ShouldMagicEventReset(G, ctx)
 
-        if (card.rank !== 3) {
-            G.sevenHighLow = 'default'
-        }
-        
+                
         //add to table
         G.table = G.table.concat( card )
         //console.log("added to table") 
@@ -297,8 +294,16 @@ function PlayCard(G, ctx, position) {
        if (G.hands[ctx.currentPlayer].length===0 && (BenchPlayable(G, ctx).layer===0 && BenchPlayable(G, ctx).positions.length ===0)) {
             GameOver(G, ctx);
        } else if (G.hands[ctx.currentPlayer].length===0 && G.deck.length===0) {
-           ctx.events.setStage('playBench')
-       } else if (G.hands[ctx.currentPlayer].length===0) {
+            MoveIsMagic(G, ctx)
+            if (G.magicEvent.type ==="Higher or lower") {
+                console.log('should end play')
+                EndPlay(G, ctx);
+            } else {
+                console.log("set playbench from playcard")
+                ctx.events.setStage('playBench')
+            }
+       } else if (G.hands[ctx.currentPlayer].length===0 && G.lastPlayed.playedBy!==ctx.currentPlayer) {
+            MoveIsMagic(G, ctx)
            EndPlay(G, ctx);
        }
 
@@ -371,9 +376,9 @@ function PlayBench(G, ctx, position) {
         G.table.push( card ) 
         ShouldMagicEventReset(G, ctx)
 
-        if (card.rank !== 3) {
-            G.sevenHighLow = 'default'
-        }
+        // if (card.rank !== 3) {
+        //     G.sevenHighLow = 'default'
+        // }
 
         //burn instantly deck if card was a 10
         if ( canBurn(G, ctx) ) { burnTable(G, ctx) }
@@ -448,7 +453,6 @@ function ReadyUp(G, ctx, readyPlayer) {
 };
 
 function EndPlay(G, ctx) {
-    MoveIsMagic(G, ctx)
     let stage = ctx.activePlayers[ctx.currentPlayer];
     if (stage==='play') {
         if (G.lastPlayed.rank === 7 && G.magicEvent.type !== 'burning') {
@@ -535,6 +539,7 @@ function CanPlayAgain(G, ctx) {
     let cards=G.hands[ctx.currentPlayer]
     //let hand = G.hands[ctx.currentPlayer];
     let chekval = false;
+    
     if (G.lastPlayed === null || (G.magicEvent.type==='burning' )) {
         chekval = true;
     } else {
@@ -714,7 +719,13 @@ function ShouldMagicEventReset (G, ctx) {
     } else if (G.lastPlayed.rank!==3) {
         G.magicEvent = {type: null, count:0}
         G.sevenHighLow = 'default'
+    } else if (G.lastPlayed.rank===3 && G.lastPlayed.playedBy===ctx.currentPlayer) {
+        G.magicEvent = {type: null, count:0}
+        G.sevenHighLow = 'default'
     }
+        
+    
+    //if last played === 3 and magic is burning and last played by this play then set the magic event to invisible 
 }
 
 

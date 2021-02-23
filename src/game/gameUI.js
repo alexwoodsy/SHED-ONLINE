@@ -79,9 +79,6 @@ const MagicImage = (props) => {
 //BenchReadyButton - need this for doing these
 
 
-
-
-
 export class MagicEvent extends React.Component {
     constructor(props) {
       super(props);
@@ -207,3 +204,7 @@ export const SevenChoiceInstruction = (props) => {
   )
 }
 
+
+export const GameOver = (props) => {
+  let winner = props.winner
+}
