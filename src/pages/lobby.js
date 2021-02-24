@@ -8,24 +8,6 @@ import { DEFAULT_PORT, APP_PRODUCTION, DEBUGING_UI } from "../config";
 import Slider from '@material-ui/core/Slider';
 import "./Style.css"
 
-
-
-// import {
-//     BrowserRouter as Router,
-//     Switch,
-//     Route,
-//     Redirect,
-//   } from "react-router-dom";
-
-
-
-//const PORT = process.env.PORT || 403; // was in use on local depoloy
-// const { origin, protocol, hostname} = window.location;
-// //const SERVER = `${protocol}//${hostname}:${PORT}`;
-// const SERVER = `${protocol}//${hostname}`
-
-//old server above
-
 const { origin, protocol, hostname } = window.location;
 const SERVER = APP_PRODUCTION ? origin : `${protocol}//${hostname}:${DEFAULT_PORT}`;
 

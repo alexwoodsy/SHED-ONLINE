@@ -4,11 +4,14 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
+  useHistory,
+  Redirect,
 } from "react-router-dom";
 import { DEBUGING_UI } from './config';
 import './index.css';
 import Homescreen from "./pages/homescreen";
 import Lobby from "./pages/lobby";
+import { GameRoom } from "./pages/gameroom";
 import reportWebVitals from './reportWebVitals';
 
 
@@ -17,31 +20,34 @@ import reportWebVitals from './reportWebVitals';
 //do routing here - start in homepage -> 
 
 
-class App extends React.Component {
-    render() {
+const App = () => {
+    const history = useHistory();    
       if (DEBUGING_UI) {
         return (
           <Lobby />
         )
       }
       return (
-        <Router>
-            <Switch>
-              <Route path="/lobby">
-                <Lobby />
-              </Route>
-              <Route path="/">
-                <Homescreen />
-              </Route>
-            </Switch>
-        </Router>
+          <Switch>
+            <Route path="/lobby">
+              <Lobby history={history} />
+            </Route>
+            <Route exact path="/" >
+              <Homescreen history={history} />
+            </Route>
+            <Route path="/shed/:matchID">
+              <GameRoom history={history} />
+            </Route>
+            <Redirect to="/" />
+          </Switch> 
       );
-  } 
 }
 
 ReactDOM.render(
   <React.StrictMode>
-    <App/>
+    <Router>
+      <App/>
+    </Router>
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -222,7 +222,7 @@ export const GameOver = (props) => {
   const [loserImg] = useImage(loserScreen);
   const [winnerImg] = useImage(winnerScreen);
   
-  if (gameOverState, gameOverState !== undefined) {
+  if ( gameOverState !== undefined) {
     
     
     for (let i=0; i<matchData.length; i++) {
