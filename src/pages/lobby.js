@@ -1,10 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Client }  from 'boardgame.io/react';
 import { LobbyClient } from 'boardgame.io/client';
-import { SocketIO, Local } from 'boardgame.io/multiplayer';
-import  SHED  from '../game/Game';
-import  SHEDtable  from '../game/Table';
-import { DEFAULT_PORT, APP_PRODUCTION, DEBUGING_UI } from "../config";
+import { DEFAULT_PORT, APP_PRODUCTION } from "../config";
 import Slider from '@material-ui/core/Slider';
 import "./Style.css"
 
@@ -12,41 +8,32 @@ const { origin, protocol, hostname } = window.location;
 const SERVER = APP_PRODUCTION ? origin : `${protocol}//${hostname}:${DEFAULT_PORT}`;
 
 
-const SHEDClient = Client({
-    game: SHED,
-    board: SHEDtable,
-    debug: false, 
-    multiplayer: SocketIO({server: SERVER}),
-    loading: loading,
-  });
-
-const DebugSHEDClient = Client({
-    game: SHED,
-    board: SHEDtable,
-    debug: true, //DEBUGING_UI,
-    numPlayers: 2,
-    multiplayer: Local(),
-    loading: loading,
-  });
 
 
-function loading () { 
-  const element = (<h1> put loading screen here</h1>)
-  return element;
-  
+
+
+
+
+function saveClientData(playerID, MatchID, numberOfPlayers, playerName, playerCredentials) {
+    localStorage.setItem("playerID", playerID);
+    localStorage.setItem("MatchID", MatchID);
+    localStorage.setItem("numberOfPlayers", numberOfPlayers);
+    localStorage.setItem("playerName", playerName);
+    localStorage.setItem("playerCredentials", playerCredentials);
 }
 
 
-export const Lobby = () => {
-    
-    const [canJoin, setcanJoin] = useState(false);
+export const Lobby = (props) => {
+    //const [canJoin, setcanJoin] = useState(false);
     const [playerID, setplayerID] = useState(null);
     const [matchID, setmatchID] = useState('')
     const [playerName, setplayerName] = useState('')
     const [numberOfPlayers, setnumberOfPlayers] = useState(2)
-    const [playerCredentials, setplayerCredentials] = useState(null)
+    //const [playerCredentials, setplayerCredentials] = useState(null)
     const connectingClient = useRef(false);
-       
+    
+    
+
     
     
     let lobbyClient = useMemo(()=> new LobbyClient({ server: SERVER }), [])//empty dependency means init once
@@ -63,11 +50,20 @@ export const Lobby = () => {
                             playerName: playerName,
                         },
                     );
-                    setcanJoin(true);
-                    setplayerCredentials(playerCredentials); 
-                                
+                    //setcanJoin(true);
+                    //setplayerCredentials(playerCredentials); 
+                    saveClientData(
+                        playerID,
+                        matchID, 
+                        numberOfPlayers, 
+                        playerName, 
+                        playerCredentials
+                    )
+                    props.history.push("/shed/"+matchID)
+
+                                                   
             } else {
-                alert('no room in game/ no game found');
+                alert('no room in game / no game found');
             }
         };
         if (connectingClient.current) {
@@ -75,7 +71,7 @@ export const Lobby = () => {
             connectingClient.current = false;
         };
         
-    }, [playerID, playerName, lobbyClient, matchID])
+    }, [playerID, playerName, lobbyClient, matchID, numberOfPlayers, props.history])
 
     
     const getFreeSeat = async () => {
@@ -99,7 +95,6 @@ export const Lobby = () => {
        }
     }
 
-    
     const Join = async () => {
         getFreeSeat()
         connectingClient.current = true;
@@ -129,7 +124,6 @@ export const Lobby = () => {
     };
 
     function handleChangeNumberOfPlayers (event, value) {
-        
         setnumberOfPlayers(value)
     }
 
@@ -152,41 +146,22 @@ export const Lobby = () => {
         Create()
         //event.preventDefault();
     }
-    if (DEBUGING_UI) {
-        
-        return(
-            <div>
-                <DebugSHEDClient playerID="0"/>
-                <DebugSHEDClient playerID="1"/>
-                {/* <DebugSHEDClient playerID="2"/>
-                <DebugSHEDClient playerID="3"/> */}
-            </div>
-        );
-    } else if (canJoin) {
-        return (
-            <SHEDClient 
-            playerID={playerID} 
-            matchID={matchID} 
-            credentials={playerCredentials} />
-        );
-    } else {
-        return (
-            <div className="lobby">
-                <CreateMatch
+
+    return (
+        <div className="lobby">
+            <CreateMatch
                 onChangeCreateMatch={handleCreateMatch}
                 onChangeNumberOfPlayers={handleChangeNumberOfPlayers}
-                />
-                <JoinMatch
+            />
+            <JoinMatch
                 playerName={playerName} 
                 onChangePlayerName={handleChangePlayerName}
                 matchID={matchID}
                 onChangeMatchID={handleChangeJoinMatch}
                 onSubmit={handleJoin} 
-                />
-            </div>
-        );
-    }
-
+            />
+        </div>
+    );
 };
 
 //REMOVED SUBMUIT FROM FORM TAG - MAY NEED TO GO BACK IN
@@ -237,3 +212,12 @@ const CreateMatch = (props) => {
 }
 
 export default Lobby
+
+
+/* 
+join should history.push("/shed/"+matchID) entering waiting room -> this will then render client
+once all players have joined -> will read player creds from local stroage and pass to client 
+
+to test simply route to game room and join automatically - add waiting in later
+
+*/

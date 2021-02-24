@@ -17,6 +17,8 @@ import reportWebVitals from './reportWebVitals';
 
 
 
+
+
 //do routing here - start in homepage -> 
 
 
@@ -24,12 +26,12 @@ const App = () => {
     const history = useHistory();    
       if (DEBUGING_UI) {
         return (
-          <Lobby />
+          <GameRoom />
         )
       }
       return (
           <Switch>
-            <Route path="/lobby">
+            <Route exact path="/lobby">
               <Lobby history={history} />
             </Route>
             <Route exact path="/" >
