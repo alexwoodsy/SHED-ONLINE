@@ -8,18 +8,13 @@ const { origin, protocol, hostname } = window.location;
 const SERVER = APP_PRODUCTION ? origin : `${protocol}//${hostname}:${DEFAULT_PORT}`;
 
 
-
-
-
-
-
-
-function saveClientData(playerID, MatchID, numberOfPlayers, playerName, playerCredentials) {
+function saveClientData(playerID, MatchID, numberOfPlayers, playerName, playerCredentials, lobbyClient) {
     localStorage.setItem("playerID", playerID);
     localStorage.setItem("MatchID", MatchID);
     localStorage.setItem("numberOfPlayers", numberOfPlayers);
     localStorage.setItem("playerName", playerName);
     localStorage.setItem("playerCredentials", playerCredentials);
+    localStorage.setItem("lobbyClient", lobbyClient);
 }
 
 
@@ -57,8 +52,10 @@ export const Lobby = (props) => {
                         matchID, 
                         numberOfPlayers, 
                         playerName, 
-                        playerCredentials
+                        playerCredentials,
+                        lobbyClient
                     )
+                    console.log(await lobbyClient.listMatches("SHED"))
                     props.history.push("/shed/"+matchID)
 
                                                    

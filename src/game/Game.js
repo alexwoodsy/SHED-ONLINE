@@ -248,7 +248,7 @@ function DrawCard(G, ctx) {
     G.hands[ctx.currentPlayer].push( G.deck.pop( card ) )  
     //console.log("added to hand")
 
-    if (G.hands[ctx.currentPlayer].length >=3) {
+    if (G.hands[ctx.currentPlayer].length >=3 || G.deck.length===0) {
         orderHand(G, ctx)
         ctx.events.endTurn()
     }
