@@ -1,57 +1,34 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Client }  from 'boardgame.io/react';
 import { LobbyClient } from 'boardgame.io/client';
-import { SocketIO } from 'boardgame.io/multiplayer';
-import  SHED  from '../game/Game';
-import  SHEDtable  from '../game/Table';
 import { DEFAULT_PORT, APP_PRODUCTION } from "../config";
-
-
-// import {
-//     BrowserRouter as Router,
-//     Switch,
-//     Route,
-//     Redirect,
-//   } from "react-router-dom";
-
-
-
-//const PORT = process.env.PORT || 403; // was in use on local depoloy
-// const { origin, protocol, hostname} = window.location;
-// //const SERVER = `${protocol}//${hostname}:${PORT}`;
-// const SERVER = `${protocol}//${hostname}`
-
-//old server above
+import Slider from '@material-ui/core/Slider';
+import "./Style.css"
 
 const { origin, protocol, hostname } = window.location;
 const SERVER = APP_PRODUCTION ? origin : `${protocol}//${hostname}:${DEFAULT_PORT}`;
 
 
-const SHEDClient = Client({
-    game: SHED,
-    board: SHEDtable,
-    debug: false,
-    multiplayer: SocketIO({server: SERVER}),
-    loading: loading,
-  });
-
-
-function loading () { 
-  const element = (<h1> put loading screen here</h1>)
-  return element;
-  
+function saveClientData(playerID, MatchID, numberOfPlayers, playerName, playerCredentials, lobbyClient) {
+    localStorage.setItem("playerID", playerID);
+    localStorage.setItem("MatchID", MatchID);
+    localStorage.setItem("numberOfPlayers", numberOfPlayers);
+    localStorage.setItem("playerName", playerName);
+    localStorage.setItem("playerCredentials", playerCredentials);
+    localStorage.setItem("lobbyClient", lobbyClient);
 }
 
 
-export const Lobby = () => {
-    
-    const [canJoin, setcanJoin] = useState(false);
+export const Lobby = (props) => {
+    //const [canJoin, setcanJoin] = useState(false);
     const [playerID, setplayerID] = useState(null);
     const [matchID, setmatchID] = useState('')
     const [playerName, setplayerName] = useState('')
-    const [playerCredentials, setplayerCredentials] = useState(null)
+    const [numberOfPlayers, setnumberOfPlayers] = useState(2)
+    //const [playerCredentials, setplayerCredentials] = useState(null)
     const connectingClient = useRef(false);
-       
+    
+    
+
     
     
     let lobbyClient = useMemo(()=> new LobbyClient({ server: SERVER }), [])//empty dependency means init once
@@ -68,11 +45,22 @@ export const Lobby = () => {
                             playerName: playerName,
                         },
                     );
-                    setcanJoin(true);
-                    setplayerCredentials(playerCredentials); 
-                                
+                    //setcanJoin(true);
+                    //setplayerCredentials(playerCredentials); 
+                    saveClientData(
+                        playerID,
+                        matchID, 
+                        numberOfPlayers, 
+                        playerName, 
+                        playerCredentials,
+                        lobbyClient
+                    )
+                    console.log(await lobbyClient.listMatches("SHED"))
+                    props.history.push("/shed/"+matchID)
+
+                                                   
             } else {
-                alert('no room in game/ no game found');
+                alert('no room in game / no game found');
             }
         };
         if (connectingClient.current) {
@@ -80,7 +68,7 @@ export const Lobby = () => {
             connectingClient.current = false;
         };
         
-    }, [playerID, playerName, lobbyClient, matchID])
+    }, [playerID, playerName, lobbyClient, matchID, numberOfPlayers, props.history])
 
     
     const getFreeSeat = async () => {
@@ -104,17 +92,17 @@ export const Lobby = () => {
        }
     }
 
-    
     const Join = async () => {
         getFreeSeat()
         connectingClient.current = true;
         
     };
 
-    const Create  = async (numPlayers) => {
+    const Create  = async () => {
+        console.log(numberOfPlayers)
         try {
             const { matchID } = await lobbyClient.createMatch('SHED', {
-                numPlayers: numPlayers
+                numPlayers: numberOfPlayers
                 });
             setmatchID(matchID)
         } catch(err) {
@@ -132,6 +120,10 @@ export const Lobby = () => {
         setplayerName(event.target.value)
     };
 
+    function handleChangeNumberOfPlayers (event, value) {
+        setnumberOfPlayers(value)
+    }
+
     function handleJoin (event) {
         if (playerName.length!==0) {
             if (matchID.length === 9) {
@@ -147,36 +139,26 @@ export const Lobby = () => {
     };
 
     function handleCreateMatch (event) {
-        let numPlayers = 2;
         //create the game and assign match ID to state:
-        Create(numPlayers)
+        Create()
         //event.preventDefault();
     }
 
-    if (canJoin) {
-        return (
-            <SHEDClient 
-            playerID={playerID} 
-            matchID={matchID} 
-            credentials={playerCredentials} />
-        );
-    } else {
-        return (
-            <div>
-                <CreateMatch
+    return (
+        <div className="lobby">
+            <CreateMatch
                 onChangeCreateMatch={handleCreateMatch}
-                />
-                <JoinMatch
+                onChangeNumberOfPlayers={handleChangeNumberOfPlayers}
+            />
+            <JoinMatch
                 playerName={playerName} 
                 onChangePlayerName={handleChangePlayerName}
                 matchID={matchID}
                 onChangeMatchID={handleChangeJoinMatch}
                 onSubmit={handleJoin} 
-                />
-            </div>
-        );
-    }
-
+            />
+        </div>
+    );
 };
 
 //REMOVED SUBMUIT FROM FORM TAG - MAY NEED TO GO BACK IN
@@ -205,6 +187,20 @@ const CreateMatch = (props) => {
     return(
     <div>
         <h2>Create Match</h2>
+        <label>
+            Number of Players:
+            <Slider 
+                defaultValue={2}
+                onChange={props.onChangeNumberOfPlayers}
+                aria-labelledby="discrete-slider"
+                valueLabelDisplay="auto"
+                step={1}
+                marks
+                min={2}
+                max={4}
+            />
+        </label>
+        
         <button onClick={props.onChangeCreateMatch}>
             <h2>Create match</h2>
         </button>
@@ -213,3 +209,12 @@ const CreateMatch = (props) => {
 }
 
 export default Lobby
+
+
+/* 
+join should history.push("/shed/"+matchID) entering waiting room -> this will then render client
+once all players have joined -> will read player creds from local stroage and pass to client 
+
+to test simply route to game room and join automatically - add waiting in later
+
+*/

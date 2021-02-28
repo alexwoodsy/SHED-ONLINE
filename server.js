@@ -1,8 +1,8 @@
 const Server = require("boardgame.io/server").Server;
-import { DEFAULT_PORT } from "./config";
+import { DEFAULT_PORT } from "./src/config";
 import path from 'path';
 import serve from 'koa-static';
-const SHED = require("./game/Game").SHED;
+const SHED = require("./src/game/Game").SHED;
 
 const server = Server({ 
   games: [SHED]
@@ -15,7 +15,7 @@ const lobbyConfig = {
 };
 
  // Build path relative to the server.js file
- const frontEndAppBuildPath = path.resolve(__dirname, '../build');
+ const frontEndAppBuildPath = path.resolve(__dirname, './build');
  server.app.use(serve(frontEndAppBuildPath))
  
  server.run(PORT, () => {

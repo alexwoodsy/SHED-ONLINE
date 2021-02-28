@@ -1,6 +1,4 @@
-
-
-function Instructions(G, ctx, player) {
+export function Instructions(G, ctx, player) {
     let stage = ctx.activePlayers[player];
     let currentPlayer = ctx.currentPlayer
     let phase = ctx.phase;
@@ -19,10 +17,3 @@ function Instructions(G, ctx, player) {
 
 }
 
-
-
-// function renderMagic() {
-
-// }
-
-export default Instructions
