@@ -118,18 +118,18 @@ export const GameRoom = (props) => {
 
         const getnewMatchID = async () => {
             let newMatchID = await CreateNewMatch()
-            console.log("setting local stroage")    
+            //console.log("setting local stroage")    
             localStorage.setItem("newMatchID", newMatchID)
-            console.log('new match ID - triggereing event to update G')
+            //console.log('new match ID - triggereing event to update G')
             document.dispatchEvent(new CustomEvent("newMatchCreated"))    
         }
 
         if (isInitialMount.current) {
             isInitialMount.current = false;
         } else {
-            console.log('num playing agin', numPlayingAgain)
+            //console.log('num playing agin', numPlayingAgain)
             if (numPlayingAgain<2) {
-                console.log("setting local stroage - not enough players") 
+                //console.log("setting local stroage - not enough players") 
                 localStorage.setItem("newMatchID","INSUFF_PLAYERS")
                 document.dispatchEvent(new CustomEvent("newMatchCreated"))    
             } else {
@@ -156,7 +156,7 @@ export const GameRoom = (props) => {
         }
 
         if (localStorage.getItem("newMatchID")!== undefined) {
-            console.log("lsitening for how to redirrct")
+            //console.log("lsitening for how to redirrct")
             document.addEventListener("ReturnLobby", redirectLobby, {once: true})
             document.addEventListener("JoinNewMatch", (event)=>conectToNewMatch(event), {once: true})
 

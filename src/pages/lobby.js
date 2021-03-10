@@ -54,7 +54,7 @@ export const Lobby = (props) => {
         }
 
         const ConnectClient = async (freeSeat) => {
-            console.log(freeSeat)
+            //console.log(freeSeat)
         
             const { playerCredentials } = await lobbyClient.joinMatch(
                 'SHED',
@@ -80,7 +80,7 @@ export const Lobby = (props) => {
 
         const JoinGameroom = async () => {
             let freeSeat = await getFreeSeat()
-            console.log('seat', freeSeat)
+            //console.log('seat', freeSeat)
 
             if (freeSeat !== null) {
                 ConnectClient(freeSeat)
@@ -116,7 +116,7 @@ export const Lobby = (props) => {
     };
 
     const Create  = async () => {
-        console.log(numberOfPlayers)
+        //console.log(numberOfPlayers)
         try {
             const { matchID } = await lobbyClient.createMatch('SHED', {
                 numPlayers: numberOfPlayers
