@@ -210,7 +210,7 @@ export const SevenChoiceInstruction = (props) => {
 
 export const GameOver = (props) => {
   let tableState= props.tableState
-  let gameOverState = props.gameOverState;
+  let winnerID = props.winnerID
   let matchData=props.matchData;
   let playerID = props.playerID;
   let winner=null;
@@ -221,96 +221,92 @@ export const GameOver = (props) => {
 
   const [loserImg] = useImage(loserScreen);
   const [winnerImg] = useImage(winnerScreen);
+
   
-  if ( gameOverState !== undefined) {
-    
-    
-    for (let i=0; i<matchData.length; i++) {
-      if (i !== parseInt(gameOverState.winner) ) {
-        losers.push (matchData[i])
-      } else {
-        winner=matchData[i];
-      }
-    }
-
-    let loserNames=[]
-      losers.forEach(element => {
-        loserNames.push ( element.name )
-      });
-
-    if (playerID===winner.id) {
-      width = tableState.cardScale*25
-      height= width/imageRatio(winnerImg)
-      //retrun winner screen
-      return (
-        <Group>
-          <Image 
-            image={winnerImg} 
-            x={tableState.padx} 
-            y={tableState.pady}
-            width={width} 
-            height={height}
-          />
-          <Rect
-            x={tableState.padx} 
-            y={tableState.pady+height}
-            width={width} 
-            height={height}
-            fill={"white"}
-            opacity={0.5}
-          />
-          <Text
-            x={tableState.padx} 
-            y={tableState.pady+3*height/2 - 3*fontsize}
-            text={`You Won!!!! mr cheeks says \nwell done ${winner.name}`}
-            fontSize ={fontsize}
-          />
-          <Text
-            x={tableState.padx} 
-            y={tableState.pady+3*height/2}
-            text={`Losers were:\n${loserNames.join("\n")}`}
-            fontSize ={fontsize}
-          />
-        </Group>
-      )
+  
+  for (let i=0; i<matchData.length; i++) {
+    if (i !== parseInt(winnerID) ) {
+      losers.push (matchData[i])
     } else {
-      //return loser screen
-      width = tableState.cardScale*25
-      height = width/imageRatio(loserImg)
-      return(
-        <Group>
-          <Image 
-            image={loserImg} 
-            x={tableState.padx} 
-            y={tableState.pady}
-            width={width} 
-            height={height}
-          />
-          <Rect
-            x={tableState.padx} 
-            y={tableState.pady+height}
-            width={width} 
-            height={height}
-            fill={"white"}
-            opacity={0.5}
-          />
-          <Text
-            x={tableState.padx} 
-            y={tableState.pady+3*height/2- 4*fontsize}
-            text={`You lost :( but the winner \n${winner.name} sent you this crab \nwith their condolences`}
-            fontSize ={fontsize}
-            wrap
-          />
-          <Text
-            x={tableState.padx} 
-            y={tableState.pady+3*height/2}
-            text={`Losers were:\n${loserNames.join("\n")}`}
-            fontSize ={fontsize}
-          />
-        </Group>
-      )   
+      winner=matchData[i];
     }
+  }
+
+  let loserNames=[]
+    losers.forEach(element => {
+      loserNames.push ( element.name )
+    });
+
+  if (playerID===winner.id) {
+    width = tableState.cardScale*25
+    height= width/imageRatio(winnerImg)
+    //retrun winner screen
+    return (
+      <Group>
+        <Image 
+          image={winnerImg} 
+          x={tableState.padx} 
+          y={tableState.pady}
+          width={width} 
+          height={height}
+        />
+        <Rect
+          x={tableState.padx} 
+          y={tableState.pady+height}
+          width={width} 
+          height={height}
+          fill={"white"}
+          opacity={0.5}
+        />
+        <Text
+          x={tableState.padx} 
+          y={tableState.pady+3*height/2 - 3*fontsize}
+          text={`You Won!!!! mr cheeks says \nwell done ${winner.name}`}
+          fontSize ={fontsize}
+        />
+        <Text
+          x={tableState.padx} 
+          y={tableState.pady+3*height/2}
+          text={`Losers were:\n${loserNames.join("\n")}`}
+          fontSize ={fontsize}
+        />
+      </Group>
+    )
   } else {
-    return null
+    //return loser screen
+    width = tableState.cardScale*25
+    height = width/imageRatio(loserImg)
+    return(
+      <Group>
+        <Image 
+          image={loserImg} 
+          x={tableState.padx} 
+          y={tableState.pady}
+          width={width} 
+          height={height}
+        />
+        <Rect
+          x={tableState.padx} 
+          y={tableState.pady+height}
+          width={width} 
+          height={height}
+          fill={"white"}
+          opacity={0.5}
+        />
+        <Text
+          x={tableState.padx} 
+          y={tableState.pady+3*height/2- 4*fontsize}
+          text={`You lost :( but the winner \n${winner.name} sent you this crab \nwith their condolences`}
+          fontSize ={fontsize}
+          wrap
+        />
+        <Text
+          x={tableState.padx} 
+          y={tableState.pady+3*height/2}
+          text={`Losers were:\n${loserNames.join("\n")}`}
+          fontSize ={fontsize}
+        />
+      </Group>
+    )   
   }
 }

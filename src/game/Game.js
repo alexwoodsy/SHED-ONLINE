@@ -5,7 +5,7 @@ import { INVALID_MOVE } from 'boardgame.io/core';
 var cardsInHand = 3; //default 3
 var emptyDeck = false; //false
 var handOf = null; //default null
-var endGame = false; //default false
+var endGame = true; //default false
 
 
 export const SHED = {
@@ -20,13 +20,16 @@ export const SHED = {
         lastPlayed: null,
         magicEvent: {"type": null, "count":0},
         hasTen: false,
+        playingAgain: Array(ctx.numPlayers),
+        newMatchID: null,
+        winner: null,
+        hostClient: null, //for end of game rematching - will issue new game commands (needs to be selected dynamically)
                 
      }),
 
     turn: {
         moveLimit: 1,
     },
-
 
     phases: {
         StartPhase:{
@@ -58,6 +61,7 @@ export const SHED = {
         },
 
         MainPhase:{
+            next:'EndPhase',
             turn: { //if this doesnt work, try moving all logic away and just calling a function that sets this
                 onBegin: (G, ctx) => { 
                    
@@ -101,6 +105,25 @@ export const SHED = {
                     draw: {
                         moveLimit: 4,
                         moves: {DrawCard},
+                    },
+                },
+            },
+        },
+
+        EndPhase: {
+            onBegin: (G, ctx) => {
+                ctx.events.setActivePlayers({
+                    all: 'playAgainChoice'
+                });
+            },
+            turn: {
+                stages: {
+                    playAgainChoice: {
+                        start: true,
+                        moves: {
+                            playAgain,
+                            setnewMatchID,
+                        },
                     },
                 },
             },
@@ -174,9 +197,45 @@ function orderHand(G, ctx) {
     }    
 }
 
+function playAgain(G, ctx, choice, player) {
+    G.playingAgain[player] = choice
+    //set host after all have chosen
+    let numChosen=0
+    G.playingAgain.forEach(element => {
+        if (element !== null) {
+            numChosen++
+        }        
+    });
+
+    if (numChosen===ctx.numPlayers) {
+        //console.log("selecting host")
+        for (let i=0; i<ctx.numPlayers; i++) {
+            //console.log('checking',i)
+            if (G.playingAgain[i]) {
+                G.hostClient = i.toString()
+                //console.log('host set to ',i.toString())
+                break;   
+            }  
+        }
+        //defualt to zero if everyone clicks leave - only player zero does this assignment
+        if (player===0 && G.hostClient===null) { 
+            G.hostClient='0'
+        }
+    }
+}
+
+function setnewMatchID(G, ctx, matchID) {
+    G.newMatchID = matchID 
+}
+
 function GameOver(G, ctx) {
-    //game is over
-    ctx.events.endGame({winner: ctx.currentPlayer})
+    //enter end of game phase - where play again / leave can be chosen
+    G.winner = ctx.currentPlayer
+    ctx.events.endPhase()
+
+
+
+    //ctx.events.endGame({winner: ctx.currentPlayer})
 }
 
 

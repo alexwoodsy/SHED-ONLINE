@@ -1,10 +1,14 @@
-import React, { useMemo, useState, useEffect } from 'react'
+import React, { useMemo, useState, useEffect, useRef } from 'react'
 import { Client }  from 'boardgame.io/react';
 import { SocketIO, Local } from 'boardgame.io/multiplayer';
 import  SHED  from '../game/Game';
 import  SHEDtable  from '../game/Table';
 import { DEFAULT_PORT, APP_PRODUCTION, DEBUGING_UI } from "../config";
 import { LobbyClient } from 'boardgame.io/client';
+import "./Style.css"
+
+
+
 
 const { origin, protocol, hostname } = window.location;
 const SERVER = APP_PRODUCTION ? origin : `${protocol}//${hostname}:${DEFAULT_PORT}`;
@@ -12,8 +16,8 @@ const SERVER = APP_PRODUCTION ? origin : `${protocol}//${hostname}:${DEFAULT_POR
 const SHEDClient = Client({
     game: SHED,
     board: SHEDtable,
-    debug: false, 
-    multiplayer: SocketIO({server: SERVER}),
+    debug: true, 
+    multiplayer: SocketIO({server: SERVER}), 
     loading: loading,
   });
 
@@ -39,16 +43,21 @@ export const GameRoom = (props) => {
     const playerID = localStorage.getItem("playerID");
     const matchID = localStorage.getItem("MatchID");
     const numberOfPlayers = localStorage.getItem("numberOfPlayers");
-    //const playerName = localStorage.getItem("playerName");
+    const playerName = localStorage.getItem("playerName");
     const playerCredentials = localStorage.getItem("playerCredentials");
-    
     const [playersJoined, setplayersJoined] = useState([])
+    const [numPlayingAgain, setnumPlayingAgain] = useState(null)
+    const [joinDelay, setjoinDelay] = useState(null)
 
+    const isInitialMount = useRef(true);
+     
+    
     //ping the server for number of players 
     useEffect(() => {
         const PlayersInRoom = async () => {
             let players = [];
             const matchInstance = await lobbyClient.getMatch('SHED', matchID)
+            console.log('checking number of players joined...')
             matchInstance.players.forEach(element => {
                 if (element.name !== undefined) {
                     players.push( element.name )
@@ -58,14 +67,145 @@ export const GameRoom = (props) => {
         }
 
         const timeout = setTimeout(() => PlayersInRoom().then( value => {
-            setplayersJoined(value)
+          if (playersJoined.length !== parseInt(numberOfPlayers) ) {
+              setplayersJoined(value)
+            }
           }  
         ), 1000)
     
         return () => {
           clearTimeout(timeout);
+          
         };
-      }, [playersJoined, lobbyClient, matchID])
+      }, [playersJoined, numberOfPlayers, lobbyClient, matchID ])
+
+    const hasCreated=useRef(false)
+    useEffect(()=>{
+        const getNumPlayingAgain = (event) => {
+            //console.log('getting num playing again')
+            let count = 0
+            for (let i=0; i<event.detail.players.length; i++) {
+                if (event.detail.players[i]) {count++}
+            }
+            setnumPlayingAgain(count)
+        }
+
+        if (hasCreated.current===false) {
+            document.addEventListener("PlayAgain", (event)=>getNumPlayingAgain(event), { once: true })
+            hasCreated.current = true;
+        }  
+        return () => {
+            document.removeEventListener("PlayAgain", (event)=>getNumPlayingAgain(event) )
+        }
+
+    })
+
+    
+    useEffect(()=>{
+        const CreateNewMatch  = async () => {
+            try {
+                const { matchID } = await lobbyClient.createMatch('SHED', {
+                    numPlayers: numPlayingAgain
+                    });
+                return matchID;
+            } catch(err) {
+                alert('could no create match - check connection')
+                console.error(err)
+                return null
+            }
+            
+        };
+
+        const getnewMatchID = async () => {
+            let newMatchID = await CreateNewMatch()
+            console.log("setting local stroage")    
+            localStorage.setItem("newMatchID", newMatchID)
+            console.log('new match ID - triggereing event to update G')
+            document.dispatchEvent(new CustomEvent("newMatchCreated"))    
+        }
+
+        if (isInitialMount.current) {
+            isInitialMount.current = false;
+        } else {
+            console.log('num playing agin', numPlayingAgain)
+            if (numPlayingAgain<2) {
+                console.log("setting local stroage - not enough players") 
+                localStorage.setItem("newMatchID","INSUFF_PLAYERS")
+                document.dispatchEvent(new CustomEvent("newMatchCreated"))    
+            } else {
+            getnewMatchID()
+            }
+        }
+    }, [numPlayingAgain, lobbyClient])
+
+    
+    useEffect(()=>{
+        const redirectLobby = () => {
+            console.log('redirecting to lobby')
+            props.history.push("/lobby")
+        }
+        
+
+        const conectToNewMatch = (event) => {
+            localStorage.setItem("newMatchID", event.detail.matchID )
+            localStorage.setItem("previousPlayerName", playerName)
+
+            //trigger timer to delay join
+            setjoinDelay((2+parseInt(playerID))*1000)
+            
+        }
+
+        if (localStorage.getItem("newMatchID")!== undefined) {
+            console.log("lsitening for how to redirrct")
+            document.addEventListener("ReturnLobby", redirectLobby, {once: true})
+            document.addEventListener("JoinNewMatch", (event)=>conectToNewMatch(event), {once: true})
+
+        }
+    
+        return () => {
+            document.removeEventListener("ReturnLobby", redirectLobby)
+            document.removeEventListener("JoinNewMatch", (event)=>conectToNewMatch(event))
+            
+        }
+
+
+        //ADD ONE TIME LISTEN LIKE ABOVE FOR THIS -> SHOULD FIX STATE UPDATE ON UNMOUNTED TOO
+    })
+
+    useEffect(()=>{
+        const timer = setTimeout(() => {
+            if (isInitialMount.current===false && joinDelay!==null) {
+                if (joinDelay > 0) {
+                    setjoinDelay(joinDelay-1000)
+                    console.log("time left to join",joinDelay)
+                } else {
+                    console.log('connecting to', localStorage.getItem("newMatchID"))
+                    props.history.push("/lobby")
+                }
+            }
+        }, 1000)
+
+        return () =>{
+            clearTimeout(timer)
+        }
+
+    },[joinDelay, props.history])
+
+    const DelayTimer = () => {
+        if (joinDelay !== null) {
+            return (
+                <div id="overlay">
+                    Joining in {joinDelay/1000}...
+                </div>
+            )
+        } else {
+            return null;
+        }
+    }
+
+    
+
+   //chnage how client is instantiated so I can call tranport functions
 
     if (DEBUGING_UI) {
         return(
@@ -80,11 +220,20 @@ export const GameRoom = (props) => {
     } else {
         if (playersJoined.length === parseInt(numberOfPlayers) ) {
             return (
-                <SHEDClient 
-                playerID={playerID} 
-                matchID={matchID} 
-                credentials={playerCredentials} />
-            );
+                <div>
+                    <div>
+                        <SHEDClient 
+                            playerID={playerID} 
+                            matchID={matchID} 
+                            credentials={playerCredentials}
+                        /> 
+                    </div>
+                    <div>
+                        <DelayTimer/>
+                    </div>
+                </div>
+                           
+            ); 
         } else {
             return (
                 <div>
@@ -101,3 +250,8 @@ export const GameRoom = (props) => {
     }
     
 }
+//buttons for playing again or return to lobby:
+//- "return to lobby" calls leavematch and reidrcts to lobby
+//- play again call's play again handler
+
+

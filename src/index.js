@@ -23,7 +23,7 @@ import reportWebVitals from './reportWebVitals';
 
 
 const App = () => {
-    const history = useHistory();    
+    const history = useHistory();   
       if (DEBUGING_UI) {
         return (
           <GameRoom />

@@ -5,6 +5,7 @@ import { Instructions } from './player';
 import { CardImage, CardRenderParam } from './card';
 import { MagicEvent, BenchReadyButton, SevenChoiceInstruction, GameOver } from './gameUI'
 import { DEBUGING_UI } from '../config';
+import "./Style.css"
 
 const cardScale = () => {
     let factor = 50;
@@ -24,6 +25,7 @@ export class SHEDtable extends React.Component {
         cardwidth: 5*cardScale(),
         cardheight: 7*cardScale(),
         dropShadow: 20,
+        hostClient: null,
     }
 
     updateDimensions = () => {
@@ -42,11 +44,38 @@ export class SHEDtable extends React.Component {
 
     componentDidMount() {
         window.addEventListener('resize', this.updateDimensions);
+        document.addEventListener("newMatchCreated", this.handleNewMatch, { once: true })
         
     }
 
     componentWillUnmount() {
         window.removeEventListener('resize', this.updateDimensions);
+        document.removeEventListener("newMatchCreated", this.handleNewMatch )
+    }
+
+    componentDidUpdate(prevProps) {
+        
+
+        //when all players have made a choice dispatch num of players for new match
+        if (this.props.ctx.phase === "EndPhase" && (this.props.G.hostClient !== prevProps.G.hostClient) ) {
+            console.log('host', this.props.G.hostClient, 'this player', this.props.playerID, this.props.G.hostClient===this.props.playerID)
+            if (this.props.G.hostClient===this.props.playerID) {
+                document.dispatchEvent(new CustomEvent("PlayAgain", {
+                    detail: {players: this.props.G.playingAgain}
+                }))
+            }
+        }
+
+    if (this.props.ctx.phase === "EndPhase" && this.props.G.newMatchID !== prevProps.G.newMatchID ) {
+        console.log("match id new ",this.props.G.newMatchID)
+            if (this.props.G.newMatchID === "INSUFF_PLAYERS") {
+                document.dispatchEvent(new CustomEvent("ReturnLobby"))    
+            } else if (this.props.G.newMatchID !== null) {
+                document.dispatchEvent(new CustomEvent("JoinNewMatch", {
+                    detail: { matchID: this.props.G.newMatchID }
+                }))
+            }
+        }
     }
 
     
@@ -68,7 +97,6 @@ export class SHEDtable extends React.Component {
     };    
 
     clickReadyButton = (currentPlayer) => {
-
         this.props.moves.ReadyUp(currentPlayer)
     };
 
@@ -84,9 +112,23 @@ export class SHEDtable extends React.Component {
         this.props.moves.PickupTable()
     };
 
-    
+    handlePlayAgain = (choice) => {
+        this.props.moves.playAgain(choice, parseInt(this.props.playerID))
+        //leave if the player chose to return to lobby (done here so G updates)
+        if (this.props.G.playingAgain[parseInt(this.props.playerID)]===false) {
+           document.dispatchEvent(new CustomEvent("ReturnLobby"))
+        }
+        
+    }
 
-    
+    handleNewMatch = () => {
+        if (this.props.G.newMatchID===null) {
+            console.log('setting new match ID')
+            this.props.moves.setnewMatchID(localStorage.getItem("newMatchID"))
+        }  
+    }
+  
+
     getPlayerOrder = () =>{
         let thisPlayerNumber = parseInt(this.props.playerID);
         let numPlayers = this.props.ctx.numPlayers
@@ -410,41 +452,70 @@ export class SHEDtable extends React.Component {
         } 
         return null;
     }
+
+    EndOfGameOptions = () => {
+        let pressed = false;
+        for (let i=0; i<this.props.ctx.numPlayers; i++) {
+            if (this.props.G.playingAgain[i]!==null && i === parseInt(this.props.playerID)) {
+                pressed = true
+
+            }
+        } 
+
+        if (pressed===false) {
+            return (
+                <div id="overlay">
+                    <button id="EndGameChoice" onClick={()=>this.handlePlayAgain(true)}>
+                        play again
+                    </button>
+                    <button id="EndGameChoice" onClick={()=>this.handlePlayAgain(false)}>
+                        return to lobby
+                    </button>
+                </div>
+            ) 
+        } else {
+            return null;
+        }
+       
+    }
     
     render() {
        
                
         //loop over all 4 players and render them accordingly
         let thisPlayerNumber = parseInt(this.props.playerID);
-        let Gameover = this.props.ctx.gameover;
-        if (Gameover !== undefined && DEBUGING_UI) {
+        if (this.props.ctx.phase === "EndPhase"  && DEBUGING_UI) {
             return (
                 <div>
-                 <h1> player {Gameover.winner}  won! </h1>
+                 <h1> player {this.props.G.winner}  won! </h1>
              </div>
             )
         }
         
-        if (Gameover !== undefined) {
+        if (this.props.ctx.phase === "EndPhase") {
             return (
-                <Stage width={this.state.screenx} height={this.state.screeny}>
-                    <this.renderGrid />
-                    <Layer>
-                        <this.renderGameInfo />
-                        <this.renderDeck /> 
-                        <this.renderTable />
-                    </Layer>
-                    <Layer>
-                        <this.renderHand />
-                        <this.renderBench />
-                        <GameOver
-                            gameOverState={Gameover}
-                            matchData={this.props.matchData}
-                            playerID={thisPlayerNumber}
-                            tableState={this.state}
-                        />
-                    </Layer>
-                </Stage>
+                <div>
+                    <this.EndOfGameOptions />
+                    <Stage width={this.state.screenx} height={this.state.screeny}>
+                        <this.renderGrid />
+                        <Layer>
+                            <this.renderGameInfo />
+                            <this.renderDeck /> 
+                            <this.renderTable />
+                        </Layer>
+                        <Layer>
+                            <this.renderHand />
+                            <this.renderBench />
+                            <GameOver
+                                winnerID={this.props.G.winner}
+                                matchData={this.props.matchData}
+                                playerID={thisPlayerNumber}
+                                tableState={this.state}
+                            />
+                        </Layer>
+                    </Stage>
+                </div>
+                
             );
 
          } else {
