@@ -182,23 +182,26 @@ export const Lobby = (props) => {
 //REMOVED SUBMUIT FROM FORM TAG - MAY NEED TO GO BACK IN
 const JoinMatch = (props) => {
     return(
-        <form onSubmit={props.onSubmit}>
-            <h2>Join Match</h2>
-            <div>
-                <label>
-                    Player Name:
-                    <input type="text" value={props.playerName} onChange={props.onChangePlayerName} /> 
-                </label>
-            </div>
-            <div>
-                <label>
-                    match ID:
-                    <input type="text" value={props.matchID} onChange={props.onChangeMatchID} />
-                    <input type="submit" value="Join" onSubmit={props.onSubmit} />
-                </label>
-            </div>
-    </form>
-);
+        <div>
+            <form onSubmit={props.onSubmit}>
+                <h2>Join Match</h2>
+                <div>
+                    <label>
+                        Player Name:
+                        <input type="text" value={props.playerName} onChange={props.onChangePlayerName} /> 
+                    </label>
+                </div>
+                <div>
+                    <label>
+                        match ID:
+                        <input type="text" value={props.matchID} onChange={props.onChangeMatchID} />
+                        <input className="bigButton" type="submit" value="Join" onSubmit={props.onSubmit} />
+                    </label>
+                </div>
+            </form>
+        </div>
+        
+    );
 }
 
 const CreateMatch = (props) => {
@@ -207,7 +210,7 @@ const CreateMatch = (props) => {
         <h2>Create Match</h2>
         <label>
             Number of Players:
-            <Slider 
+            <Slider id="slider"
                 defaultValue={2}
                 onChange={props.onChangeNumberOfPlayers}
                 aria-labelledby="discrete-slider"
@@ -219,8 +222,8 @@ const CreateMatch = (props) => {
             />
         </label>
         
-        <button onClick={props.onChangeCreateMatch}>
-            <h2>Create match</h2>
+        <button className="bigButton" onClick={props.onChangeCreateMatch}>
+            Create match
         </button>
     </div>
     );

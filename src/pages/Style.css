@@ -1,25 +1,63 @@
 
 .ShedLogo {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 40%;
+  margin: auto;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
 }
-.playButton {
+
+.bigButton {
     margin: auto;
-    width: 25%;
-      
+    font-size: 40px;
+    font-family: pixelFont;
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: rgba(255, 255, 255, 0.3); /* Black background with opacity */
+    border-radius: 25px;
+}
+
+.biggerButton {
+  margin: auto;
+  font-size: 60px;
+  font-family: pixelFont;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.3); /* Black background with opacity */
+  border-radius: 25px;
 }
 
 .lobby {
+    font-family: pixelFont;
+    font-size: 25px;
     display: block;
     margin-left: auto;
     margin-right: auto;
     width: 40%;
+    background-color: rgba(179, 179, 179, 0.3); /* Black background with opacity */
+    border-radius: 25px;
 
+}
+
+.gameroom {
+    font-family: pixelFont;
+    font-size: 25px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 40%;
+    background-color: rgba(179, 179, 179, 0.3); /* Black background with opacity */
+    border-radius: 25px;
+}
+
+#slider {
+  color: red;
+  display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 70%;
 }
 
 #overlay {
@@ -39,8 +77,67 @@
     justify-content: center;
     align-items: center;
     font-size: 25px;
+    font-family: pixelFont;
   }
 
 #EndGameChoice {
+  font-family: pixelFont;
   font-size: 25px;
+}
+
+h1 {
+  font-family: pixelFont;
+  display: flex;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: 95%;
+}
+
+h2 {
+  font-family: pixelFont;
+  display: flex;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: 95%;
+}
+
+div {
+  font-family: pixelFont;
+  display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 95%;
+}
+
+body {
+  font-family: pixelFont;
+  background-image: url("/src/images/BackgroundPattern.png");
+  background-repeat: repeat;
+  font-size:30px;
+}
+
+
+
+
+input[type=text] {
+  font-family: 'pixelFont';
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  font-size: 25px;
+  background-color: rgba(255, 255, 255, 0.151); /* Black background with opacity */
+  border-radius: 155px;
+}
+
+input[type=text]:focus {
+  border: 3px solid #555;  
+  border-radius: 25px;
+}
+
+@font-face {
+  font-family: 'pixelFont';
+  src: local('pixelFont'), url("/src/fonts/DotGothic16-Regular.ttf") format('woff');
 }

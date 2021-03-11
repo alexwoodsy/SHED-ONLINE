@@ -140,23 +140,20 @@ export const GameRoom = (props) => {
 
     
     useEffect(()=>{
-        const redirectLobby = () => {
+        const redirectLobby = async () => {
             console.log('redirecting to lobby')
-            props.history.push("/lobby")
         }
         
 
         const conectToNewMatch = (event) => {
             localStorage.setItem("newMatchID", event.detail.matchID )
             localStorage.setItem("previousPlayerName", playerName)
-
             //trigger timer to delay join
             setjoinDelay((2+parseInt(playerID))*1000)
             
         }
 
         if (localStorage.getItem("newMatchID")!== undefined) {
-            //console.log("lsitening for how to redirrct")
             document.addEventListener("ReturnLobby", redirectLobby, {once: true})
             document.addEventListener("JoinNewMatch", (event)=>conectToNewMatch(event), {once: true})
 
@@ -234,9 +231,11 @@ export const GameRoom = (props) => {
                 </div>
                            
             ); 
+                //need another else if match ID is null
+
         } else {
             return (
-                <div>
+                <div className="gameroom">
                     <h1>waiting room</h1>
                     <h2> players in room({playersJoined.length}/{numberOfPlayers}):</h2>
                     <div>
