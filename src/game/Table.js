@@ -444,7 +444,7 @@ export class SHEDtable extends React.Component {
             let xline = [(0), (this.state.screeny/2), (this.state.screenx), (this.state.screeny/2)]
             return(
                 <Layer>
-                    <Rect x={this.state.padx} y={this.state.pady} width={this.state.screenx-2*this.state.padx} height={this.state.screeny-2*this.state.pady} fill="blue" />
+                    {/* <Rect x={this.state.padx} y={this.state.pady} width={this.state.screenx-2*this.state.padx} height={this.state.screeny-2*this.state.pady} fill="blue" /> */}
                     <Line points={yline} stroke="red" strokeWidth={3}/>
                     <Line points={xline} stroke="red" strokeWidth={3}/>
                 </Layer>
