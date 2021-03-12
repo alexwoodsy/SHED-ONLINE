@@ -2,6 +2,7 @@ import React from 'react';
 import { Image, Text } from 'react-konva';
 import useImage from 'use-image';
 import CardImages from './CardImages';
+import { imageRatio } from './gameUI'
 
 const DEBUG = false;
 
@@ -9,6 +10,26 @@ const DEBUG = false;
 function GetFace(card) {
     if (card === null) {
         return (CardImages.Empty)
+    } else if (typeof card === "string") { 
+        let image;
+        let suit = card.substring(5)
+        switch (suit) {
+            case "hearts":
+                image = CardImages.Ash.hearts
+                break;
+            case "diamonds":
+                image = CardImages.Ash.diamonds
+                break;
+            case "spades":
+                image = CardImages.Ash.spades
+                break;
+            case "clubs":
+                image = CardImages.Ash.clubs
+                break;
+            default:
+                break;
+        }
+        return image
     } else {
         let image;
         switch (card.suit) {
@@ -52,10 +73,24 @@ export const CardImage = (props) => {
                 height={props.height}
             />
         );
-    }
-    
-    
-    if (props.reverse===true) {
+        //hijak the card image class to show burnt card piles
+    } else if (typeof card === "string") {
+        let width= props.width;
+        let height = props.height;
+        let ratio = imageRatio(front)
+        width = height * ratio
+        return (
+            <Image 
+                image={front} 
+                x={props.x-width/4} 
+                y={props.y}
+                width={width} 
+                rotation = {rotation} 
+                height={height}
+            />
+        );
+
+    } else if (props.reverse===true) {
         if (DEBUG) {
             return null
         } else {

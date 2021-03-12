@@ -308,6 +308,18 @@ export class SHEDtable extends React.Component {
                 );
             }
             return renderedCards.reverse();
+        } else if (this.props.G.magicEvent.type==="burning") {
+            console.log('getting ash')
+            return (
+                <CardImage 
+                    card={"burnt"+this.props.G.lastPlayed.suit}
+                    key ={"ash"}
+                    width={this.state.cardwidth} 
+                    height={this.state.cardheight}
+                    x={x} 
+                    y={y} 
+                />
+               )
         } else {
            return (
             <CardImage 

@@ -8,6 +8,8 @@ import HighOrLow from '../images/magicEvents/HighOrLow.png'
 import reset from '../images/magicEvents/reset.png'
 //ui
 import wood from '../images/UI/wood.png'
+import waiting from '../images/UI/Waiting.png'
+import yourTurn from '../images/UI/YourTurn.png'
 //benchui
 import benchReady from '../images/UI/BenchReady.png'
 import benchUnready from '../images/UI/BenchUnready.png'
@@ -17,6 +19,9 @@ import lowerArrow from '../images/magicEvents/LowerArrow.png'
 //gameover
 import winnerScreen from '../images/Winner.png'
 import loserScreen from '../images/Loser.png'
+
+
+
 
 export function Instructions(G, ctx, player) {
   let stage = ctx.activePlayers[player];
@@ -46,7 +51,7 @@ const MagicImages = {
   wood: wood,
 }
 
-function imageRatio (image) {
+export function imageRatio (image) {
   //scale image
   let imgRatio=1; //inni to 1 ao image still renders
   if (image !== undefined) {
