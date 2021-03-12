@@ -56,6 +56,7 @@ import diamondsK from "../images/cards/KD.png";
 import diamondsA from "../images/cards/AD.png";
 //card back
 import cardback from "../images/cards/CardBack.png"
+import emptyCard from "../images/cards/EmptyCard.png"
 
 
 const CardFaces = {
@@ -69,6 +70,7 @@ const CardFaces = {
 export const CardImages = {
     Faces: CardFaces,
     Back: cardback, 
+    Empty: emptyCard,
 }
 
 //function that gets the image from the card

@@ -1,9 +1,7 @@
 import React from 'react';
 import {Layer, Group, Rect, Stage, Text, Line } from 'react-konva';
-//import tablebackground from '../images/tabletop.jpg'
-import { Instructions } from './player';
 import { CardImage, CardRenderParam } from './card';
-import { MagicEvent, BenchReadyButton, SevenChoiceInstruction, GameOver } from './gameUI'
+import { MagicEvent, BenchReadyButton, SevenChoiceInstruction, GameOver, Instructions } from './gameUI'
 import { DEBUGING_UI } from '../config';
 import "./Style.css"
 
@@ -245,7 +243,6 @@ export class SHEDtable extends React.Component {
         let deck = this.props.G.deck
         let x = this.state.screenx/2 - 3*this.state.cardwidth/2;
         let y = this.state.screeny/2-this.state.cardheight/2;
-        let fontsize = 2*this.state.cardScale;
         let topcard = deck[deck.length -1]
         if (deck.length > 0) {
             return (
@@ -263,7 +260,16 @@ export class SHEDtable extends React.Component {
                 />
             );
         } else {
-            return (<Text x={x} y={y+this.state.cardheight/4} text={"deck\n(empty)"} fontSize={fontsize} />);
+            return (
+                <CardImage 
+                    card={null} 
+                    key ={"emptyTable"}
+                    width={this.state.cardwidth} 
+                    height={this.state.cardheight}
+                    x={x} 
+                    y={y} 
+                />
+               )
         };
     };
 
@@ -271,7 +277,6 @@ export class SHEDtable extends React.Component {
         let table = this.props.G.table
         let x = this.state.screenx/2 + this.state.cardwidth/2;
         let y = this.state.screeny/2-this.state.cardheight/2;
-        let fontsize = 2*this.state.cardScale
         if (table.length > 0) {
             let tableCardsToRender = [];
             let index = table.length-1
@@ -304,7 +309,16 @@ export class SHEDtable extends React.Component {
             }
             return renderedCards.reverse();
         } else {
-           return <Text x={x} y={y+this.state.cardheight/4} text={"table\n(empty)"} fontSize={fontsize} />
+           return (
+            <CardImage 
+                card={null} 
+                key ={"emptyTable"}
+                width={this.state.cardwidth} 
+                height={this.state.cardheight}
+                x={x} 
+                y={y} 
+            />
+           )
         };
     };
 

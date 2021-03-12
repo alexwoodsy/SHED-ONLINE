@@ -7,52 +7,53 @@ const DEBUG = false;
 
 //retrun index in CradImages.Faces of corresponding cards
 function GetFace(card) {
-    let image;
-    switch (card.suit) {
-        case "hearts":
-            image = CardImages.Faces.hearts[card.rank-2]
-            break;
-        case "diamonds":
-            image = CardImages.Faces.diamonds[card.rank-2]
-            break;
-        case "spades":
-            image = CardImages.Faces.spades[card.rank-2]
-            break;
-        case "clubs":
-            image = CardImages.Faces.clubs[card.rank-2]
-            break;
-        default:
-            break;
-    }
-    
-    return image
+    if (card === null) {
+        return (CardImages.Empty)
+    } else {
+        let image;
+        switch (card.suit) {
+            case "hearts":
+                image = CardImages.Faces.hearts[card.rank-2]
+                break;
+            case "diamonds":
+                image = CardImages.Faces.diamonds[card.rank-2]
+                break;
+            case "spades":
+                image = CardImages.Faces.spades[card.rank-2]
+                break;
+            case "clubs":
+                image = CardImages.Faces.clubs[card.rank-2]
+                break;
+            default:
+                break;
+        }
+        return image
+    } 
 }
 
 export const CardImage = (props) => { 
     let card = props.card
     let rotation = props.rotation
-    // let rotation=0;
-    // if (props.player===2 || props.player===3) {
-    //     rotation=90
-    // } else if (props.player===0 || props.player===1){
-    //     rotation=0
-    // } else {
-    //     rotation=0
-    // }; 
-
     const [back] = useImage(CardImages.Back);
-
-
     let cardImg = GetFace(card);
-
     const [front] = useImage(cardImg)
 
     let opacity = 1;
+    
 
-    if (card.invisible && props.reverse===false) {
-        opacity = 0.5
-    }; 
-
+    if (card === null) {
+        return (
+            <Image 
+                image={front} 
+                x={props.x} 
+                y={props.y}
+                width={props.width} 
+                rotation = {rotation} 
+                height={props.height}
+            />
+        );
+    }
+    
     
     if (props.reverse===true) {
         if (DEBUG) {
@@ -75,7 +76,9 @@ export const CardImage = (props) => {
         }
 
     } else {
-
+        if (card.invisible && props.reverse===false) {
+            opacity = 0.5
+        }; 
         if (DEBUG) {
             let cardtext = card.rank.toString().concat(card.suit);
             return(

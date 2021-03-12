@@ -18,6 +18,25 @@ import lowerArrow from '../images/magicEvents/LowerArrow.png'
 import winnerScreen from '../images/Winner.png'
 import loserScreen from '../images/Loser.png'
 
+export function Instructions(G, ctx, player) {
+  let stage = ctx.activePlayers[player];
+  let currentPlayer = ctx.currentPlayer
+  let phase = ctx.phase;
+
+  if (phase==='StartPhase') { //give payers all same instructions in the start phase
+      return "set up your bench"
+  } else if (phase==='MainPhase') {
+      if (player.toString()===currentPlayer) { // instructions for player making turn
+          let message = "Your turn: "
+          return message.concat(stage)
+      } else { //instructions for everyone else
+
+          return 'waiting for turn'
+      }  
+  }
+
+}
+
 
 const MagicImages = {
   burn: burn,
@@ -80,7 +99,6 @@ const MagicImage = (props) => {
 
 
 //BenchReadyButton - need this for doing these
-
 
 export class MagicEvent extends React.Component {
     constructor(props) {
