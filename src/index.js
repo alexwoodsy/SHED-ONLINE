@@ -15,6 +15,17 @@ import { GameRoom } from "./pages/gameroom";
 import reportWebVitals from './reportWebVitals';
 
 
+import { Client }  from 'boardgame.io/react';
+import { Local } from 'boardgame.io/multiplayer';
+import  SHED  from './game/Game';
+import  SHEDtable  from './game/Table';
+const DebugSHEDClient = Client({
+  game: SHED,
+  board: SHEDtable,
+  debug: true, //DEBUGING_UI,
+  numPlayers: 2,
+  multiplayer: Local(),
+});
 
 
 
@@ -25,9 +36,15 @@ import reportWebVitals from './reportWebVitals';
 const App = () => {
     const history = useHistory();   
       if (DEBUGING_UI) {
-        return (
-          <GameRoom />
-        )
+        localStorage.clear()
+        return(
+            <div>
+                <DebugSHEDClient playerID="0"/>
+                <DebugSHEDClient playerID="1"/>
+                {/* <DebugSHEDClient playerID="2"/>
+                <DebugSHEDClient playerID="3"/> */}
+            </div>
+        );  
       }
       return (
           <Switch>

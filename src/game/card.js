@@ -57,9 +57,16 @@ export const CardImage = (props) => {
     let rotation = props.rotation
     const [back] = useImage(CardImages.Back);
     let cardImg = GetFace(card);
-    const [front] = useImage(cardImg)
-
+    const [front] = useImage(cardImg) 
     let opacity = 1;
+    let shadowColor;
+    if (props.highlight==="green") {
+        shadowColor = "#4feb34"
+    } else if (props.highlight==="white") {
+        shadowColor = "white"
+    } else {
+      shadowColor = "black"
+    }
     
 
     if (card === null) {
@@ -103,6 +110,7 @@ export const CardImage = (props) => {
                     rotation = {rotation} 
                     height={props.height}
                     shadowBlur={props.shadowBlur} 
+                    shadowColor={shadowColor}
                     player={props.player} 
                     onClick={props.onClick}
                     onTap={props.onTap}
@@ -130,6 +138,7 @@ export const CardImage = (props) => {
                     rotation = {rotation} 
                     height={props.height} 
                     shadowBlur={props.shadowBlur} 
+                    shadowColor={shadowColor}
                     player={props.player} 
                     onClick={props.onClick}
                     onTap={props.onTap}

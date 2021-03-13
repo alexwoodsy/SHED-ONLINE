@@ -141,6 +141,7 @@ export class SHEDtable extends React.Component {
 
     renderHand = (props) => {
         let thisPlayerNumber = parseInt(this.props.playerID); //the current player
+        let stage = this.props.ctx.activePlayers[this.props.ctx.currentPlayer];
         let x = this.state.screenx/2// cardwidth/2 
         let y =20 //screeny-pady-cardheight; 
         let cards = [];
@@ -149,6 +150,15 @@ export class SHEDtable extends React.Component {
         let numPlayers = this.props.ctx.numPlayers
         for (let i=0; i<numPlayers; i++) {
             let player = playerOrder[i]; //ensure current player is always at the bottom of screen
+            let highlight=null;
+            if (stage==="play") {
+                if (player===thisPlayerNumber && player===parseInt(this.props.ctx.currentPlayer) ) {
+                    highlight = "green"
+                } else if (player===parseInt(this.props.ctx.currentPlayer)) {
+                    highlight = "white"
+                }
+            } 
+             
             let zone = zones[i];
             let hand = this.props.G.hands[player];
             let range = 3*this.state.screenx/4
@@ -180,6 +190,7 @@ export class SHEDtable extends React.Component {
                     onClick={()=>this.clickCard(clickAction, i, player)}
                     onTap={()=>this.clickCard(clickAction, i, player)}
                     shadowBlur={this.state.dropShadow}
+                    highlight={highlight}
                 />)
             }
         }
@@ -241,6 +252,8 @@ export class SHEDtable extends React.Component {
 
     renderDeck = (props) => {
         let deck = this.props.G.deck
+        let thisPlayerNumber = parseInt(this.props.playerID); //the current player
+        let stage = this.props.ctx.activePlayers[thisPlayerNumber];
         let x = this.state.screenx/2 - 3*this.state.cardwidth/2;
         let y = this.state.screeny/2-this.state.cardheight/2;
         let topcard = deck[deck.length -1]
@@ -257,6 +270,7 @@ export class SHEDtable extends React.Component {
                     onClick={()=>this.clickCard('draw')}
                     onTap={()=>this.clickCard('draw')}
                     shadowBlur={this.state.dropShadow}
+                    highlight={stage==="draw" ? "green" : null}
                 />
             );
         } else {
@@ -275,6 +289,8 @@ export class SHEDtable extends React.Component {
 
     renderTable = (props) => {
         let table = this.props.G.table
+        let thisPlayerNumber = parseInt(this.props.playerID); //the current player
+        let stage = this.props.ctx.activePlayers[thisPlayerNumber];
         let x = this.state.screenx/2 + this.state.cardwidth/2;
         let y = this.state.screeny/2-this.state.cardheight/2;
         if (table.length > 0) {
@@ -304,6 +320,7 @@ export class SHEDtable extends React.Component {
                         x={x} 
                         y={y} 
                         shadowBlur={this.state.dropShadow}
+                        highlight={stage==="pickup"? "green" : null}
                     />
                 );
             }
@@ -339,9 +356,8 @@ export class SHEDtable extends React.Component {
     readyButton = (props) => {
         let phase = this.props.ctx.phase;
         let stage = this.props.G.Ready[props.player]
-        let width = 9*this.state.cardScale;
-        let x = this.state.screenx/2 -width - 2* this.state.cardwidth - this.state.padx;
-        let y = this.state.screeny - this.state.pady - 2*this.state.cardheight;
+        let x = this.state.screenx/2 + this.state.padx + 3*this.state.cardwidth/2;
+        let y = this.state.screeny - this.state.pady - this.state.cardheight*2;
 
         let bench = this.props.G.benchs[this.props.playerID]
         let benchTot=0;
@@ -426,23 +442,22 @@ export class SHEDtable extends React.Component {
     }
 
     
-    renderInstructions = (props) => {
+    renderInstructions = () => {
         let player = parseInt(this.props.playerID)
-        let text = Instructions(this.props.G, this.props.ctx, player);
-        
-        let width = 16*this.state.cardScale;
-        let height = 3*this.state.cardScale;
+        let currentPlayer = this.props.ctx.currentPlayer
+        let phase = this.props.ctx.phase;
         let x = this.state.screenx/2 + this.state.padx + 3*this.state.cardwidth/2;
         let y = this.state.screeny - this.state.pady - this.state.cardheight*2;
-        let fontsize = 2*this.state.cardScale;
-        let colour = 'white';
         
-        return(<Group >
-            <Rect x={x} y={y} width={width} height={height}
-                fill={colour} cornerRadius={10}
-                />
-                <Text x={x} y={y+height/4} align={'center'} text={text} fontSize={fontsize} fill={'black'} />
-        </Group>)
+        return(<Instructions
+            currentPlayer={currentPlayer}
+            phase={phase}
+            player={player}
+            scale={this.state.cardScale}
+            x={x}
+            y={y}
+            
+        />)
     };
 
     

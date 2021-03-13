@@ -1,13 +1,11 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react'
 import { Client }  from 'boardgame.io/react';
-import { SocketIO, Local } from 'boardgame.io/multiplayer';
+import { SocketIO } from 'boardgame.io/multiplayer';
 import  SHED  from '../game/Game';
 import  SHEDtable  from '../game/Table';
-import { DEFAULT_PORT, APP_PRODUCTION, DEBUGING_UI } from "../config";
+import { DEFAULT_PORT, APP_PRODUCTION } from "../config";
 import { LobbyClient } from 'boardgame.io/client';
 import "./Style.css"
-
-
 
 
 const { origin, protocol, hostname } = window.location;
@@ -20,17 +18,6 @@ const SHEDClient = Client({
     multiplayer: SocketIO({server: SERVER}), 
     loading: loading,
   });
-
-
-const DebugSHEDClient = Client({
-    game: SHED,
-    board: SHEDtable,
-    debug: true, //DEBUGING_UI,
-    numPlayers: 2,
-    multiplayer: Local(),
-    loading: loading,
-  });
-
   
 function loading () { 
     const element = (<h1> put loading screen here</h1>)
@@ -51,7 +38,6 @@ export const GameRoom = (props) => {
 
     const isInitialMount = useRef(true);
      
-    
     //ping the server for number of players 
     useEffect(() => {
         const PlayersInRoom = async () => {
@@ -204,49 +190,39 @@ export const GameRoom = (props) => {
 
    //chnage how client is instantiated so I can call tranport functions
 
-    if (DEBUGING_UI) {
-        return(
+     
+    if (playersJoined.length === parseInt(numberOfPlayers) ) {
+        return (
             <div>
-                <DebugSHEDClient playerID="0"/>
-                <DebugSHEDClient playerID="1"/>
-                {/* <DebugSHEDClient playerID="2"/>
-                <DebugSHEDClient playerID="3"/> */}
-            </div>
-        );
-        
-    } else {
-        if (playersJoined.length === parseInt(numberOfPlayers) ) {
-            return (
                 <div>
-                    <div>
-                        <SHEDClient 
-                            playerID={playerID} 
-                            matchID={matchID} 
-                            credentials={playerCredentials}
-                        /> 
-                    </div>
-                    <div>
-                        <DelayTimer/>
-                    </div>
+                    <SHEDClient 
+                        playerID={playerID} 
+                        matchID={matchID} 
+                        credentials={playerCredentials}
+                    /> 
                 </div>
-                           
-            ); 
-                //need another else if match ID is null
+                <div>
+                    <DelayTimer/>
+                </div>
+            </div>
+                        
+        ); 
+            //need another else if match ID is null
 
-        } else {
-            return (
-                <div className="gameroom">
-                    <h1>waiting room</h1>
-                    <h2> players in room({playersJoined.length}/{numberOfPlayers}):</h2>
-                    <div>
-                        {playersJoined.map((name, index) => (
-                            <p key={index}>{index+1}. {name}</p>
-                        ))}
-                    </div>
-                </div> 
-            )
-        }
+    } else {
+        return (
+            <div className="gameroom">
+                <h1>waiting room</h1>
+                <h2> players in room({playersJoined.length}/{numberOfPlayers}):</h2>
+                <div>
+                    {playersJoined.map((name, index) => (
+                        <p key={index}>{index+1}. {name}</p>
+                    ))}
+                </div>
+            </div> 
+        )
     }
+    
     
 }
 //buttons for playing again or return to lobby:

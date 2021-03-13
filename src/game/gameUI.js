@@ -8,8 +8,8 @@ import HighOrLow from '../images/magicEvents/HighOrLow.png'
 import reset from '../images/magicEvents/reset.png'
 //ui
 import wood from '../images/UI/wood.png'
-import waiting from '../images/UI/Waiting.png'
-import yourTurn from '../images/UI/YourTurn.png'
+import waitingImg from '../images/UI/Waiting.png'
+import yourTurnImg from '../images/UI/YourTurn.png'
 //benchui
 import benchReady from '../images/UI/BenchReady.png'
 import benchUnready from '../images/UI/BenchUnready.png'
@@ -19,28 +19,6 @@ import lowerArrow from '../images/magicEvents/LowerArrow.png'
 //gameover
 import winnerScreen from '../images/Winner.png'
 import loserScreen from '../images/Loser.png'
-
-
-
-
-export function Instructions(G, ctx, player) {
-  let stage = ctx.activePlayers[player];
-  let currentPlayer = ctx.currentPlayer
-  let phase = ctx.phase;
-
-  if (phase==='StartPhase') { //give payers all same instructions in the start phase
-      return "set up your bench"
-  } else if (phase==='MainPhase') {
-      if (player.toString()===currentPlayer) { // instructions for player making turn
-          let message = "Your turn: "
-          return message.concat(stage)
-      } else { //instructions for everyone else
-
-          return 'waiting for turn'
-      }  
-  }
-
-}
 
 
 const MagicImages = {
@@ -178,7 +156,7 @@ export const BenchReadyButton = (props) => {
   let width = scale*imageRatio(image);
   let height = scale;
   let x = props.x //- width/2;
-  let y = props.y - height/2;
+  let y = props.y //- height/2;
   
   
   return (
@@ -332,4 +310,53 @@ export const GameOver = (props) => {
       </Group>
     )   
   }
+}
+
+
+export const Instructions = (props) => {
+  let [waiting] = useImage(waitingImg);
+  let [yourTurn] = useImage(yourTurnImg)
+  let currentPlayer = props.currentPlayer
+  let phase = props.phase;
+  let player = props.player
+  let x = props.x
+  let y = props.y
+  let scale = props.scale*10
+  
+  if (phase==='StartPhase') {
+    return null
+  } else if (phase==='MainPhase') {
+      if (player.toString()===currentPlayer) { // instructions for player making turn
+        let width = scale*imageRatio(yourTurn);
+        let height = scale;
+        y = y - height/2
+        return (
+          <Image 
+              image={yourTurn} 
+              x={x} 
+              y={y}
+              width={width} 
+              height={height}
+              shadowBlur={props.shadowBlur} 
+          />
+        )
+      } else { //instructions for everyone else
+        let width = scale*imageRatio(waiting);
+        let height = scale;
+        y = y - height/2
+        return (
+          <Image 
+              image={waiting} 
+              x={x} 
+              y={y}
+              width={width} 
+              height={height}
+              shadowBlur={props.shadowBlur} 
+          />
+        )
+      }  
+  } else {
+    return null;
+  }
+
 }
