@@ -43,7 +43,7 @@ export class SHEDtable extends React.Component {
     componentDidMount() {
         window.addEventListener('resize', this.updateDimensions);
         document.addEventListener("newMatchCreated", this.handleNewMatch, { once: true })
-        
+        //console.log(this.props.G.hands[0][0])
     }
 
     componentWillUnmount() {
@@ -146,6 +146,10 @@ export class SHEDtable extends React.Component {
         let y =20 //screeny-pady-cardheight; 
         let cards = [];
         let zones =['bottom', 'top', 'left', 'right'];
+        if (this.props.ctx.numPlayers > 2 ) {
+            zones =['bottom', 'left', 'top', 'right'];
+        }
+    
         let playerOrder = this.getPlayerOrder()
         let numPlayers = this.props.ctx.numPlayers
         for (let i=0; i<numPlayers; i++) {
@@ -169,6 +173,9 @@ export class SHEDtable extends React.Component {
                 xcord = cardParams[i][0] 
                 ycord = cardParams[i][1]
                 
+                //append coords etc to card
+                
+
                 //console.log('rendering:', hand[i], 'player', player, `at x:${xcord} y:${ycord} in zone ${zone}`)
                 
                 //define click type for bench setting stage and normal game play
@@ -182,6 +189,7 @@ export class SHEDtable extends React.Component {
                     key = {player.toString().concat(hand[i].name)}
                     reverse={player!==thisPlayerNumber}
                     player={player}
+                    expandable={player===parseInt(this.props.playerID)}
                     width={this.state.cardwidth} 
                     height={this.state.cardheight}
                     x={xcord}
@@ -191,6 +199,7 @@ export class SHEDtable extends React.Component {
                     onTap={()=>this.clickCard(clickAction, i, player)}
                     shadowBlur={this.state.dropShadow}
                     highlight={highlight}
+
                 />)
             }
         }
@@ -206,6 +215,10 @@ export class SHEDtable extends React.Component {
         let cards=[];
 
         let zones =['bottom', 'top', 'left', 'right'];
+        if (this.props.ctx.numPlayers > 2 ) {
+            zones =['bottom', 'left', 'top', 'right'];
+        }
+        
         let playerOrder = this.getPlayerOrder()
         let numPlayers = this.props.ctx.numPlayers
         for (let k=0; k<numPlayers; k++) {
@@ -227,7 +240,6 @@ export class SHEDtable extends React.Component {
                     xcord=cardParams[j][0]
                     ycord=cardParams[j][1]
                     let rotation = cardParams[j][2];
-
                     cards.push(
                         <CardImage
                             reverse={i===0}
@@ -467,13 +479,19 @@ export class SHEDtable extends React.Component {
         let matchID = this.props.matchID;
 
         if (DEBUGING_UI) {
-            return <Text x={10} y={10} text={`player ${this.props.playerID}`} fontSize={15} />;
+            return (
+                <Group>
+                    <Text x={10} y={10} text={`player ${this.props.playerID}`} fontSize={15} />
+                    <Text x={10} y={30} text={`mobile ${this.props.isMobile}`} fontSize={15} />
+                </Group>
+            )
         }
         return (
             <Group>
                 <Text x={10} y={10} text={"player: ".concat(matchData[playerID].name)} fontSize={15} />
                 <Text x={10} y={30} text={"Game: ".concat(matchID)} fontSize={15}/>
                 <Text x={10} y={50} text={"Connected: ".concat(matchData[playerID].isConnected)} fontSize={15}/>
+                <Text x={10} y={70} text={`mobile ${this.props.isMobile}`} fontSize={15} />
             </Group>
         );
 
@@ -485,7 +503,7 @@ export class SHEDtable extends React.Component {
             let xline = [(0), (this.state.screeny/2), (this.state.screenx), (this.state.screeny/2)]
             return(
                 <Layer>
-                    {/* <Rect x={this.state.padx} y={this.state.pady} width={this.state.screenx-2*this.state.padx} height={this.state.screeny-2*this.state.pady} fill="blue" /> */}
+                    <Rect x={this.state.padx} y={this.state.pady} width={this.state.screenx-2*this.state.padx} height={this.state.screeny-2*this.state.pady} fill="blue" />
                     <Line points={yline} stroke="red" strokeWidth={3}/>
                     <Line points={xline} stroke="red" strokeWidth={3}/>
                 </Layer>

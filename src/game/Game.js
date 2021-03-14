@@ -144,10 +144,17 @@ export class Card {
         this.LastPlayedBy = null;
         this.turnPlayedOn = null;
         this.currentLocation = null;
+        this.currentLocationIndex = null;
         this.LastLocation=null;
+        // this.dimensions= {
+        //     x: null,
+        //     y: null,
+        //     width: null,
+        //     height: null
+        // };
     }  
     name() {
-        return this.rank.toString().concat(" ",this.suit," ",this.LastPlayedBy);
+        return this.rank.toString().concat(" ",this.suit," ",this.LastPlayedBy);  
     };
 
     magic() {
@@ -168,25 +175,16 @@ export class Card {
         this.turnPlayedOn = turn;
     }
 
-   set location (newLocation) {
-    let curLoc = this.currentLocation
-    this.currentLocation= newLocation
-    this.LastLocation = curLoc;
-        
-
-        // switch(newLocation){
-        //     case 'deck':    
-        //     case 'table':
-        //     case 'bench':
-        //     case 'hand':
-        //         let current = this.currentLocation;
-        //         this.LastLocation = current;
-        //         this.currentLocation = newLocation
-        //         break;
-        //     default:
-        //         console.error('card moved to an unknown location', newLocation)
-        // };
+    set location (newLocation) {
+        let curLoc = this.currentLocation
+        this.currentLocation= newLocation
+        this.LastLocation = curLoc;
     }
+
+    set locationIndex (index) {
+        this.currentLocationIndex = index
+    }
+
 }
 
 function orderHand(G, ctx) {
@@ -272,6 +270,7 @@ function initHand (G, ctx) {
                 if (G.deck[i].rank === handOf) {
                     let card = G.deck.splice(i, 1)[0]
                     card.location = 'hand';
+                    card.locationIndex = G.hands[id].length
                     G.hands[id].push( card )
                 }
             }
@@ -279,6 +278,7 @@ function initHand (G, ctx) {
             for (let pos=0; pos < cardsInHand; pos++) {
                 let card = G.deck.pop();
                 card.location = 'hand';
+                card.locationIndex = G.hands[id].length
                 G.hands[id].push( card )
             };
         }

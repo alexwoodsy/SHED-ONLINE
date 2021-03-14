@@ -345,7 +345,7 @@ export const Instructions = (props) => {
         let height = scale;
         y = y - height/2
         return (
-          <Image 
+          <Image
               image={waiting} 
               x={x} 
               y={y}
@@ -358,5 +358,4 @@ export const Instructions = (props) => {
   } else {
     return null;
   }
-
 }

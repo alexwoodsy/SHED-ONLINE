@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 import { Image, Text } from 'react-konva';
 import useImage from 'use-image';
 import CardImages from './CardImages';
@@ -69,6 +69,58 @@ export const CardImage = (props) => {
     }
     
 
+    const scaledDims = (x, y, width, height, reverse=false) => {
+        let scaleFactor = 1.5
+        if (!reverse) {
+            return ({
+                x: x-width*(scaleFactor-1)/2,
+                y: y-height*(scaleFactor-1)/2,
+                width: scaleFactor*width,
+                height: scaleFactor*height,
+            }) 
+        } else {
+            return ({
+                x: x+(width/scaleFactor)*(scaleFactor-1)/2,
+                y: y,
+                width: width/scaleFactor,
+                height: height/scaleFactor,
+            })
+        } 
+    }
+
+    let expanded = scaledDims(props.x, props.y, props.width, props.height)
+    
+    const cardRef = useRef(null)
+    useEffect(()=>{
+        const expandCard = () => {
+            cardRef.current.moveToTop()
+            cardRef.current.to({
+                x: expanded.x,
+                y: expanded.y,
+                width: expanded.width,
+                height: expanded.height,
+                duration:0.1,
+            });
+        }
+        const shrinkCard = () => {
+            cardRef.current.to({
+                x: props.x,
+                y: props.y,
+                width: props.width,
+                height: props.height,
+                duration:0.1,
+            });
+        }
+        if (cardRef.current!==null && props.expandable) {
+
+            cardRef.current.on('mouseover',(event)=>expandCard(event)) 
+            cardRef.current.on('mouseout',()=>shrinkCard())
+        }
+        
+    }, [cardRef, expanded, props])
+
+
+
     if (card === null) {
         return (
             <Image 
@@ -80,7 +132,6 @@ export const CardImage = (props) => {
                 height={props.height}
             />
         );
-        //hijak the card image class to show burnt card piles
     } else if (typeof card === "string") {
         let width= props.width;
         let height = props.height;
@@ -96,7 +147,6 @@ export const CardImage = (props) => {
                 height={height}
             />
         );
-
     } else if (props.reverse===true) {
         if (DEBUG) {
             return null
@@ -113,7 +163,6 @@ export const CardImage = (props) => {
                     shadowColor={shadowColor}
                     player={props.player} 
                     onClick={props.onClick}
-                    onTap={props.onTap}
                 />
             );
         }
@@ -130,6 +179,7 @@ export const CardImage = (props) => {
         } else {
             return (
                 <Image 
+                    ref={cardRef}
                     image={front} 
                     x={props.x} 
                     y={props.y} 
@@ -142,7 +192,7 @@ export const CardImage = (props) => {
                     player={props.player} 
                     onClick={props.onClick}
                     onTap={props.onTap}
-                />
+            />
             );
         }
     }
@@ -156,13 +206,14 @@ export const CardImage = (props) => {
 
 //wil give the coords + rotation for cards in a collection spaced nicely for each zone
 export function CardRenderParam (rangeX, rangeY, cardwidth, cardheight, screenX, screenY, padX, padY, range, numberCards, Zone) {
+    let yspacing = cardheight/2 + padY
     let ratioX = ((screenX-2*padX)/screenY) ;
     let ratioY = ((screenY-2*padY)/screenX);
     let Params =Array(numberCards); // [ [x, y]_n ]
     let dx =1; //cos rot
     let dy =0; // sin rot
     let originX = 0;
-    let originY = screenY-padY-cardheight -rangeY;
+    let originY = screenY-padY-cardheight -rangeY +yspacing;
     let cardRotation = 0;
     switch (Zone) {
         case 'bottom':

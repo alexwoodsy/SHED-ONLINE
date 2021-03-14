@@ -199,6 +199,7 @@ export const GameRoom = (props) => {
                         playerID={playerID} 
                         matchID={matchID} 
                         credentials={playerCredentials}
+                        isMobile={props.isMobile}
                     /> 
                 </div>
                 <div>
