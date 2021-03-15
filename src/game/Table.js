@@ -26,6 +26,7 @@ export class SHEDtable extends React.Component {
         uiHeight:3*window.innerHeight/4,
         dropShadow: 20,
         hostClient: null,
+        playerNames: !DEBUGING_UI ? this.props.matchData.map(elem=>elem.name) : null,
     }
 
     updateDimensions = () => {
@@ -53,6 +54,7 @@ export class SHEDtable extends React.Component {
         }
         
         //console.log(this.props.G.hands[0][0])
+        console.log(this.state.playerNames)
     }
 
     componentWillUnmount() {
@@ -624,6 +626,8 @@ export class SHEDtable extends React.Component {
                         y={this.state.screeny/2} 
                         scale={this.state.cardScale} 
                         choice={(this.props.G.sevenHighLow === 'default') ? "" : this.props.G.sevenHighLow}
+                        onClick={()=>this.clickTable()} 
+                        onTap={()=>this.clickTable()}
                     />
                     </Layer>
                     <Layer>
