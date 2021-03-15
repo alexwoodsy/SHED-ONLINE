@@ -428,7 +428,7 @@ export class SHEDtable extends React.Component {
         let width = 9*this.state.cardScale;
         let height = 3*this.state.cardScale;
         let fontsize = 2*this.state.cardScale
-        let x = this.state.screenx/2 -width - 2* this.state.cardwidth - this.state.padx;
+        let x = this.state.screenx/4 - width/2
         let y = 3*this.state.screeny/4
         let colour = 'white';
     
@@ -450,8 +450,8 @@ export class SHEDtable extends React.Component {
 
     sevenChoiceButton = (props) => {
         let stage = this.props.ctx.activePlayers[this.props.ctx.currentPlayer];
-        let sep = 6*this.state.cardScale;
-        let x = this.state.screenx/2 - 2*sep - 2* this.state.cardwidth - this.state.padx;
+        let sep = 3.5*this.state.cardScale;
+        let x = this.state.screenx/4 
         let y = 3*this.state.screeny/4
         
         if (stage==='sevenChoice' && this.props.playerID === this.props.ctx.currentPlayer) {
@@ -609,20 +609,18 @@ export class SHEDtable extends React.Component {
                     <this.renderGrid />
                     <Layer>
                         <this.renderGameInfo />
-                        <this.renderDeck /> 
-                        <this.renderTable />
                         <this.readyButton player={ thisPlayerNumber } />
                         <this.endTurnButton />
                         <this.sevenChoiceButton />
                         <this.renderInstructions/>
-                    </Layer>
-                    <Layer>
                         <this.renderBench />
                         <this.renderHand />  
+                        <this.renderDeck /> 
+                        <this.renderTable />
                     </Layer>
                     <Layer>
                     <SevenChoiceInstruction 
-                        x={this.state.screenx/2 + this.state.padx + 3*this.state.cardwidth/2} 
+                        x={this.state.screenx/2 + 5.5*this.state.cardwidth/5} 
                         y={this.state.screeny/2} 
                         scale={this.state.cardScale} 
                         choice={(this.props.G.sevenHighLow === 'default') ? "" : this.props.G.sevenHighLow}

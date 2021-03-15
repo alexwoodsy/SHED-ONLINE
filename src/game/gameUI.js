@@ -187,10 +187,10 @@ export const SevenChoiceInstruction = (props) => {
       return null;
     }
 
-  let scale = props.scale*7
+  let scale = props.scale*5
   let width = scale*imageRatio(image);
   let height = scale;
-  let x = props.x //- width/2;
+  let x = props.x - width;
   let y = props.y - height/2;
   
   
