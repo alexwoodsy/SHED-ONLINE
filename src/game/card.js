@@ -68,24 +68,15 @@ export const CardImage = (props) => {
       shadowColor = "black"
     }
     
-
-    const scaledDims = (x, y, width, height, reverse=false) => {
+    const scaledDims = (x, y, width, height) => {
         let scaleFactor = 1.5
-        if (!reverse) {
-            return ({
-                x: x-width*(scaleFactor-1)/2,
-                y: y-height*(scaleFactor-1)/2,
-                width: scaleFactor*width,
-                height: scaleFactor*height,
-            }) 
-        } else {
-            return ({
-                x: x+(width/scaleFactor)*(scaleFactor-1)/2,
-                y: y,
-                width: width/scaleFactor,
-                height: height/scaleFactor,
-            })
-        } 
+        return ({
+            x: x-width*(scaleFactor-1)/2,
+            y: y-height*(scaleFactor-1)/2 - height/2 - 2*props.pady,
+            width: scaleFactor*width,
+            height: scaleFactor*height,
+        }) 
+        
     }
 
     let expanded = scaledDims(props.x, props.y, props.width, props.height)
@@ -93,13 +84,13 @@ export const CardImage = (props) => {
     const cardRef = useRef(null)
     useEffect(()=>{
         const expandCard = () => {
-            cardRef.current.moveToTop()
+            //cardRef.current.moveToTop()
             cardRef.current.to({
                 x: expanded.x,
                 y: expanded.y,
                 width: expanded.width,
                 height: expanded.height,
-                duration:0.1,
+                duration:0.2,
             });
         }
         const shrinkCard = () => {
@@ -108,10 +99,10 @@ export const CardImage = (props) => {
                 y: props.y,
                 width: props.width,
                 height: props.height,
-                duration:0.1,
+                duration:0.2,
             });
         }
-        if (cardRef.current!==null && props.expandable) {
+        if (cardRef.current!==null && props.expandable && !props.isMobile) {
 
             cardRef.current.on('mouseover',(event)=>expandCard(event)) 
             cardRef.current.on('mouseout',()=>shrinkCard())
@@ -155,10 +146,10 @@ export const CardImage = (props) => {
                 <Image 
                     image={back} 
                     x={props.x} 
-                    y={props.y}
-                    width={props.width} 
-                    rotation = {rotation} 
+                    y={props.y} 
+                    width={props.width}
                     height={props.height}
+                    rotation = {rotation} 
                     shadowBlur={props.shadowBlur} 
                     shadowColor={shadowColor}
                     player={props.player} 
@@ -177,16 +168,25 @@ export const CardImage = (props) => {
                 <Text x={props.x} y={props.y} rotation={rotation-90} opacity={opacity} text={cardtext} fontSize={18} />
             )
         } else {
+            let dims = {
+                x: props.x,
+                y: props.y,
+                width: props.width,
+                height: props.height
+            }
+            if (props.isMobile ) {
+                dims = expanded
+            }
             return (
                 <Image 
                     ref={cardRef}
-                    image={front} 
-                    x={props.x} 
-                    y={props.y} 
-                    width={props.width} 
+                    image={front}
+                    x={dims.x} 
+                    y={dims.y}
+                    width={dims.width}
+                    height={dims.height}   
                     opacity={opacity} 
                     rotation = {rotation} 
-                    height={props.height} 
                     shadowBlur={props.shadowBlur} 
                     shadowColor={shadowColor}
                     player={props.player} 
@@ -205,8 +205,9 @@ export const CardImage = (props) => {
 //
 
 //wil give the coords + rotation for cards in a collection spaced nicely for each zone
-export function CardRenderParam (rangeX, rangeY, cardwidth, cardheight, screenX, screenY, padX, padY, range, numberCards, Zone) {
+export function CardRenderParam (rangeX, rangeY, cardwidth, cardheight, screenX, screenY, padX, padY, range, numberCards, Zone, isMobile) {
     let yspacing = cardheight/2 + padY
+    let xspacing = cardheight/2 + padX
     let ratioX = ((screenX-2*padX)/screenY) ;
     let ratioY = ((screenY-2*padY)/screenX);
     let Params =Array(numberCards); // [ [x, y]_n ]
@@ -222,7 +223,7 @@ export function CardRenderParam (rangeX, rangeY, cardwidth, cardheight, screenX,
             dx=-1;
             dy=0;
             originX = screenX
-            originY = padY+cardheight+rangeY
+            originY = padY+cardheight+rangeY - yspacing
             cardRotation = 180;
             break;
         case 'left':
@@ -232,8 +233,8 @@ export function CardRenderParam (rangeX, rangeY, cardwidth, cardheight, screenX,
             rangeX = rangeY * ratioX
             rangeY = tempLeft * ratioY
 
-            originX = padX + rangeX
-            originY = padY + cardwidth
+            originX = padX + rangeX - xspacing
+            originY = padY + cardwidth 
             cardRotation = 270;
             break;
         case 'right':
@@ -243,7 +244,7 @@ export function CardRenderParam (rangeX, rangeY, cardwidth, cardheight, screenX,
             rangeX = rangeY * ((screenX-2*padX)/screenY)
             rangeY = tempRight * ((screenY-2*padY)/screenX)
 
-            originX = screenX -padX - rangeX
+            originX = screenX -padX - rangeX + xspacing
             originY = screenY-padY-cardwidth 
             cardRotation = 90;
             break;

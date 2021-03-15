@@ -43,7 +43,7 @@ export const GameRoom = (props) => {
         const PlayersInRoom = async () => {
             let players = [];
             const matchInstance = await lobbyClient.getMatch('SHED', matchID)
-            console.log('checking number of players joined...')
+            console.log('checking number of players joined is ...',matchInstance.players.length)
             matchInstance.players.forEach(element => {
                 if (element.name !== undefined) {
                     players.push( element.name )
@@ -128,12 +128,17 @@ export const GameRoom = (props) => {
     useEffect(()=>{
         const redirectLobby = async () => {
             console.log('redirecting to lobby')
+            props.history.push("/lobby")
         }
         
 
         const conectToNewMatch = (event) => {
             localStorage.setItem("newMatchID", event.detail.matchID )
             localStorage.setItem("previousPlayerName", playerName)
+            //NEED NUM OF PLAYERS TO BE SET
+            //localStorage.setItem("numberOfPlayers",);
+
+
             //trigger timer to delay join
             setjoinDelay((2+parseInt(playerID))*1000)
             
@@ -150,9 +155,6 @@ export const GameRoom = (props) => {
             document.removeEventListener("JoinNewMatch", (event)=>conectToNewMatch(event))
             
         }
-
-
-        //ADD ONE TIME LISTEN LIKE ABOVE FOR THIS -> SHOULD FIX STATE UPDATE ON UNMOUNTED TOO
     })
 
     useEffect(()=>{

@@ -9,6 +9,7 @@ const SERVER = APP_PRODUCTION ? origin : `${protocol}//${hostname}:${DEFAULT_POR
 
 
 function saveClientData(playerID, MatchID, numberOfPlayers, playerName, playerCredentials, lobbyClient) {
+    console.log("saving number of players", numberOfPlayers)
     localStorage.setItem("playerID", playerID);
     localStorage.setItem("MatchID", MatchID);
     localStorage.setItem("numberOfPlayers", numberOfPlayers);
@@ -31,69 +32,61 @@ export const Lobby = (props) => {
     let lobbyClient = useMemo(()=> new LobbyClient({ server: SERVER }), [])//empty dependency means init once
     
     useEffect(()=>{
-        const getFreeSeat = async () => {
-            //check if joining is possible 
-           // console.log('joining match id', matchID)
-           try {
-            const matchJoining = await lobbyClient.getMatch('SHED', matchID)
-            //console.log("joining", matchJoining)
+        
+        const ConnectClient = async () => {
             let freeSeat = null;
-            for (let i=0; i < matchJoining.players.length; i++) {
-                //console.log('checking players', matchJoining.players[i].name)
-                if (typeof matchJoining.players[i].name === 'undefined') {
-                    freeSeat = i.toString()
-                    break;
+            let numPlayersMatchJoining = null;
+            console.log("getting free seat")
+            try {
+                const matchJoining = await lobbyClient.getMatch('SHED', matchID)
+                console.log("joining num of players", matchJoining.players.length)
+                numPlayersMatchJoining = matchJoining.players.length
+                for (let i=0; i < matchJoining.players.length; i++) {
+                    if (typeof matchJoining.players[i].name === 'undefined') {
+                        freeSeat = i.toString()
+                        break;
+                    }
                 }
-            }
-            return freeSeat;
-           } catch(err) {
+            } 
+            catch(err) {
                console.log(matchID, err)
                 alert('could not find match')
-                return null;
-           }
-        }
-
-        const ConnectClient = async (freeSeat) => {
-            //console.log(freeSeat)
-        
-            const { playerCredentials } = await lobbyClient.joinMatch(
-                'SHED',
-                matchID,
-                {
-                    playerID: freeSeat,
-                    playerName: playerName,
-                },
-            );
-            //setcanJoin(true);
-            //setplayerCredentials(playerCredentials); 
-            saveClientData(
-                freeSeat,
-                matchID, 
-                numberOfPlayers, 
-                playerName, 
-                playerCredentials,
-                lobbyClient
-            )
-            console.log(await lobbyClient.listMatches("SHED"))
-            props.history.push("/shed/"+matchID)
-        };
-
-        const JoinGameroom = async () => {
-            let freeSeat = await getFreeSeat()
-            //console.log('seat', freeSeat)
-
-            if (freeSeat !== null) {
-                ConnectClient(freeSeat)
-            } else {
-                alert('no room in game / no game found');
             }
-        }
+
+            console.log("free seat", freeSeat)
+
+            if (freeSeat === null) {
+                alert('no room in game / no game found');
+            } else {
+                console.log("now joining")
+                const { playerCredentials } = await lobbyClient.joinMatch(
+                    'SHED',
+                    matchID,
+                    {
+                        playerID: freeSeat,
+                        playerName: playerName,
+                    },
+                );
+    
+                console.log("now saving info")
+                saveClientData(
+                    freeSeat,
+                    matchID, 
+                    numPlayersMatchJoining, 
+                    playerName, 
+                    playerCredentials,
+                    lobbyClient
+                )
+                console.log(await lobbyClient.listMatches("SHED"))
+                props.history.push("/shed/"+matchID) 
+            }
+        };
 
         if (joining) {
-            JoinGameroom()  
+            ConnectClient()  
         };
         
-    }, [joining, playerName, lobbyClient, matchID, numberOfPlayers, props.history])
+    }, [joining, playerName, lobbyClient, matchID, props.history])
 
     //on mount check if the player has a newmatch
     useEffect(()=>{
@@ -107,9 +100,6 @@ export const Lobby = (props) => {
         }
     }, [])
 
-    
-    
-    
 
     const Join = () => {
         setjoining(true)
@@ -140,6 +130,7 @@ export const Lobby = (props) => {
 
     function handleChangeNumberOfPlayers (event, value) {
         setnumberOfPlayers(value)
+        event.preventDefault()
     }
   
     function handleJoin (event) {
