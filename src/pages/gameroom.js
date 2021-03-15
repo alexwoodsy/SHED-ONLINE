@@ -214,7 +214,7 @@ export const GameRoom = (props) => {
 
     } else {
         return (
-            <div className="gameroom">
+            <div id={props.isMobile? "mobileLobby": "lobby"}>
                 <h1>waiting room</h1>
                 <h2> players in room({playersJoined.length}/{numberOfPlayers}):</h2>
                 <div>

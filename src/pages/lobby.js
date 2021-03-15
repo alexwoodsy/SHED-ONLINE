@@ -154,7 +154,7 @@ export const Lobby = (props) => {
     }
 
     return (
-        <div className="lobby">
+        <div id={props.isMobile? "mobileLobby": "lobby"}>
             <CreateMatch
                 onChangeCreateMatch={handleCreateMatch}
                 onChangeNumberOfPlayers={handleChangeNumberOfPlayers}

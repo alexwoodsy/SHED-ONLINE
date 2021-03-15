@@ -29,7 +29,7 @@
   border-radius: 25px;
 }
 
-.lobby {
+#lobby {
     font-family: pixelFont;
     font-size: 25px;
     display: block;
@@ -38,6 +38,19 @@
     width: 40%;
     background-color: rgba(179, 179, 179, 0.3); /* Black background with opacity */
     border-radius: 25px;
+    padding: 5px 5px;
+
+}
+
+#mobileLobby {
+  font-family: pixelFont;
+    font-size: 20px;
+    display: block;
+    margin: auto;
+    width: 95%;
+    background-color: rgba(179, 179, 179, 0.3); /* Black background with opacity */
+    border-radius: 25px;
+    padding: 20px 5px;
 
 }
 
@@ -116,6 +129,7 @@ body {
   background-image: url("/src/images/BackgroundPattern.png");
   background-repeat: repeat;
   font-size:30px;
+  padding: 5px;
 }
 
 
