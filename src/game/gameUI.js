@@ -152,11 +152,11 @@ export const BenchReadyButton = (props) => {
       shadowColor = "#4feb34"
     }
 
-  let scale = props.scale*15
+  let scale = props.scale*8
   let width = scale*imageRatio(image);
   let height = scale;
   let x = props.x //- width/2;
-  let y = props.y //- height/2;
+  let y = props.y - height/2;
   
   
   return (

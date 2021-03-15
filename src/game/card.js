@@ -205,7 +205,7 @@ export const CardImage = (props) => {
 //
 
 //wil give the coords + rotation for cards in a collection spaced nicely for each zone
-export function CardRenderParam (rangeX, rangeY, cardwidth, cardheight, screenX, screenY, padX, padY, range, numberCards, Zone, isMobile) {
+export function CardRenderParam (rangeX, rangeY, cardwidth, cardheight, screenX, screenY, padX, padY, range, numberCards, Zone) {
     let yspacing = cardheight/2 + padY
     let xspacing = cardheight/2 + padX
     let ratioX = ((screenX-2*padX)/screenY) ;
