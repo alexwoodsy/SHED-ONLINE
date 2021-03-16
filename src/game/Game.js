@@ -154,7 +154,8 @@ export class Card {
         // };
     }  
     name() {
-        return this.rank.toString().concat(" ",this.suit," ",this.LastPlayedBy);  
+        //return this.rank.toString().concat(" ",this.suit," ",this.LastPlayedBy);  
+        return `card_${this.rank.toString()}${this.suit}`
     };
 
     magic() {
@@ -241,14 +242,15 @@ function GetDeck() {
     let suits = ["hearts", "diamonds", "spades", "clubs"];
     let ranks = [2,3,4,5,6,7,8,9,10,11,12,13,14];
     let deck = []
-        for (let i=0; i < suits.length; i++) {
-            for (let j=0; j < ranks.length; j++) {
-                let card = new Card(suits[i], ranks[j]);
-                card.location = 'deck'
-                deck.push( card ) 
-            }
+    for (let i=0; i < suits.length; i++) {
+        for (let j=0; j < ranks.length; j++) {
+            let card = new Card(suits[i], ranks[j]);
+            card.location = 'deck'
+            deck.push( card ) 
         }
-        return deck
+    }
+    //console.log("deck", deck)
+    return deck
 }
 
 function initBench (G, ctx) {

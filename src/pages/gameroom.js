@@ -14,7 +14,7 @@ const SERVER = APP_PRODUCTION ? origin : `${protocol}//${hostname}:${DEFAULT_POR
 const SHEDClient = Client({
     game: SHED,
     board: SHEDtable,
-    debug: true, 
+    debug: false, 
     multiplayer: SocketIO({server: SERVER}), 
     loading: loading,
   });
@@ -195,19 +195,23 @@ export const GameRoom = (props) => {
      
     if (playersJoined.length === parseInt(numberOfPlayers) ) {
         return (
-            <div>
-                <div>
+            <div id ="Game">
+                <div id="menuBar">
+                    <button>
+                        say hi
+                    </button>
+                </div>
+                <div >
                     <SHEDClient 
                         playerID={playerID} 
                         matchID={matchID} 
                         credentials={playerCredentials}
                         isMobile={props.isMobile}
                     /> 
-                </div>
-                <div>
                     <DelayTimer/>
                 </div>
             </div>
+            
                         
         ); 
             //need another else if match ID is null

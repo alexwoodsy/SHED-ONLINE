@@ -16,10 +16,9 @@ export class SHEDtable extends React.Component {
     
     state = {
         screenx: window.innerWidth,
-        screeny: window.innerHeight,
-        padx: cardScale()*window.innerWidth/1000,
-        pady: cardScale()*window.innerHeight/1000,
-        mobileYshift: 0,
+        screeny: window.innerHeight - window.innerHeight*0.06,
+        padx: 0,
+        pady: window.innerHeight*0.02,
         cardScale: cardScale(),
         cardwidth: 5*cardScale(),
         cardheight: 7*cardScale(),
@@ -34,8 +33,8 @@ export class SHEDtable extends React.Component {
         this.setState({
             screenx: window.innerWidth,
             screeny: window.innerHeight,
-            padx: cardScale()*window.innerWidth/1000,
-            pady: cardScale()*window.innerHeight/1000,
+            padx: window.innerWidth/100,
+            pady: window.innerHeight/100,
             cardScale: scale,
             cardwidth: 5*scale,
             cardheight: 7*scale,
@@ -47,13 +46,7 @@ export class SHEDtable extends React.Component {
     componentDidMount() {
         window.addEventListener('resize', this.updateDimensions);
         document.addEventListener("newMatchCreated", this.handleNewMatch, { once: true })
-        if (this.props.isMobile && this.state.screenx<this.state.screeny) {
-            this.setState({
-                mobileYshift: 7*cardScale() //sen through to params and apply 
-            })
-        }
-        
-        //console.log(this.props.G.hands[0][0])
+        console.log(this.props.G.hands[0][0].name)
         console.log(this.state.playerNames)
     }
 
@@ -202,7 +195,7 @@ export class SHEDtable extends React.Component {
                 cards.push(
                 <CardImage
                     card={hand[i]}
-                    key = {player.toString().concat(hand[i].name)}
+                    key = {hand[i].name}
                     reverse={player!==thisPlayerNumber}
                     player={player}
                     expandable={player===parseInt(this.props.playerID)}
@@ -317,7 +310,7 @@ export class SHEDtable extends React.Component {
             return (
                 <CardImage 
                     card={null} 
-                    key ={"emptyTable"}
+                    key ={"emptyDeck"}
                     width={this.state.cardwidth} 
                     height={this.state.cardheight}
                     x={x} 
@@ -370,7 +363,7 @@ export class SHEDtable extends React.Component {
             return (
                 <CardImage 
                     card={"burnt"+this.props.G.lastPlayed.suit}
-                    key ={"ash"}
+                    key ={"burnt"+this.props.G.lastPlayed.suit}
                     width={this.state.cardwidth} 
                     height={this.state.cardheight}
                     x={x} 
@@ -489,13 +482,15 @@ export class SHEDtable extends React.Component {
         let x = this.state.screenx/2 + this.state.padx + 3*this.state.cardwidth/2;
         let y = 3*this.state.screeny/4
         
-        return(<Instructions
+        return( <Instructions
             currentPlayer={currentPlayer}
             phase={phase}
             player={player}
             scale={this.state.cardScale}
             x={x}
             y={y}
+            isMobile={this.props.isMobile}
+            playerNammes={this.state.playerNames}
             
         />)
     };
@@ -632,10 +627,10 @@ export class SHEDtable extends React.Component {
                     </Layer>
                     <Layer>
                         <MagicEvent 
-                        magicEvent={this.props.G.magicEvent} 
-                        x={this.state.screenx/2} 
-                        y={this.state.screeny/2}
-                        scale={this.state.cardScale}
+                            magicEvent={this.props.G.magicEvent} 
+                            x={this.state.screenx/2} 
+                            y={this.state.screeny/2}
+                            scale={this.state.cardScale}
                         />
                     </Layer>
                 </Stage>

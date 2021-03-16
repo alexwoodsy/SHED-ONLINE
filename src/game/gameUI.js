@@ -1,4 +1,4 @@
-import React from "react"; //, { useEffect, useState }
+import React, {useRef, useEffect} from "react"; //, { useEffect, useState }
 import { Image, Group, Text, Rect } from 'react-konva';
 import useImage from 'use-image';
 //magic
@@ -322,6 +322,33 @@ export const Instructions = (props) => {
   let x = props.x
   let y = props.y
   let scale = props.scale*10
+
+  const waitingRef = useRef(null)
+  const shoWhosTurn = useRef(false) //use this to show the player whos turn
+
+  useEffect(()=>{
+    let counter;
+    const onHover = () => {
+      counter = setTimeout(()=>{
+        console.log("hoviering")
+      },500)
+    }
+
+    const stopCounter = () => {
+      clearTimeout(counter)
+    }
+
+    if (waitingRef.current!==null ) {
+      waitingRef.current.on('mouseover',()=>onHover()) 
+      waitingRef.current.on('mouseout',()=>stopCounter() )
+    }
+
+    return () => {
+      stopCounter()
+    }
+
+  }, [waitingRef])
+
   
   if (phase==='StartPhase') {
     return null
@@ -346,6 +373,7 @@ export const Instructions = (props) => {
         y = y - height/2
         return (
           <Image
+              ref={waitingRef}
               image={waiting} 
               x={x} 
               y={y}
