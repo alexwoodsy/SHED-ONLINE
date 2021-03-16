@@ -10,7 +10,7 @@ const DEBUG = false;
 function GetFace(card) {
     if (card === null) {
         return (CardImages.Empty)
-    } else if (typeof card === "string") { 
+    } else if (typeof card === "string") {
         let image;
         let suit = card.substring(5)
         switch (suit) {
@@ -49,15 +49,15 @@ function GetFace(card) {
                 break;
         }
         return image
-    } 
+    }
 }
 
-export const CardImage = (props) => { 
+export const CardImage = (props) => {
     let card = props.card
     let rotation = props.rotation
     const [back] = useImage(CardImages.Back);
     let cardImg = GetFace(card);
-    const [front] = useImage(cardImg) 
+    const [front] = useImage(cardImg)
     let opacity = 1;
     let shadowColor;
     if (props.highlight==="green") {
@@ -67,7 +67,7 @@ export const CardImage = (props) => {
     } else {
       shadowColor = "black"
     }
-    
+
     const scaledDims = (x, y, width, height) => {
         let scaleFactor = 1.5
         return ({
@@ -75,12 +75,12 @@ export const CardImage = (props) => {
             y: y-height*(scaleFactor-1)/2 - height/2 - 2*props.pady,
             width: scaleFactor*width,
             height: scaleFactor*height,
-        }) 
-        
+        })
+
     }
 
     let expanded = scaledDims(props.x, props.y, props.width, props.height)
-    
+
     const cardRef = useRef(null)
     useEffect(()=>{
         const expandCard = () => {
@@ -104,22 +104,22 @@ export const CardImage = (props) => {
         }
         if (cardRef.current!==null && props.expandable && !props.isMobile) {
 
-            cardRef.current.on('mouseover',(event)=>expandCard(event)) 
+            cardRef.current.on('mouseover',(event)=>expandCard(event))
             cardRef.current.on('mouseout',()=>shrinkCard())
         }
-        
+
     }, [cardRef, expanded, props])
 
 
 
     if (card === null) {
         return (
-            <Image 
-                image={front} 
-                x={props.x} 
+            <Image
+                image={front}
+                x={props.x}
                 y={props.y}
-                width={props.width} 
-                rotation = {rotation} 
+                width={props.width}
+                rotation = {rotation}
                 height={props.height}
             />
         );
@@ -129,12 +129,12 @@ export const CardImage = (props) => {
         let ratio = imageRatio(front)
         width = height * ratio
         return (
-            <Image 
-                image={front} 
-                x={props.x-width/4} 
+            <Image
+                image={front}
+                x={props.x-width/4}
                 y={props.y}
-                width={width} 
-                rotation = {rotation} 
+                width={width}
+                rotation = {rotation}
                 height={height}
             />
         );
@@ -143,17 +143,18 @@ export const CardImage = (props) => {
             return null
         } else {
             return (
-                <Image 
-                    image={back} 
-                    x={props.x} 
-                    y={props.y} 
+                <Image
+                    image={back}
+                    x={props.x}
+                    y={props.y}
                     width={props.width}
                     height={props.height}
-                    rotation = {rotation} 
-                    shadowBlur={props.shadowBlur} 
+                    rotation = {rotation}
+                    shadowBlur={props.shadowBlur}
                     shadowColor={shadowColor}
-                    player={props.player} 
+                    player={props.player}
                     onClick={props.onClick}
+                    onTap={props.onTap}
                 />
             );
         }
@@ -161,7 +162,7 @@ export const CardImage = (props) => {
     } else {
         if (card.invisible && props.reverse===false) {
             opacity = 0.5
-        }; 
+        };
         if (DEBUG) {
             let cardtext = card.rank.toString().concat(card.suit);
             return(
@@ -178,18 +179,18 @@ export const CardImage = (props) => {
                 dims = expanded
             }
             return (
-                <Image 
+                <Image
                     ref={cardRef}
                     image={front}
-                    x={dims.x} 
+                    x={dims.x}
                     y={dims.y}
                     width={dims.width}
-                    height={dims.height}   
-                    opacity={opacity} 
-                    rotation = {rotation} 
-                    shadowBlur={props.shadowBlur} 
+                    height={dims.height}
+                    opacity={opacity}
+                    rotation = {rotation}
+                    shadowBlur={props.shadowBlur}
                     shadowColor={shadowColor}
-                    player={props.player} 
+                    player={props.player}
                     onClick={props.onClick}
                     onTap={props.onTap}
             />
@@ -228,13 +229,13 @@ export function CardRenderParam (rangeX, rangeY, cardwidth, cardheight, screenX,
             break;
         case 'left':
             dx=0;
-            dy=1; 
+            dy=1;
             let tempLeft = rangeX;
             rangeX = rangeY * ratioX
             rangeY = tempLeft * ratioY
 
             originX = padX + rangeX - xspacing
-            originY = padY + cardwidth 
+            originY = padY + cardwidth
             cardRotation = 270;
             break;
         case 'right':
@@ -245,31 +246,28 @@ export function CardRenderParam (rangeX, rangeY, cardwidth, cardheight, screenX,
             rangeY = tempRight * ((screenY-2*padY)/screenX)
 
             originX = screenX -padX - rangeX + xspacing
-            originY = screenY-padY-cardwidth 
+            originY = screenY-padY-cardwidth
             cardRotation = 90;
             break;
         default:
             break;
-    };  
-    
+    };
+
     let overlap = (numberCards*cardwidth-range)/numberCards
     overlap = overlap < 0 ? 0 : overlap;
     let offset = numberCards*(cardwidth - overlap)/2
-    
-    
-    
+
+
+
     for (let i=0; i<numberCards; i++ ) {
-        let cardSeperationX = i*(cardwidth - overlap) 
+        let cardSeperationX = i*(cardwidth - overlap)
         let cardSeperationY = i*(cardwidth - overlap);
 
         let cardSceenX = originX + dx*(rangeX) + dx*( cardSeperationX - offset )
         let cardScreenY = originY + dy*rangeY + dy*( cardSeperationY - offset );
-        
+
         let coords = [cardSceenX, cardScreenY, cardRotation]
         Params[i] = coords;
     }
     return Params;
 }
-
-
-
