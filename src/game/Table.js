@@ -13,7 +13,6 @@ const cardScale = () => {
 
 
 export class SHEDtable extends React.Component {
-    
     state = {
         screenx: window.innerWidth,
         screeny: window.innerHeight - window.innerHeight*0.06,
@@ -26,15 +25,22 @@ export class SHEDtable extends React.Component {
         dropShadow: 20,
         hostClient: null,
         playerNames: !DEBUGING_UI ? this.props.matchData.map(elem=>elem.name) : null,
+        // positions: {
+        //     deck:{x: window.innerWidth/2 - 6*(cardScale())/5, y: (window.innerHeight - window.innerHeight*0.06)/2 - (7*cardScale())},
+        //     box: {x: 200, y: 600},
+        //     box2: {x: 300, y: 100},
+        // }
     }
+
+    
 
     updateDimensions = () => {
         let scale = cardScale()
         this.setState({
             screenx: window.innerWidth,
-            screeny: window.innerHeight,
+            screeny: window.innerHeight- window.innerHeight*0.06,
             padx: window.innerWidth/100,
-            pady: window.innerHeight/100,
+            pady: window.innerHeight*0.02,
             cardScale: scale,
             cardwidth: 5*scale,
             cardheight: 7*scale,
@@ -46,8 +52,8 @@ export class SHEDtable extends React.Component {
     componentDidMount() {
         window.addEventListener('resize', this.updateDimensions);
         document.addEventListener("newMatchCreated", this.handleNewMatch, { once: true })
-        console.log(this.props.G.hands[0][0].name)
-        console.log(this.state.playerNames)
+        //console.log(this.props.G.hands[0][0].name)
+        //console.log(this.state.playerNames)
     }
 
     componentWillUnmount() {
@@ -56,8 +62,6 @@ export class SHEDtable extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        
-
         //when all players have made a choice dispatch num of players for new match
         if (this.props.ctx.phase === "EndPhase" && (this.props.G.hostClient !== prevProps.G.hostClient) ) {
             console.log('host', this.props.G.hostClient, 'this player', this.props.playerID, this.props.G.hostClient===this.props.playerID)
@@ -113,6 +117,37 @@ export class SHEDtable extends React.Component {
     clickTable = () => {
         this.props.moves.PickupTable()
     };
+
+    // moveTo =  (location, shape, node) => {
+    //     console.log(node)
+    //     let newlocation;
+    //     switch (location) {
+    //         case "deck": 
+    //             newlocation = this.state.positions.deck
+    //             break;
+    //         default:
+    //             break;
+    //     }
+    //     let test = "{".concat('"',shape,'"',': {"x": 50, "y": 700}}')
+    //     console.log(test)
+    //     let target = JSON.parse(test)
+    //     console.log(target)
+    //     this.rect.to({
+    //         x: newlocation.x,
+    //         y: newlocation.y,
+    //         duration: 0.2,
+    //         onFinish: ()=>{
+    //             //assign final postion
+    //             this.setState(prevState => ({
+    //                 positions: {
+    //                     ...prevState.positions,
+    //                     target
+    //                 }
+    //             }))
+    //         }
+    //     })
+        
+    // }
 
     handlePlayAgain = (choice) => {
         this.props.moves.playAgain(choice, parseInt(this.props.playerID))
@@ -192,10 +227,13 @@ export class SHEDtable extends React.Component {
                 let phase = this.props.ctx.phase;
                 let clickAction;
                 if (phase === 'StartPhase') {clickAction = 'addBench'} else {clickAction = 'play'};
+                let key = hand[i] !== null ? hand[i].name : `${player}hand${i}`
+                if(hand[i] === null) { console.log("glitchy key found") }
                 cards.push(
                 <CardImage
                     card={hand[i]}
-                    key = {hand[i].name}
+                    key = {key}
+                    keyProp={key}
                     reverse={player!==thisPlayerNumber}
                     player={player}
                     expandable={player===parseInt(this.props.playerID)}
@@ -218,7 +256,7 @@ export class SHEDtable extends React.Component {
         return cards
     };
 
-    renderBench = (props) => {
+    renderBench = () => {
         let x = this.state.screenx/2// cardwidth/2 
         let yspace = this.state.cardheight/10; 
         let y = this.state.screeny/2 - 6*this.state.cardheight/5  //3*this.state.pady + this.state.cardheight;
@@ -261,11 +299,14 @@ export class SHEDtable extends React.Component {
                     }
 
                     let rotation = cardParams[j][2];
+                    let key = bench[j][i] !== null ? bench[j][i].name : `${player}bench${j}${i}`
+                    if(bench[j][i] === null) { console.log("glitchy key found") }
                     cards.push(
                         <CardImage
                             reverse={i===0}
                             card={ bench[j][i] }
-                            key = { bench[j][i].name}
+                            key = {key}
+                            keyProp={key}
                             x={xcord} 
                             y={ycord} 
                             rotation={rotation}
@@ -291,9 +332,12 @@ export class SHEDtable extends React.Component {
         let y = this.state.screeny/2 - this.state.cardheight/2;
         let topcard = deck[deck.length -1]
         if (deck.length > 0) {
+            let key = topcard !== null ? topcard.name : `deck`
+            if(topcard === null) { console.log("glitchy key found") }
             return (
                 <CardImage 
-                    key = {topcard.name}
+                    key = {key}
+                    keyProp={key}
                     card={topcard}
                     reverse={true} 
                     x={x} 
@@ -311,6 +355,7 @@ export class SHEDtable extends React.Component {
                 <CardImage 
                     card={null} 
                     key ={"emptyDeck"}
+                    keyProp={"emptyDeck"}
                     width={this.state.cardwidth} 
                     height={this.state.cardheight}
                     x={x} 
@@ -341,10 +386,13 @@ export class SHEDtable extends React.Component {
             //getTableCards(table, (table.length-1))
             let renderedCards = [];
             for (let i=0; i<tableCardsToRender.length; i++) {
+                let key = tableCardsToRender[i] !== null ? tableCardsToRender[i].name : `table${i}`
+                if(tableCardsToRender[i] === null) { console.log("glitchy key found") }
                 renderedCards.push( 
                     <CardImage 
                         card={tableCardsToRender[i]} 
-                        key ={tableCardsToRender[i].name}
+                        key ={key}
+                        keyProp={key}
                         reverse={false} 
                         onClick={()=>this.clickTable()} 
                         onTap={()=>this.clickTable()}
@@ -360,10 +408,12 @@ export class SHEDtable extends React.Component {
             return renderedCards.reverse();
         } else if (this.props.G.magicEvent.type==="burning") {
             console.log('getting ash')
+            let card = "burnt"+this.props.G.lastPlayed.suit
             return (
                 <CardImage 
-                    card={"burnt"+this.props.G.lastPlayed.suit}
-                    key ={"burnt"+this.props.G.lastPlayed.suit}
+                    card={card}
+                    key ={card}
+                    keyProp={card}
                     width={this.state.cardwidth} 
                     height={this.state.cardheight}
                     x={x} 
@@ -375,6 +425,7 @@ export class SHEDtable extends React.Component {
             <CardImage 
                 card={null} 
                 key ={"emptyTable"}
+                keyProp={"emptyTable"}
                 width={this.state.cardwidth} 
                 height={this.state.cardheight}
                 x={x} 
@@ -614,6 +665,8 @@ export class SHEDtable extends React.Component {
                         <this.renderHand />  
                         <this.renderDeck /> 
                         <this.renderTable />
+                        {/* <Rect ref={node => {this.rect = node;} } x={this.state.positions.box.x} y={this.state.positions.box.y} width={70} height={70} fill={"white"} onClick={()=>this.moveTo("deck","box")} />
+                        <Rect ref={node => {this.rect = node;} } x={this.state.positions.box2.x} y={this.state.positions.box2.y} width={70} height={70} fill={"grey"} onClick={(node)=>this.moveTo("deck","box2", node)} /> */}
                     </Layer>
                     <Layer>
                     <SevenChoiceInstruction 

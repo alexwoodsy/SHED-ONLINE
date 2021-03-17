@@ -324,13 +324,13 @@ export const Instructions = (props) => {
   let scale = props.scale*10
 
   const waitingRef = useRef(null)
-  const shoWhosTurn = useRef(false) //use this to show the player whos turn
+  //const shoWhosTurn = useRef(false) //use this to show the player whos turn
 
   useEffect(()=>{
     let counter;
     const onHover = () => {
       counter = setTimeout(()=>{
-        console.log("hoviering")
+        console.log(player)
       },500)
     }
 
@@ -347,7 +347,7 @@ export const Instructions = (props) => {
       stopCounter()
     }
 
-  }, [waitingRef])
+  }, [waitingRef, player])
 
   
   if (phase==='StartPhase') {

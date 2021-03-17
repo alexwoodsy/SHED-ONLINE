@@ -55,9 +55,9 @@ function GetFace(card) {
 export const CardImage = (props) => {
     let card = props.card
     let rotation = props.rotation
-    const [back] = useImage(CardImages.Back);
     let cardImg = GetFace(card);
-    const [front] = useImage(cardImg)
+    const [front] = useImage(cardImg) 
+       const [back] = useImage(CardImages.Back);
     let opacity = 1;
     let shadowColor;
     if (props.highlight==="green") {
@@ -76,7 +76,6 @@ export const CardImage = (props) => {
             width: scaleFactor*width,
             height: scaleFactor*height,
         })
-
     }
 
     let expanded = scaledDims(props.x, props.y, props.width, props.height)
@@ -102,19 +101,18 @@ export const CardImage = (props) => {
                 duration:0.2,
             });
         }
+       
         if (cardRef.current!==null && props.expandable && !props.isMobile) {
-
             cardRef.current.on('mouseover',(event)=>expandCard(event))
             cardRef.current.on('mouseout',()=>shrinkCard())
         }
-
     }, [cardRef, expanded, props])
-
 
 
     if (card === null) {
         return (
             <Image
+                key={props.keyProp}
                 image={front}
                 x={props.x}
                 y={props.y}
@@ -131,6 +129,7 @@ export const CardImage = (props) => {
         return (
             <Image
                 image={front}
+                key={props.keyProp}
                 x={props.x-width/4}
                 y={props.y}
                 width={width}
@@ -144,6 +143,7 @@ export const CardImage = (props) => {
         } else {
             return (
                 <Image
+                    key={props.keyProp}
                     image={back}
                     x={props.x}
                     y={props.y}
@@ -181,6 +181,7 @@ export const CardImage = (props) => {
             return (
                 <Image
                     ref={cardRef}
+                    key={props.keyProp}
                     image={front}
                     x={dims.x}
                     y={dims.y}
@@ -198,12 +199,6 @@ export const CardImage = (props) => {
         }
     }
 }
-//old react component for text:
-
-//<Text x={props.x} y={props.y} rotation={props.rotation-90} opacity={opacity} text={cardtext} fontSize={18} />
-
-//export default CardImage
-//
 
 //wil give the coords + rotation for cards in a collection spaced nicely for each zone
 export function CardRenderParam (rangeX, rangeY, cardwidth, cardheight, screenX, screenY, padX, padY, range, numberCards, Zone) {
@@ -256,9 +251,6 @@ export function CardRenderParam (rangeX, rangeY, cardwidth, cardheight, screenX,
     let overlap = (numberCards*cardwidth-range)/numberCards
     overlap = overlap < 0 ? 0 : overlap;
     let offset = numberCards*(cardwidth - overlap)/2
-
-
-
     for (let i=0; i<numberCards; i++ ) {
         let cardSeperationX = i*(cardwidth - overlap)
         let cardSeperationY = i*(cardwidth - overlap);
