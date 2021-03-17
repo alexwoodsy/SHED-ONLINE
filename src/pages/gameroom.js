@@ -196,20 +196,13 @@ export const GameRoom = (props) => {
     if (playersJoined.length === parseInt(numberOfPlayers) ) {
         return (
             <div id ="Game">
-                <div id="menuBar">
-                    <button>
-                        say hi
-                    </button>
-                </div>
-                <div >
-                    <SHEDClient 
-                        playerID={playerID} 
-                        matchID={matchID} 
-                        credentials={playerCredentials}
-                        isMobile={props.isMobile}
-                    /> 
-                    <DelayTimer/>
-                </div>
+                <SHEDClient 
+                    playerID={playerID} 
+                    matchID={matchID} 
+                    credentials={playerCredentials}
+                    isMobile={props.isMobile}
+                /> 
+                <DelayTimer/>
             </div>
             
                         

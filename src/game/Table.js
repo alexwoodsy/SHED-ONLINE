@@ -10,8 +10,6 @@ const cardScale = () => {
     return (window.innerWidth > window.innerHeight) ?  window.innerHeight/factor : window.innerWidth/factor
 }
 
-
-
 export class SHEDtable extends React.Component {
     state = {
         screenx: window.innerWidth,
@@ -228,29 +226,34 @@ export class SHEDtable extends React.Component {
                 let clickAction;
                 if (phase === 'StartPhase') {clickAction = 'addBench'} else {clickAction = 'play'};
                 let key = hand[i] !== null ? hand[i].name : `${player}hand${i}`
-                if(hand[i] === null) { console.log("glitchy key found") }
-                cards.push(
-                <CardImage
-                    card={hand[i]}
-                    key = {key}
-                    keyProp={key}
-                    reverse={player!==thisPlayerNumber}
-                    player={player}
-                    expandable={player===parseInt(this.props.playerID)}
-                    width={this.state.cardwidth} 
-                    height={this.state.cardheight}
-                    pady = {this.state.pady}
-                    x={xcord}
-                    y={ycord}
-                    rotation={cardParams[i][2]}
-                    onClick={()=>this.clickCard(clickAction, i, player)}
-                    onTap={()=>this.clickCard(clickAction, i, player)}
-                    shadowBlur={this.state.dropShadow}
-                    highlight={highlight}
-                    isPlayer={player===thisPlayerNumber}
-                    isMobile={this.props.isMobile}
-
-                />)
+                if(hand[i] === null) { 
+                    console.log("glitchy key found", this.props.G, this.props.ctx)
+                    console.log("hand[i]", hand[i])
+                 } else {
+                    cards.push(
+                        <CardImage
+                            card={hand[i]}
+                            key = {key}
+                            keyProp={key}
+                            reverse={player!==thisPlayerNumber}
+                            player={player}
+                            expandable={player===parseInt(this.props.playerID)}
+                            width={this.state.cardwidth} 
+                            height={this.state.cardheight}
+                            pady = {this.state.pady}
+                            x={xcord}
+                            y={ycord}
+                            rotation={cardParams[i][2]}
+                            onClick={()=>this.clickCard(clickAction, i, player)}
+                            onTap={()=>this.clickCard(clickAction, i, player)}
+                            shadowBlur={this.state.dropShadow}
+                            highlight={highlight}
+                            isPlayer={player===thisPlayerNumber}
+                            isMobile={this.props.isMobile}
+        
+                        />)
+                 }
+                
             }
         }
         return cards
@@ -653,6 +656,12 @@ export class SHEDtable extends React.Component {
 
          } else {
             return (
+                <div>
+                    <div id="menuBar">
+                        <button>
+                            say hi
+                        </button>
+                    </div>
                 <Stage width={this.state.screenx} height={this.state.screeny}>
                     <this.renderGrid />
                     <Layer>
@@ -687,6 +696,7 @@ export class SHEDtable extends React.Component {
                         />
                     </Layer>
                 </Stage>
+                </div>
             );
          };
     };
