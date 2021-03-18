@@ -290,29 +290,38 @@ function initHand (G, ctx) {
 
 function PickupTable(G, ctx) {
     let cards = G.table;
-    cards.forEach(card => {
-        card.location= 'hand'
-    });
-    G.hands[ctx.currentPlayer] = G.hands[ctx.currentPlayer].concat(cards);
-    G.table = [];
-    G.lastPlayed = null; //Incase someone picks up -------------------------------------was changed - if stuff is broke then comment out again
-    ShouldMagicEventReset(G, ctx)
-    orderHand(G, ctx)
-    ctx.events.endTurn();
+    if (cards.length > 0) {
+        cards.forEach(card => {
+            card.location= 'hand'
+        });
+        G.hands[ctx.currentPlayer] = G.hands[ctx.currentPlayer].concat(cards);
+        G.table = [];
+        G.lastPlayed = null; //Incase someone picks up -------------------------------------was changed - if stuff is broke then comment out again
+        ShouldMagicEventReset(G, ctx)
+        orderHand(G, ctx)
+        ctx.events.endTurn();
+    } else {
+        return INVALID_MOVE;
+    }
 };
 
 
 //draw the card from deck and add the end of hand
 function DrawCard(G, ctx) {
-    let card = G.deck.pop();
-    card.location = 'hand'
-    G.hands[ctx.currentPlayer].push( G.deck.pop( card ) )  
-    //console.log("added to hand")
+    if (G.deck.length > 0) {
+        let card = G.deck.pop();
+        card.location = 'hand'
+        G.hands[ctx.currentPlayer].push( G.deck.pop( card ) )  
+        //console.log("added to hand")
 
-    if (G.hands[ctx.currentPlayer].length >=3 || G.deck.length===0) {
-        orderHand(G, ctx)
-        ctx.events.endTurn()
+        if (G.hands[ctx.currentPlayer].length >=3 || G.deck.length===0) {
+            orderHand(G, ctx)
+            ctx.events.endTurn()
+        }
+    } else {
+        return INVALID_MOVE;
     }
+    
     
 }
   
