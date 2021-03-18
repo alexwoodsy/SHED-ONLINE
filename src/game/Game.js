@@ -317,7 +317,7 @@ function DrawCard(G, ctx) {
     if (G.deck.length > 0) {
         let card = G.deck.pop();
         card.location = 'hand'
-        G.hands[ctx.currentPlayer].push( G.deck.pop( card ) )  
+        G.hands[ctx.currentPlayer].push( card  )  
         //console.log("added to hand")
 
         if (G.hands[ctx.currentPlayer].length >=3 || G.deck.length===0) {
