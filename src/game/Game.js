@@ -78,6 +78,8 @@ export const SHED = {
                         //     console.log('onbegin', CanPlayBench(G, ctx))
                         if ( CanPlayBench(G, ctx) || BenchPlayable(G, ctx).layer ===0){
                             ctx.events.setActivePlayers({currentPlayer: 'playBench'});
+                        } else if (G.deck.length === 0 && BenchPlayable(G, ctx).layer===1) {
+                            ctx.events.setActivePlayers({currentPlayer: 'pickupBench'});
                         } else {
                             ctx.events.setActivePlayers({currentPlayer: 'pickup'});
                         };
@@ -89,6 +91,10 @@ export const SHED = {
                     pickup:{
                         moveLimit: 1,
                         moves: {PickupTable},
+                    },
+                    pickupBench: {
+                        moveLimit: 1,
+                        moves: {TakeBench},
                     },
                     play: {
                         moveLimit: 4,
@@ -398,7 +404,13 @@ function TakeBench(G, ctx, player, position) {
         // = ctx.currentPlayer //used to check if taken from bench - removed because this behaviour is not right + set last played wrong!
         card.location='hand'
         G.hands[player].push( card ) 
+    } else {
+        return INVALID_MOVE;
     };
+    //end trun after pickup a card from bench
+    if (ctx.activePlayers[player] === 'pickupBench') {
+        ctx.events.setActivePlayers({currentPlayer: 'pickup'});
+    }
 };
 
 //add card in hand to the bench

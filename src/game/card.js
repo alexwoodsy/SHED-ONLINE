@@ -1,8 +1,11 @@
 import React, {useEffect, useRef} from 'react';
-import { Image, Text } from 'react-konva';
+import { Group, Image, Text } from 'react-konva';
 import useImage from 'use-image';
 import CardImages from './CardImages';
 import { imageRatio } from './gameUI'
+
+
+
 
 const DEBUG = false;
 
@@ -57,7 +60,7 @@ export const CardImage = (props) => {
     let rotation = props.rotation
     let cardImg = GetFace(card);
     const [front] = useImage(cardImg) 
-       const [back] = useImage(CardImages.Back);
+    const [back] = useImage(CardImages.Back);
     let opacity = 1;
     let shadowColor;
     if (props.highlight==="green") {
@@ -67,7 +70,6 @@ export const CardImage = (props) => {
     } else {
       shadowColor = "black"
     }
-
     const scaledDims = (x, y, width, height) => {
         let scaleFactor = 1.5
         return ({
@@ -179,26 +181,29 @@ export const CardImage = (props) => {
                 dims = expanded
             }
             return (
-                <Image
-                    ref={cardRef}
-                    key={props.keyProp}
-                    image={front}
-                    x={dims.x}
-                    y={dims.y}
-                    width={dims.width}
-                    height={dims.height}
-                    opacity={opacity}
-                    rotation = {rotation}
-                    shadowBlur={props.shadowBlur}
-                    shadowColor={shadowColor}
-                    player={props.player}
-                    onClick={props.onClick}
-                    onTap={props.onTap}
-            />
+                <Group>
+                    <Image
+                        ref={cardRef}
+                        key={props.keyProp}
+                        image={front}
+                        x={dims.x}
+                        y={props.underInvisible? dims.y + dims.height/6 : dims.y}
+                        width={dims.width}
+                        height={dims.height}
+                        opacity={opacity}
+                        rotation = {rotation}
+                        shadowBlur={props.shadowBlur}
+                        shadowColor={shadowColor}
+                        player={props.player}
+                        onClick={props.onClick}
+                        onTap={props.onTap}
+                    />
+                </Group>  
             );
         }
     }
 }
+
 
 //wil give the coords + rotation for cards in a collection spaced nicely for each zone
 export function CardRenderParam (rangeX, rangeY, cardwidth, cardheight, screenX, screenY, padX, padY, range, numberCards, Zone) {

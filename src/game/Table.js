@@ -23,11 +23,6 @@ export class SHEDtable extends React.Component {
         dropShadow: 20,
         hostClient: null,
         playerNames: !DEBUGING_UI ? this.props.matchData.map(elem=>elem.name) : null,
-        // positions: {
-        //     deck:{x: window.innerWidth/2 - 6*(cardScale())/5, y: (window.innerHeight - window.innerHeight*0.06)/2 - (7*cardScale())},
-        //     box: {x: 200, y: 600},
-        //     box2: {x: 300, y: 100},
-        // }
     }
 
     
@@ -97,6 +92,8 @@ export class SHEDtable extends React.Component {
             this.props.moves.AddBench(player, position)
         }else if (type==='playBench' && player===thisPlayerNumber) {
             this.props.moves.PlayBench(position)
+        } else if (type==='pickupBench' && player===thisPlayerNumber) {
+            this.props.moves.TakeBench(player, position)
         };         
     };    
 
@@ -116,36 +113,6 @@ export class SHEDtable extends React.Component {
         this.props.moves.PickupTable()
     };
 
-    // moveTo =  (location, shape, node) => {
-    //     console.log(node)
-    //     let newlocation;
-    //     switch (location) {
-    //         case "deck": 
-    //             newlocation = this.state.positions.deck
-    //             break;
-    //         default:
-    //             break;
-    //     }
-    //     let test = "{".concat('"',shape,'"',': {"x": 50, "y": 700}}')
-    //     console.log(test)
-    //     let target = JSON.parse(test)
-    //     console.log(target)
-    //     this.rect.to({
-    //         x: newlocation.x,
-    //         y: newlocation.y,
-    //         duration: 0.2,
-    //         onFinish: ()=>{
-    //             //assign final postion
-    //             this.setState(prevState => ({
-    //                 positions: {
-    //                     ...prevState.positions,
-    //                     target
-    //                 }
-    //             }))
-    //         }
-    //     })
-        
-    // }
 
     handlePlayAgain = (choice) => {
         this.props.moves.playAgain(choice, parseInt(this.props.playerID))
@@ -250,7 +217,6 @@ export class SHEDtable extends React.Component {
                             highlight={highlight}
                             isPlayer={player===thisPlayerNumber}
                             isMobile={this.props.isMobile}
-        
                         />)
                  }
                 
@@ -260,12 +226,12 @@ export class SHEDtable extends React.Component {
     };
 
     renderBench = () => {
+        let thisPlayerNumber = parseInt(this.props.playerID); //the current player
         let x = this.state.screenx/2// cardwidth/2 
         let yspace = this.state.cardheight/10; 
         let y = this.state.screeny/2 - 6*this.state.cardheight/5  //3*this.state.pady + this.state.cardheight;
         let range = 500
         let cards=[];
-
         let zones =['bottom', 'top', 'left', 'right'];
         if (this.props.ctx.numPlayers > 2 ) {
             zones =['bottom', 'left', 'top', 'right'];
@@ -277,10 +243,25 @@ export class SHEDtable extends React.Component {
             let player = playerOrder[k]; //ensure current player is always at the bottom of screen
             let zone = zones[k]
             let bench = this.props.G.benchs[player]
+            let highlight=null;
+            let stage = this.props.ctx.activePlayers[this.props.ctx.currentPlayer]
+            if (stage==="pickupBench" || stage==="playBench" ) {
+                if (player===thisPlayerNumber && player===parseInt(this.props.ctx.currentPlayer) ) {
+                    highlight = "green"
+                } else if (player===parseInt(this.props.ctx.currentPlayer)) {
+                    highlight = "white"
+                }
+            } 
 
             let phase = this.props.ctx.phase;
             let clickAction;
-            if (phase === 'StartPhase') {clickAction = 'takeBench'} else {clickAction = 'playBench'};
+            if (phase === 'StartPhase') {
+                clickAction = 'takeBench'
+            } else if (stage==='playBench'){
+                clickAction = 'playBench'
+            } else {
+                clickAction = 'pickupBench'
+            };
                         
             for (let j=0; j<3; j++) {
                 //find number of cards at postion. 
@@ -319,6 +300,7 @@ export class SHEDtable extends React.Component {
                             onClick={()=>this.clickCard(clickAction, j, player)}
                             onTap={()=>this.clickCard(clickAction, j, player)}
                             shadowBlur={this.state.dropShadow}
+                            highlight={highlight}
                         />
                     )
                 };
@@ -394,6 +376,7 @@ export class SHEDtable extends React.Component {
                 renderedCards.push( 
                     <CardImage 
                         card={tableCardsToRender[i]} 
+                        underInvisible={tableCardsToRender.length>1 && i===tableCardsToRender.length-1}
                         key ={key}
                         keyProp={key}
                         reverse={false} 

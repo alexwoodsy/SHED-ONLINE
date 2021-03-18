@@ -62,6 +62,8 @@ import ashC from '../images/magicEvents/Ash_C.png'
 import ashS from '../images/magicEvents/Ash_S.png'
 import ashD from '../images/magicEvents/Ash_D.png'
 import ashH from '../images/magicEvents/Ash_H.png'
+//card Indicator
+//import indicator from '../images/UI/NailIndicator.png'
 
 
 
@@ -84,7 +86,8 @@ export const CardImages = {
     Faces: CardFaces,
     Back: cardback, 
     Empty: emptyCard,
-    Ash: AshSuits
+    Ash: AshSuits,
+    //Indicator: indicator,
 }
 
 //function that gets the image from the card
