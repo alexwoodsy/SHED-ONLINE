@@ -1,3 +1,7 @@
+@font-face {
+  font-family: 'Carn';
+  src: local('Carn'), url("/src/fonts/Carnevalee Freakshow.ttf") format('woff');
+} 
 
 .ShedLogo {
   margin: auto;
@@ -10,7 +14,7 @@
 .bigButton {
     margin: auto;
     font-size: 40px;
-    font-family: pixelFont;
+    font-family: Carn;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -21,7 +25,7 @@
 .biggerButton {
   margin: auto;
   font-size: 60px;
-  font-family: pixelFont;
+  font-family: Carn;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -34,7 +38,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-family: pixelFont;
+  font-family: Carn;
   font-size: 25px;
   margin-left: auto;
   margin-right: auto;
@@ -46,7 +50,7 @@
 }
 
 #mobileLobby {
-  font-family: pixelFont;
+  font-family: Carn;
     font-size: 20px;
     position: absolute;
     top: 50%;
@@ -60,33 +64,17 @@
 
 }
 
-.gameroom {
-    font-family: pixelFont;
-    font-size: 25px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 40%;
-    background-color: rgba(179, 179, 179, 0.3); /* Black background with opacity */
-    border-radius: 25px;
-}
-
 #Game {
-  position: fixed; /* Sit on top of the page content */
+  font-family: Carn;
+  position: fixed;
   overflow: hidden;
   width: 100%; /* Full width (cover the whole page) */
   height: 100%; /* Full height (cover the whole page) */
+  top: 6%;
   margin: 0;
-  padding: 0;
+  padding:0;
+  
 }
-
-#menuBar {
-  display: block; /* Hidden by default */
-  width: 100%; /* Full width (cover the whole page) */
-  height: 6%;
-  background-color: rgba(104, 33, 0, 1);
-}
-
 
 #slider {
   color: red;
@@ -113,18 +101,17 @@
     justify-content: center;
     align-items: center;
     font-size: 25px;
-    font-family: pixelFont;
+    font-family: Carn;
   }
 
 #EndGameChoice {
-  font-family: pixelFont;
+  font-family: Carn;
   font-size: 25px;
 }
 
 
-
 h1 {
-  font-family: pixelFont;
+  font-family: Carn;
   display: flex;
     justify-content: center;
     margin-left: auto;
@@ -133,7 +120,7 @@ h1 {
 }
 
 h2 {
-  font-family: pixelFont;
+  font-family: Carn;
   display: flex;
     justify-content: center;
     margin-left: auto;
@@ -142,7 +129,7 @@ h2 {
 }
 
 .ContainerDiv {
-  font-family: pixelFont;
+  font-family: Carn;
   display: block;
   margin-left: auto;
   margin-right: auto;
@@ -152,7 +139,7 @@ h2 {
 body {
   display: block;
   touch-action: none;
-  font-family: pixelFont;
+  font-family: Carn;
   background-image: url("/src/images/BackgroundPattern.png");
   background-repeat: repeat;
   background-size: 192.67px 156px;
@@ -163,7 +150,7 @@ body {
 
 
 input[type=text] {
-  font-family: 'pixelFont';
+  font-family: 'Carn';
   width: 100%;
   padding: 12px 20px;
   margin: 8px 0;
@@ -178,7 +165,94 @@ input[type=text]:focus {
   border-radius: 25px;
 }
 
-@font-face {
-  font-family: 'pixelFont';
-  src: local('pixelFont'), url("/src/fonts/DotGothic16-Regular.ttf") format('woff');
+
+#menuBar {
+  position: absolute; /* Sit on top of the page content */
+    display: block; /* Hidden by default */
+    width: 100%;
+  font-family: Carn;
+  height: 6%;
+  background-color: rgba(255, 51, 0, 1);
+}
+
+#MenuContainer {
+  float: left;
+  height: 100%;
+}
+#MenuButton {
+  padding: 0;
+  width: 6vh;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  background-image: url(/src/images/icons/menu.png);
+  background-size: cover; 
+  color: #333;
+  cursor: pointer;
+  outline: 0;
+}
+
+.LeftDropdown {
+  position: absolute;
+  top: 7vh;
+  left: 1%;
+  width: 300px;
+  z-index: 2;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.301);
+  background-color: rgba(179, 179, 179, 0.3); /* Black background with opacity */
+    border-radius: 25px;
+    padding: 20px 5px;
+  color: aliceblue;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background-color: rgba(119, 119, 119, 0.219);
+}
+li {
+  padding: 8px 12px;
+  justify-content: center;
+  display: flex;
+  justify-content: center;
+}
+
+li:hover {
+  background-color: rgba(0, 0, 0, 0.14);
+  cursor: pointer;
+}
+
+#ChatContainer {
+  float: right;
+  height: 100%;
+}
+
+#ChatButton {
+  padding: 0;
+  width: 6vh;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  background-image: url(/src/images/icons/chat.png);
+  background-size: cover; 
+  color: #333;
+  cursor: pointer;
+  outline: 0;
+}
+
+.RightDropdown {
+  position: absolute;
+  top: 7vh;
+  right: 1%;
+  width: 300px;
+  height: 80vh;
+  z-index: 2;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.301);
+  background-color: rgba(179, 179, 179, 0.3); /* Black background with opacity */
+    border-radius: 25px;
+    padding: 20px 5px;
+  color: aliceblue;
 }

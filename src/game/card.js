@@ -74,7 +74,7 @@ export const CardImage = (props) => {
         let scaleFactor = 1.5
         return ({
             x: x-width*(scaleFactor-1)/2,
-            y: y-height*(scaleFactor-1)/2 - height/2 - 2*props.pady,
+            y: y-height*(scaleFactor-1)/2 - 3*height/4 ,
             width: scaleFactor*width,
             height: scaleFactor*height,
         })
@@ -124,15 +124,15 @@ export const CardImage = (props) => {
             />
         );
     } else if (typeof card === "string") {
-        let width= props.width;
-        let height = props.height;
+        let width;
+        let height = props.height*0.8;
         let ratio = imageRatio(front)
         width = height * ratio
         return (
             <Image
                 image={front}
                 key={props.keyProp}
-                x={props.x-width/4}
+                x={props.x-width/5}
                 y={props.y}
                 width={width}
                 rotation = {rotation}
@@ -247,7 +247,7 @@ export function CardRenderParam (rangeX, rangeY, cardwidth, cardheight, screenX,
 
             originX = screenX -padX - rangeX + xspacing
             originY = screenY-padY-cardwidth
-            cardRotation = 90;
+            cardRotation =90;
             break;
         default:
             break;

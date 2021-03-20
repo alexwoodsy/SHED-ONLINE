@@ -1,9 +1,14 @@
 import React from 'react';
 import {Layer, Group, Rect, Stage, Text, Line } from 'react-konva';
+import Menu from './Menu'
 import { CardImage, CardRenderParam } from './card';
-import { MagicEvent, BenchReadyButton, SevenChoiceInstruction, GameOver, Instructions } from './gameUI'
+import { MagicEvent, BenchReadyButton, SevenChoiceInstruction, GameOver, Instructions, EndTurnButton } from './gameUI'
 import { DEBUGING_UI } from '../config';
-import "./Style.css"
+import "../pages/Style.css"
+
+
+
+
 
 const cardScale = () => {
     let factor = 40;
@@ -13,9 +18,9 @@ const cardScale = () => {
 export class SHEDtable extends React.Component {
     state = {
         screenx: window.innerWidth,
-        screeny: window.innerHeight - window.innerHeight*0.06,
+        screeny: window.innerHeight- window.innerHeight*0.06,
         padx: 0,
-        pady: window.innerHeight*0.02,
+        pady: window.innerHeight*0.06,
         cardScale: cardScale(),
         cardwidth: 5*cardScale(),
         cardheight: 7*cardScale(),
@@ -32,8 +37,8 @@ export class SHEDtable extends React.Component {
         this.setState({
             screenx: window.innerWidth,
             screeny: window.innerHeight- window.innerHeight*0.06,
-            padx: window.innerWidth/100,
-            pady: window.innerHeight*0.02,
+            padx: 0,
+            pady: 0,
             cardScale: scale,
             cardwidth: 5*scale,
             cardheight: 7*scale,
@@ -147,7 +152,7 @@ export class SHEDtable extends React.Component {
         let thisPlayerNumber = parseInt(this.props.playerID); //the current player
         let stage = this.props.ctx.activePlayers[this.props.ctx.currentPlayer];
         let x = this.state.screenx/2// cardwidth/2 
-        let y = this.state.pady 
+        let y =0
         let cards = [];
         let zones =['bottom', 'top', 'left', 'right'];
         if (this.props.ctx.numPlayers > 2 ) {
@@ -273,7 +278,7 @@ export class SHEDtable extends React.Component {
                     ycord=cardParams[j][1] 
                     switch (zone) { //adaptation to hanle unique bench positioning
                         case "right":
-                            xcord=this.state.screenx/2 + 2*this.state.cardheight/5 + this.state.cardwidth
+                            xcord=this.state.screenx/2 + 7*this.state.cardheight/5 + this.state.cardwidth
                             break
                         case "left":
                             xcord=this.state.screenx/2 - 7*this.state.cardheight/5 - this.state.cardwidth
@@ -426,7 +431,7 @@ export class SHEDtable extends React.Component {
     readyButton = (props) => {
         let phase = this.props.ctx.phase;
         let stage = this.props.G.Ready[props.player]
-        let x = this.state.screenx/2 + this.state.padx + 3*this.state.cardwidth/2;
+        let x = 3*this.state.screenx/4 
         let y = 3*this.state.screeny/4
 
         let bench = this.props.G.benchs[this.props.playerID]
@@ -457,24 +462,23 @@ export class SHEDtable extends React.Component {
         let stage = this.props.ctx.activePlayers[this.props.ctx.currentPlayer];
         let hasTen = this.props.G.hasTen;
         let numMoves = this.props.ctx.numMoves;
-        let width = 9*this.state.cardScale;
-        let height = 3*this.state.cardScale;
-        let fontsize = 2*this.state.cardScale
-        let x = this.state.screenx/4 - width/2
+        let x = this.state.screenx/4 
         let y = 3*this.state.screeny/4
-        let colour = 'white';
-    
-        if ((stage==='play' || stage==='playBench') &&
-            numMoves >=1 && 
-            this.props.playerID === this.props.ctx.currentPlayer 
-            && (this.props.G.magicEvent.type!=='burning' || hasTen)
-            ) { 
-            return (<Group onClick={()=>this.clickendTurnButton(props.player)} onTap={()=>this.clickendTurnButton(props.player)}>
-                <Rect x={x} y={y} width={width} height={height} fontSize={fontsize}
-                    fill={colour} cornerRadius={20} 
-                    />
-                    <Text x={x} y={y+height/4} align={'center'} text={'End Turn'} fontSize={fontsize} fill={'black'} />
-            </Group>)
+        
+        
+        if (((stage==='play' || stage==='playBench') &&
+        numMoves >=1 && 
+        this.props.playerID === this.props.ctx.currentPlayer 
+        && (this.props.G.magicEvent.type!=='burning' || hasTen)
+        )) {
+            return (
+            <EndTurnButton
+                onClick={()=>this.clickendTurnButton(props.player)} 
+                onTap={()=>this.clickendTurnButton(props.player)}
+                x={x}
+                y={y}
+                scale={this.state.cardScale}
+            />)
         } else {
             return null;
         }
@@ -516,7 +520,7 @@ export class SHEDtable extends React.Component {
         let player = parseInt(this.props.playerID)
         let currentPlayer = this.props.ctx.currentPlayer
         let phase = this.props.ctx.phase;
-        let x = this.state.screenx/2 + this.state.padx + 3*this.state.cardwidth/2;
+        let x = 3*this.state.screenx/4 
         let y = 3*this.state.screeny/4
         
         return( <Instructions
@@ -563,7 +567,7 @@ export class SHEDtable extends React.Component {
             let xline = [(0), (this.state.screeny/2), (this.state.screenx), (this.state.screeny/2)]
             return(
                 <Layer>
-                    <Rect x={this.state.padx} y={this.state.pady} width={this.state.screenx-2*this.state.padx} height={this.state.screeny-2*this.state.pady} fill="blue" />
+                    <Rect x={0} y={0} width={this.state.screenx-2*this.state.padx} height={this.state.screeny} fill="blue" />
                     <Line points={yline} stroke="red" strokeWidth={3}/>
                     <Line points={xline} stroke="red" strokeWidth={3}/>
                 </Layer>
@@ -614,8 +618,10 @@ export class SHEDtable extends React.Component {
         if (this.props.ctx.phase === "EndPhase") {
             return (
                 <div>
+                    <Menu matchID={this.props.matchID} />
+                <div id="Game">
                     <this.EndOfGameOptions />
-                    <Stage width={this.state.screenx} height={this.state.screeny}>
+                    <Stage x={0} y={0} width={this.state.screenx} height={this.state.screeny}>
                         <this.renderGrid />
                         <Layer>
                             <this.renderGameInfo />
@@ -634,51 +640,51 @@ export class SHEDtable extends React.Component {
                         </Layer>
                     </Stage>
                 </div>
-                
+                </div>
             );
 
          } else {
             return (
                 <div>
-                    <div id="menuBar">
-                        <button>
-                            say hi
-                        </button>
+                    <div>
+                    <Menu matchID={this.props.matchID} />
                     </div>
-                <Stage width={this.state.screenx} height={this.state.screeny}>
-                    <this.renderGrid />
-                    <Layer>
-                        <this.renderGameInfo />
-                        <this.readyButton player={ thisPlayerNumber } />
-                        <this.endTurnButton />
-                        <this.sevenChoiceButton />
-                        <this.renderInstructions/>
-                        <this.renderBench />
-                        <this.renderHand />  
-                        <this.renderDeck /> 
-                        <this.renderTable />
-                        {/* <Rect ref={node => {this.rect = node;} } x={this.state.positions.box.x} y={this.state.positions.box.y} width={70} height={70} fill={"white"} onClick={()=>this.moveTo("deck","box")} />
-                        <Rect ref={node => {this.rect = node;} } x={this.state.positions.box2.x} y={this.state.positions.box2.y} width={70} height={70} fill={"grey"} onClick={(node)=>this.moveTo("deck","box2", node)} /> */}
-                    </Layer>
-                    <Layer>
-                    <SevenChoiceInstruction 
-                        x={this.state.screenx/2 + 5.5*this.state.cardwidth/5} 
-                        y={this.state.screeny/2} 
-                        scale={this.state.cardScale} 
-                        choice={(this.props.G.sevenHighLow === 'default') ? "" : this.props.G.sevenHighLow}
-                        onClick={()=>this.clickTable()} 
-                        onTap={()=>this.clickTable()}
-                    />
-                    </Layer>
-                    <Layer>
-                        <MagicEvent 
-                            magicEvent={this.props.G.magicEvent} 
-                            x={this.state.screenx/2} 
-                            y={this.state.screeny/2}
-                            scale={this.state.cardScale}
-                        />
-                    </Layer>
-                </Stage>
+                    <div id="Game">
+                        <Stage x={0} y={0} width={this.state.screenx} height={this.state.screeny}>
+                            <this.renderGrid />
+                            <Layer>
+                                <this.renderGameInfo />
+                                <this.readyButton player={ thisPlayerNumber } />
+                                <this.endTurnButton />
+                                <this.sevenChoiceButton />
+                                <this.renderInstructions/>
+                                <this.renderBench />
+                                <this.renderHand />  
+                                <this.renderDeck /> 
+                                <this.renderTable />
+                                {/* <Rect ref={node => {this.rect = node;} } x={this.state.positions.box.x} y={this.state.positions.box.y} width={70} height={70} fill={"white"} onClick={()=>this.moveTo("deck","box")} />
+                                <Rect ref={node => {this.rect = node;} } x={this.state.positions.box2.x} y={this.state.positions.box2.y} width={70} height={70} fill={"grey"} onClick={(node)=>this.moveTo("deck","box2", node)} /> */}
+                            </Layer>
+                            <Layer>
+                            <SevenChoiceInstruction 
+                                x={this.state.screenx/2 + 5.5*this.state.cardwidth/5} 
+                                y={this.state.screeny/2} 
+                                scale={this.state.cardScale} 
+                                choice={(this.props.G.sevenHighLow === 'default') ? "" : this.props.G.sevenHighLow}
+                                onClick={()=>this.clickTable()} 
+                                onTap={()=>this.clickTable()}
+                            />
+                            </Layer>
+                            <Layer>
+                                <MagicEvent 
+                                    magicEvent={this.props.G.magicEvent} 
+                                    x={this.state.screenx/2} 
+                                    y={this.state.screeny/2}
+                                    scale={this.state.cardScale}
+                                />
+                            </Layer>
+                        </Stage>
+                    </div>
                 </div>
             );
          };

@@ -3,6 +3,7 @@ import { Client }  from 'boardgame.io/react';
 import { SocketIO } from 'boardgame.io/multiplayer';
 import  SHED  from '../game/Game';
 import  SHEDtable  from '../game/Table';
+import Menu from '../game/Menu'
 import { DEFAULT_PORT, APP_PRODUCTION } from "../config";
 import { LobbyClient } from 'boardgame.io/client';
 import "./Style.css"
@@ -11,14 +12,26 @@ import "./Style.css"
 const { origin, protocol, hostname } = window.location;
 const SERVER = APP_PRODUCTION ? origin : `${protocol}//${hostname}:${DEFAULT_PORT}`;
 
+
+
+
+
+
+
+
+
+
+
+
 const SHEDClient = Client({
     game: SHED,
     board: SHEDtable,
     debug: false, 
     multiplayer: SocketIO({server: SERVER}), 
     loading: loading,
+    chatMessages: Client.chatMessages
   });
-  
+
 function loading () { 
     const element = (<h1> put loading screen here</h1>)
     return element;
@@ -195,7 +208,7 @@ export const GameRoom = (props) => {
      
     if (playersJoined.length === parseInt(numberOfPlayers) ) {
         return (
-            <div id ="Game">
+            <div>
                 <SHEDClient 
                     playerID={playerID} 
                     matchID={matchID} 
@@ -211,7 +224,9 @@ export const GameRoom = (props) => {
 
     } else {
         return (
-            <div id={props.isMobile? "mobileLobby": "lobby"}>
+            <div>
+                <Menu matchID={matchID}/>
+                <div id={props.isMobile? "mobileLobby": "lobby"}>
                 <h1>waiting room</h1>
                 <h2> players in room({playersJoined.length}/{numberOfPlayers}):</h2>
                 <div>
@@ -220,6 +235,8 @@ export const GameRoom = (props) => {
                     ))}
                 </div>
             </div> 
+            </div>
+            
         )
     }
     

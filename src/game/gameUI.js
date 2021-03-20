@@ -1,4 +1,4 @@
-import React, {useRef, useEffect} from "react"; //, { useEffect, useState }
+import React, {useRef, useEffect} from "react"; 
 import { Image, Group, Text, Rect } from 'react-konva';
 import useImage from 'use-image';
 //magic
@@ -10,6 +10,9 @@ import reset from '../images/magicEvents/reset.png'
 import wood from '../images/UI/wood.png'
 import waitingImg from '../images/UI/Waiting.png'
 import yourTurnImg from '../images/UI/YourTurn.png'
+//end turn button
+import endTurn from '../images/UI/EndTurn.png'
+//import endTurnDepressed from '../images/UI/EndTurnDepressed.png'
 //benchui
 import benchReady from '../images/UI/BenchReady.png'
 import benchUnready from '../images/UI/BenchUnready.png'
@@ -19,7 +22,6 @@ import lowerArrow from '../images/magicEvents/LowerArrow.png'
 //gameover
 import winnerScreen from '../images/Winner.png'
 import loserScreen from '../images/Loser.png'
-
 
 const MagicImages = {
   burn: burn,
@@ -138,6 +140,30 @@ export class MagicEvent extends React.Component {
     }
   }
 
+  export const EndTurnButton = (props) => {
+    let [UnPressed] = useImage(endTurn)
+    let scale = props.scale*8
+    let width = scale*imageRatio(UnPressed);
+    let height = scale;
+    let x = props.x - width/2;
+    let y = props.y - height/2;
+   
+    
+    return (
+      <Image 
+        image={UnPressed} 
+        x={x} 
+        y={y}
+        width={width} 
+        height={height}
+        shadowBlur={props.shadowBlur} 
+        onClick={props.onClick}
+        onTap={props.onTap}
+      />
+      )
+  }  
+
+
 export const BenchReadyButton = (props) => {
   let [unready] = useImage(benchUnready)
   let [ready] = useImage(benchReady)
@@ -247,13 +273,13 @@ export const GameOver = (props) => {
         <Image 
           image={winnerImg} 
           x={tableState.padx} 
-          y={tableState.pady}
+          y={0}
           width={width} 
           height={height}
         />
         <Rect
           x={tableState.padx} 
-          y={tableState.pady+height}
+          y={height}
           width={width} 
           height={height}
           fill={"white"}
@@ -261,13 +287,13 @@ export const GameOver = (props) => {
         />
         <Text
           x={tableState.padx} 
-          y={tableState.pady+3*height/2 - 3*fontsize}
+          y={3*height/2 - 3*fontsize}
           text={`You Won!!!! mr cheeks says \nwell done ${winner.name}`}
           fontSize ={fontsize}
         />
         <Text
           x={tableState.padx} 
-          y={tableState.pady+3*height/2}
+          y={3*height/2}
           text={`Losers were:\n${loserNames.join("\n")}`}
           fontSize ={fontsize}
         />
@@ -282,13 +308,13 @@ export const GameOver = (props) => {
         <Image 
           image={loserImg} 
           x={tableState.padx} 
-          y={tableState.pady}
+          y={0}
           width={width} 
           height={height}
         />
         <Rect
           x={tableState.padx} 
-          y={tableState.pady+height}
+          y={height}
           width={width} 
           height={height}
           fill={"white"}
@@ -296,14 +322,14 @@ export const GameOver = (props) => {
         />
         <Text
           x={tableState.padx} 
-          y={tableState.pady+3*height/2- 4*fontsize}
+          y={3*height/2- 4*fontsize}
           text={`You lost :( but the winner \n${winner.name} sent you this crab \nwith their condolences`}
           fontSize ={fontsize}
           wrap
         />
         <Text
           x={tableState.padx} 
-          y={tableState.pady+3*height/2}
+          y={3*height/2}
           text={`Losers were:\n${loserNames.join("\n")}`}
           fontSize ={fontsize}
         />
