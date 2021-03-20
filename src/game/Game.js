@@ -5,7 +5,7 @@ import { INVALID_MOVE } from 'boardgame.io/core';
 var cardsInHand = 3; //default 3
 var emptyDeck = false; //false
 var handOf = null; //default null
-var endGame = true; //default false
+var endGame = false; //default false
 
 
 export const SHED = {
