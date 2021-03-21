@@ -6,10 +6,6 @@ import { MagicEvent, BenchReadyButton, SevenChoiceInstruction, GameOver, Instruc
 import { DEBUGING_UI } from '../config';
 import "../pages/Style.css"
 
-
-
-
-
 const cardScale = () => {
     let factor = 40;
     return (window.innerWidth > window.innerHeight) ?  window.innerHeight/factor : window.innerWidth/factor
@@ -466,11 +462,11 @@ export class SHEDtable extends React.Component {
         let y = 3*this.state.screeny/4
         
         
-        if (((stage==='play' || stage==='playBench') &&
+        if ((stage==='play' || stage==='playBench') &&
         numMoves >=1 && 
         this.props.playerID === this.props.ctx.currentPlayer 
         && (this.props.G.magicEvent.type!=='burning' || hasTen)
-        )) {
+        ) {
             return (
             <EndTurnButton
                 onClick={()=>this.clickendTurnButton(props.player)} 
@@ -602,9 +598,7 @@ export class SHEDtable extends React.Component {
        
     }
     
-    render() {
-       
-               
+    render() {               
         //loop over all 4 players and render them accordingly
         let thisPlayerNumber = parseInt(this.props.playerID);
         if (this.props.ctx.phase === "EndPhase"  && DEBUGING_UI) {

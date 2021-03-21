@@ -7,6 +7,53 @@ var emptyDeck = false; //false
 var handOf = null; //default null
 var endGame = false; //default false
 
+const constructCard = (suit, rank) => {
+    const isMagic = () => {
+        let magic = [2, 3, 10]; //ranks of the magic cards - 7 not included -> DAN mode add 7 in this array 
+        let magicCheck = false;
+        for (let i=0; i < magic.length; i++) {
+            if (magic[i] === rank) {
+                magicCheck = true
+            };
+        }
+        return magicCheck
+    }
+    
+    return ({
+        suit: suit,
+        rank: rank,
+        magic: isMagic(),
+        invisible: (rank===3),
+        name: `card_${rank.toString()}${suit}`,
+        LastPlayedBy: null,
+        turnPlayedOn: null,
+        currentLocation: null,
+        currentLocationIndex: null,
+        lastLocation: null,
+    })
+}
+
+const updateCardLocation = (card, newLocation) => {
+    let curLoc = card.currentLocation
+    card.currentLocation = newLocation
+    card.LastLocation = curLoc;
+}
+
+function GetDeck() {
+    let suits = ["hearts", "diamonds", "spades", "clubs"];
+    let ranks = [2,3,4,5,6,7,8,9,10,11,12,13,14];
+    let deck = []
+    for (let i=0; i < suits.length; i++) {
+        for (let j=0; j < ranks.length; j++) {
+            let card = constructCard(suits[i], ranks[j]);
+            updateCardLocation(card, 'deck')
+            deck.push( card ) 
+        }
+    }
+    //console.log("deck", deck)
+    return deck
+}
+
 
 export const SHED = {
     name: 'SHED',
@@ -139,60 +186,7 @@ export const SHED = {
 
 
 
-//card class
-export class Card {
-    constructor(suit, rank) {
-        this.suit = suit;
-        this.rank = rank;
-        this.invisible = (this.rank===3);
-        this.magic = this.magic()
-        this.name = this.name()
-        this.LastPlayedBy = null;
-        this.turnPlayedOn = null;
-        this.currentLocation = null;
-        this.currentLocationIndex = null;
-        this.LastLocation=null;
-        // this.dimensions= {
-        //     x: null,
-        //     y: null,
-        //     width: null,
-        //     height: null
-        // };
-    }  
-    name() {
-        //return this.rank.toString().concat(" ",this.suit," ",this.LastPlayedBy);  
-        return `card_${this.rank.toString()}${this.suit}`
-    };
 
-    magic() {
-        let magic = [2, 3, 10]; //ranks of the magic cards - 7 not included -> DAN mode add 7 in this array 
-        let magicCheck = false;
-        for (let i=0; i < magic.length; i++) {
-            if (magic[i] === this.rank) {
-                magicCheck = true
-            };
-        }
-        return magicCheck
-    }; 
-   
-    set playedBy (player) {
-        this.LastPlayedBy = player;
-    }
-    set turnPlayed (turn) {
-        this.turnPlayedOn = turn;
-    }
-
-    set location (newLocation) {
-        let curLoc = this.currentLocation
-        this.currentLocation= newLocation
-        this.LastLocation = curLoc;
-    }
-
-    set locationIndex (index) {
-        this.currentLocationIndex = index
-    }
-
-}
 
 function orderHand(G, ctx) {
     if (G.hands[ctx.currentPlayer].length > 1) {
@@ -244,27 +238,12 @@ function GameOver(G, ctx) {
 }
 
 
-function GetDeck() {
-    let suits = ["hearts", "diamonds", "spades", "clubs"];
-    let ranks = [2,3,4,5,6,7,8,9,10,11,12,13,14];
-    let deck = []
-    for (let i=0; i < suits.length; i++) {
-        for (let j=0; j < ranks.length; j++) {
-            let card = new Card(suits[i], ranks[j]);
-            card.location = 'deck'
-            deck.push( card ) 
-        }
-    }
-    //console.log("deck", deck)
-    return deck
-}
-
 function initBench (G, ctx) {
    for (let id=0; id < ctx.numPlayers; id++){
        for (let pos=0; pos < 3; pos++) {
         for (let order=0; order < 2; order++) {
             let card = G.deck.pop(); 
-            card.location = 'bench';
+            updateCardLocation(card, 'bench')
             G.benchs[id][pos][order] = card;
         };
        }; 
@@ -277,16 +256,14 @@ function initHand (G, ctx) {
             for (let i=0; i<G.deck.length; i++) {
                 if (G.deck[i].rank === handOf) {
                     let card = G.deck.splice(i, 1)[0]
-                    card.location = 'hand';
-                    card.locationIndex = G.hands[id].length
+                    updateCardLocation(card, 'hand')
                     G.hands[id].push( card )
                 }
             }
         } else {
             for (let pos=0; pos < cardsInHand; pos++) {
                 let card = G.deck.pop();
-                card.location = 'hand';
-                card.locationIndex = G.hands[id].length
+                updateCardLocation(card, 'hand')
                 G.hands[id].push( card )
             };
         }
@@ -298,7 +275,7 @@ function PickupTable(G, ctx) {
     let cards = G.table;
     if (cards.length > 0) {
         cards.forEach(card => {
-            card.location= 'hand'
+            updateCardLocation(card, 'hand')
         });
         G.hands[ctx.currentPlayer] = G.hands[ctx.currentPlayer].concat(cards);
         G.table = [];
@@ -316,7 +293,7 @@ function PickupTable(G, ctx) {
 function DrawCard(G, ctx) {
     if (G.deck.length > 0) {
         let card = G.deck.pop();
-        card.location = 'hand'
+        updateCardLocation(card, 'hand')
         G.hands[ctx.currentPlayer].push( card  )  
         //console.log("added to hand")
 
@@ -341,9 +318,9 @@ function PlayCard(G, ctx, position) {
         let card = G.hands[ctx.currentPlayer].splice(position, 1)[0]
         
 
-        card.playedBy = ctx.currentPlayer;
+        card.LastPlayedBy = ctx.currentPlayer;
         card.turnPlayed = ctx.turn;
-        card.location = 'table'
+        updateCardLocation(card, 'table')
         //add to last played for movevalid / ui decision checks
         G.lastPlayed = card;
         ShouldMagicEventReset(G, ctx)
@@ -370,6 +347,7 @@ function PlayCard(G, ctx, position) {
             EndPlay(G, ctx); 
        }; 
 
+       
        //hanle playing last card in hand 
        if (G.hands[ctx.currentPlayer].length===0 && (BenchPlayable(G, ctx).layer===0 && BenchPlayable(G, ctx).positions.length ===0)) {
             GameOver(G, ctx);
@@ -382,7 +360,7 @@ function PlayCard(G, ctx, position) {
                 console.log("set playbench from playcard")
                 ctx.events.setStage('playBench')
             }
-       } else if (G.hands[ctx.currentPlayer].length===0 && G.lastPlayed.playedBy!==ctx.currentPlayer) {
+       } else if (G.hands[ctx.currentPlayer].length===0 && G.lastPlayed.LastPlayedBy!==ctx.currentPlayer) {
             MoveIsMagic(G, ctx)
             EndPlay(G, ctx);
        }
@@ -402,7 +380,7 @@ function TakeBench(G, ctx, player, position) {
     if (benchPoslen !== 1) {
         let card = G.benchs[player][position].pop()
         // = ctx.currentPlayer //used to check if taken from bench - removed because this behaviour is not right + set last played wrong!
-        card.location='hand'
+        updateCardLocation(card, 'hand')
         G.hands[player].push( card ) 
     } else {
         return INVALID_MOVE;
@@ -426,7 +404,7 @@ function AddBench(G, ctx, player, position) {
     
     if (freeBenchPos !== null ) { //&& G.hands[player][position].LastPlayedBy===null - removed this functionallity
         let card = G.hands[player].splice(position, 1)[0]
-        card.location = 'bench'
+        updateCardLocation(card, 'bench')
         G.benchs[player][freeBenchPos].push( card )
         
         //console.log('adding to bench')
@@ -457,8 +435,8 @@ function PlayBench(G, ctx, position) {
     if ( MoveValid(G, ctx, card) && correctLayer) {
         //play the card
         let card = G.benchs[ctx.currentPlayer][position].pop()
-        card.location = 'table'
-        card.playedBy = ctx.currentPlayer;
+        updateCardLocation(card, 'table')
+        card.LastPlayedBy = ctx.currentPlayer;
         card.turnPlayed = ctx.turn;
         G.lastPlayed = card;
         G.table.push( card ) 
@@ -486,7 +464,7 @@ function PlayBench(G, ctx, position) {
             //console.log('move on top layer is invalid')
             return INVALID_MOVE;
         } else if (StartLayer===0) {
-            card.playedBy = ctx.currentPlayer;
+            card.LastPlayedBy = ctx.currentPlayer;
             card.turnPlayed = ctx.turn;
             
             G.table.push( G.benchs[ctx.currentPlayer][position].pop() ) 

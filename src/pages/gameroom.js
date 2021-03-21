@@ -13,23 +13,12 @@ const { origin, protocol, hostname } = window.location;
 const SERVER = APP_PRODUCTION ? origin : `${protocol}//${hostname}:${DEFAULT_PORT}`;
 
 
-
-
-
-
-
-
-
-
-
-
 const SHEDClient = Client({
     game: SHED,
     board: SHEDtable,
     debug: false, 
     multiplayer: SocketIO({server: SERVER}), 
     loading: loading,
-    chatMessages: Client.chatMessages
   });
 
 function loading () { 

@@ -135,7 +135,7 @@ export const Lobby = (props) => {
   
     function handleJoin (event) {
         if (playerName.length!==0) {
-            if (matchID.length === 9) {
+            if (matchID.length === 11) {
                 Join(); 
             event.preventDefault();
             } else {
