@@ -144,7 +144,7 @@ export const Lobby = (props) => {
         } else {
             alert('must enter a name before joining!')
         }
-        event.preventDefault();
+        
     };
 
     function handleCreateMatch (event) {
@@ -178,15 +178,17 @@ const JoinMatch = (props) => {
                 <h2>Join Match</h2>
                 <div>
                     <label>
-                        Player Name:
+                    Player Name:
                         <input type="text" value={props.playerName} onChange={props.onChangePlayerName} /> 
                     </label>
                 </div>
                 <div>
                     <label>
-                        match ID:
-                        <input type="text" value={props.matchID} onChange={props.onChangeMatchID} />
-                        <input className="bigButton" type="submit" value="Join" onSubmit={props.onSubmit} />
+                    match ID:
+                        <div className="inlineSubmit" >
+                            <input type="text" value={props.matchID} onChange={props.onChangeMatchID} />
+                            <input id="inputButton" type="submit" value="" onSubmit={props.onSubmit} />
+                        </div> 
                     </label>
                 </div>
             </form>

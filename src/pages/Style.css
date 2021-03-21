@@ -146,14 +146,18 @@ body {
   font-size:30px;
 }
 
+label {
+  width: 100%;
+}
 
 
 
 input[type=text] {
+  vertical-align: middle;
+  width: 85%;
+  margin: 5px 10px 5px 0;
+  padding: 10px;
   font-family: 'Carn';
-  width: 100%;
-  padding: 12px 20px;
-  margin: 8px 0;
   box-sizing: border-box;
   font-size: 25px;
   background-color: rgba(255, 255, 255, 0.151); /* Black background with opacity */
@@ -163,6 +167,30 @@ input[type=text] {
 input[type=text]:focus {
   border: 3px solid #555;  
   border-radius: 25px;
+}
+
+.inlineSubmit {
+  justify-content: left;
+    align-items: center;
+    width: 100%;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  
+}
+
+#inputButton {
+  vertical-align: middle;
+  padding: 0;
+  width: 4vh;
+  height: 4vh;
+  border: 0;
+  background: transparent;
+  background-image: url(/src/images/icons/send.png);
+  background-size: cover; 
+  color: #333;
+  cursor: pointer;
+  outline: 0;
 }
 
 
@@ -221,6 +249,7 @@ li {
 
 li:hover {
   background-color: rgba(0, 0, 0, 0.14);
+  left: 0;
   cursor: pointer;
 }
 
@@ -230,7 +259,7 @@ li:hover {
 }
 
 #ChatButton {
-  padding: 0;
+  padding: 10;
   width: 6vh;
   height: 100%;
   border: 0;
@@ -242,17 +271,83 @@ li:hover {
   outline: 0;
 }
 
+.chatSubmit {
+  position: absolute;
+  bottom: 10px;
+  justify-content: left;
+    align-items: center;
+    vertical-align: middle;
+    width: 100%;
+  display: flex;
+  flex-flow: row wrap;
+  
+  
+}
+
+
+#sendButton {
+  vertical-align: middle;
+  padding: 0;
+  width: 4vh;
+  height: 4vh;
+  border: 0;
+  background: transparent;
+  background-image: url(/src/images/icons/send.png);
+  background-size: cover; 
+  color: #333;
+  cursor: pointer;
+  outline: 0;
+}
+
 .RightDropdown {
   position: absolute;
   top: 7vh;
   right: 1%;
-  width: 300px;
+  width: 350px;
   height: 80vh;
   z-index: 2;
   border: 1px solid rgba(0, 0, 0, 0.04);
   box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.301);
   background-color: rgba(179, 179, 179, 0.3); /* Black background with opacity */
     border-radius: 25px;
-    padding: 20px 5px;
-  color: aliceblue;
+    padding: 5px 5px;
+    text-align: left;
+  color: rgb(0, 0, 0);
+  text-shadow: 2px 2px  rgba(255, 51, 0, 1);
+  overflow-wrap: break-word;
+  word-break: break-all;
+  
+}
+
+#messagesList {
+  position: relative;
+  display: inline-block;
+  left: 0;
+	text-align: left; 
+  font-size: 25px;
+  line-height: 1;
+  background-color: transparent;
+  overflow-wrap: break-word;
+  
+  
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

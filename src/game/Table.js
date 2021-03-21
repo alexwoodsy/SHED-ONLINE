@@ -601,6 +601,9 @@ export class SHEDtable extends React.Component {
     render() {               
         //loop over all 4 players and render them accordingly
         let thisPlayerNumber = parseInt(this.props.playerID);
+        let playerNames = this.props.matchData.map((player)=>{
+            return player.name
+        })
         if (this.props.ctx.phase === "EndPhase"  && DEBUGING_UI) {
             return (
                 <div>
@@ -612,7 +615,12 @@ export class SHEDtable extends React.Component {
         if (this.props.ctx.phase === "EndPhase") {
             return (
                 <div>
-                    <Menu matchID={this.props.matchID} />
+                    <Menu 
+                        sendChatMessage={this.props.sendChatMessage}
+                        chatMessages={this.props.chatMessages} 
+                        playerNames={playerNames}
+                        matchID={this.props.matchID} 
+                    />
                 <div id="Game">
                     <this.EndOfGameOptions />
                     <Stage x={0} y={0} width={this.state.screenx} height={this.state.screeny}>
@@ -641,7 +649,12 @@ export class SHEDtable extends React.Component {
             return (
                 <div>
                     <div>
-                    <Menu matchID={this.props.matchID} />
+                    <Menu 
+                        sendChatMessage={this.props.sendChatMessage}
+                        chatMessages={this.props.chatMessages} 
+                        matchID={this.props.matchID} 
+                        playerNames={playerNames}
+                    />
                     </div>
                     <div id="Game">
                         <Stage x={0} y={0} width={this.state.screenx} height={this.state.screeny}>
