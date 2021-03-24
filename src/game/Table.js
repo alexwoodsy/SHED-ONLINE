@@ -2,7 +2,7 @@ import React from 'react';
 import {Layer, Group, Rect, Stage, Text, Line } from 'react-konva';
 import Menu from './Menu'
 import { CardImage, CardRenderParam } from './card';
-import { MagicEvent, BenchReadyButton, SevenChoiceInstruction, GameOver, Instructions, EndTurnButton } from './gameUI'
+import { MagicEvent, BenchReadyButton, SevenChoiceInstruction, Instructions, EndTurnButton, GameOver } from './gameUI'
 import { DEBUGING_UI } from '../config';
 import "../pages/Style.css"
 
@@ -573,6 +573,7 @@ export class SHEDtable extends React.Component {
     }
 
     EndOfGameOptions = () => {
+        let thisPlayerNumber = parseInt(this.props.playerID);
         let pressed = false;
         for (let i=0; i<this.props.ctx.numPlayers; i++) {
             if (this.props.G.playingAgain[i]!==null && i === parseInt(this.props.playerID)) {
@@ -583,7 +584,13 @@ export class SHEDtable extends React.Component {
 
         if (pressed===false) {
             return (
-                <div id="overlay">
+                <div id="EndScreen">
+                    <GameOver 
+                        winnerID={this.props.G.winner}
+                        matchData={this.props.matchData}
+                        playerID={thisPlayerNumber}
+                    /> 
+                <div>
                     <button id="EndGameChoice" onClick={()=>this.handlePlayAgain(true)}>
                         play again
                     </button>
@@ -591,6 +598,8 @@ export class SHEDtable extends React.Component {
                         return to lobby
                     </button>
                 </div>
+                </div>
+                
             ) 
         } else {
             return null;
@@ -601,9 +610,10 @@ export class SHEDtable extends React.Component {
     render() {               
         //loop over all 4 players and render them accordingly
         let thisPlayerNumber = parseInt(this.props.playerID);
-        let playerNames = this.props.matchData.map((player)=>{
+        let playerNames=[];
+        if (!DEBUGING_UI) {playerNames = this.props.matchData.map((player)=>{
             return player.name
-        })
+        })}
         if (this.props.ctx.phase === "EndPhase"  && DEBUGING_UI) {
             return (
                 <div>
@@ -620,28 +630,22 @@ export class SHEDtable extends React.Component {
                         chatMessages={this.props.chatMessages} 
                         playerNames={playerNames}
                         matchID={this.props.matchID} 
-                    />
-                <div id="Game">
+                    /> 
+                    <div id="overlay"/>
                     <this.EndOfGameOptions />
-                    <Stage x={0} y={0} width={this.state.screenx} height={this.state.screeny}>
-                        <this.renderGrid />
-                        <Layer>
-                            <this.renderGameInfo />
-                            <this.renderDeck /> 
-                            <this.renderTable />
-                        </Layer>
-                        <Layer>
-                            <this.renderHand />
-                            <this.renderBench />
-                            <GameOver
-                                winnerID={this.props.G.winner}
-                                matchData={this.props.matchData}
-                                playerID={thisPlayerNumber}
-                                tableState={this.state}
-                            />
-                        </Layer>
-                    </Stage>
-                </div>
+                    <div id="Game">
+                        <Stage x={this.state.screenx/4} y={0} width={this.state.screenx} height={this.state.screeny}>
+                            <this.renderGrid />
+                            <Layer>
+                                <this.renderDeck /> 
+                                <this.renderTable />
+                            </Layer>
+                            <Layer>
+                                <this.renderHand />
+                                <this.renderBench />
+                            </Layer>
+                        </Stage>
+                    </div>
                 </div>
             );
 

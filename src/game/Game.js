@@ -5,7 +5,7 @@ import { INVALID_MOVE } from 'boardgame.io/core';
 var cardsInHand = 3; //default 3
 var emptyDeck = false; //false
 var handOf = null; //default null
-var endGame = false; //default false
+var endGame = true; //default false
 
 const constructCard = (suit, rank) => {
     const isMagic = () => {
@@ -90,6 +90,10 @@ export const SHED = {
                 ctx.events.setActivePlayers({
                     all: 'settingBench'
                 });
+
+                if (endGame) {
+                    ctx.events.endPhase()
+                }
             },
             
 
@@ -111,7 +115,6 @@ export const SHED = {
             next:'EndPhase',
             turn: { //if this doesnt work, try moving all logic away and just calling a function that sets this
                 onBegin: (G, ctx) => { 
-                   
                     if (G.hands[ctx.currentPlayer].length > 0) {
                         if ( CanPlay(G, ctx) ) {
                             ctx.events.setActivePlayers({currentPlayer: 'play'});
@@ -131,6 +134,10 @@ export const SHED = {
                             ctx.events.setActivePlayers({currentPlayer: 'pickup'});
                         };
                     };
+
+                    if (endGame) {
+                        GameOver(G, ctx)
+                    }
                 },
                 
                 
@@ -309,10 +316,7 @@ function DrawCard(G, ctx) {
 }
   
   //later need to update to allow playing of more than 1 card - should be anmother function that calls this one
-function PlayCard(G, ctx, position) {
-    if (endGame) { 
-        GameOver(G, ctx)}
-    
+function PlayCard(G, ctx, position) {  
     let card = G.hands[ctx.currentPlayer][position]
     if ( MoveValid(G, ctx, card) ) {
         let card = G.hands[ctx.currentPlayer].splice(position, 1)[0]
@@ -414,8 +418,6 @@ function AddBench(G, ctx, player, position) {
 };
 
 function PlayBench(G, ctx, position) {
-    if (endGame) { 
-        GameOver(G, ctx)}
     //G.magicEvent.type = null//reset before turn 
     let PlayablePositions = BenchPlayable(G, ctx).positions;
     //console.log('playable pos', PlayablePositions)
