@@ -1,20 +1,22 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import "./Style.css"
 import ShedLogo from '../images/Logo.png'
 import wood from '../images/UI/wood.png'
 
 
-export const Homescreen = (props) => {      
+export const Homescreen = (props) => {     
+    useEffect(()=>{
+        localStorage.clear()
+        //console.log(localStorage) 
+    }, [])
+    
     return(
-        <div>
-            <div>
-                <img src={ShedLogo} alt={wood} className="ShedLogo"/>
-            </div>
-            <div>
-                <button className="playButton" onClick={() => props.history.push("/lobby")}>
-                    Play
-                </button>
-            </div>
+        <div> 
+            <img src={ShedLogo} alt={wood} className="ShedLogo"/>
+        
+            <button className="biggerButton" onClick={() => props.history.push("/lobby")}>
+                Play
+            </button>
         </div>
     )
        

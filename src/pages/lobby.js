@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { LobbyClient } from 'boardgame.io/client';
 import { DEFAULT_PORT, APP_PRODUCTION } from "../config";
 import Slider from '@material-ui/core/Slider';
@@ -9,97 +9,104 @@ const SERVER = APP_PRODUCTION ? origin : `${protocol}//${hostname}:${DEFAULT_POR
 
 
 function saveClientData(playerID, MatchID, numberOfPlayers, playerName, playerCredentials, lobbyClient) {
+    console.log("saving number of players", numberOfPlayers)
     localStorage.setItem("playerID", playerID);
     localStorage.setItem("MatchID", MatchID);
     localStorage.setItem("numberOfPlayers", numberOfPlayers);
     localStorage.setItem("playerName", playerName);
     localStorage.setItem("playerCredentials", playerCredentials);
-    localStorage.setItem("lobbyClient", lobbyClient);
+    //ONCE JOINED CLEAR NEWMATCH/prevplatername LOCAL STORAGE
+    localStorage.removeItem("newMatchID")
+    localStorage.removeItem("previousPlayerName")
 }
 
 
 export const Lobby = (props) => {
     //const [canJoin, setcanJoin] = useState(false);
-    const [playerID, setplayerID] = useState(null);
     const [matchID, setmatchID] = useState('')
     const [playerName, setplayerName] = useState('')
     const [numberOfPlayers, setnumberOfPlayers] = useState(2)
     //const [playerCredentials, setplayerCredentials] = useState(null)
-    const connectingClient = useRef(false);
-    
-    
-
-    
-    
+    const [joining, setjoining] = useState(false)
+    //const connectingClient = useRef(false);
     let lobbyClient = useMemo(()=> new LobbyClient({ server: SERVER }), [])//empty dependency means init once
     
-
     useEffect(()=>{
+        
         const ConnectClient = async () => {
-            if (playerID !== null) {
-                const { playerCredentials } = await lobbyClient.joinMatch(
-                        'SHED',
-                        matchID,
-                        {
-                            playerID: playerID,
-                            playerName: playerName,
-                        },
-                    );
-                    //setcanJoin(true);
-                    //setplayerCredentials(playerCredentials); 
-                    saveClientData(
-                        playerID,
-                        matchID, 
-                        numberOfPlayers, 
-                        playerName, 
-                        playerCredentials,
-                        lobbyClient
-                    )
-                    console.log(await lobbyClient.listMatches("SHED"))
-                    props.history.push("/shed/"+matchID)
+            let freeSeat = null;
+            let numPlayersMatchJoining = null;
+            console.log("getting free seat")
+            try {
+                const matchJoining = await lobbyClient.getMatch('SHED', matchID)
+                console.log("joining num of players", matchJoining.players.length)
+                numPlayersMatchJoining = matchJoining.players.length
+                for (let i=0; i < matchJoining.players.length; i++) {
+                    if (typeof matchJoining.players[i].name === 'undefined') {
+                        freeSeat = i.toString()
+                        break;
+                    }
+                }
+            } 
+            catch(err) {
+               console.log(matchID, err)
+                alert('could not find match')
+            }
 
-                                                   
-            } else {
+            console.log("free seat", freeSeat)
+
+            if (freeSeat === null) {
                 alert('no room in game / no game found');
-            }
-        };
-        if (connectingClient.current) {
-            ConnectClient(playerName)
-            connectingClient.current = false;
-        };
-        
-    }, [playerID, playerName, lobbyClient, matchID, numberOfPlayers, props.history])
-
+            } else {
+                console.log("now joining")
+                const { playerCredentials } = await lobbyClient.joinMatch(
+                    'SHED',
+                    matchID,
+                    {
+                        playerID: freeSeat,
+                        playerName: playerName,
+                    },
+                );
     
-    const getFreeSeat = async () => {
-        //check if joining is possible 
-       // console.log('joining match id', matchID)
-       try {
-        const matchJoining = await lobbyClient.getMatch('SHED', matchID)
-        //console.log("joining", matchJoining)
-        let freeSeat = null;
-        for (let i=0; i < matchJoining.players.length; i++) {
-            //console.log('checking players', matchJoining.players[i].name)
-            if (typeof matchJoining.players[i].name === 'undefined') {
-                freeSeat = i.toString()
-                break;
+                console.log("now saving info")
+                saveClientData(
+                    freeSeat,
+                    matchID, 
+                    numPlayersMatchJoining, 
+                    playerName, 
+                    playerCredentials,
+                    lobbyClient
+                )
+                console.log(await lobbyClient.listMatches("SHED"))
+                props.history.push("/shed/"+matchID) 
             }
-        }
-        setplayerID(freeSeat)
-       } catch(err) {
-           console.log(matchID, err)
-        alert('could not find match')
-       }
-    }
+        };
 
-    const Join = async () => {
-        getFreeSeat()
-        connectingClient.current = true;
+        if (joining) {
+            ConnectClient()  
+        };
         
+    }, [joining, playerName, lobbyClient, matchID, props.history])
+
+    //on mount check if the player has a newmatch
+    useEffect(()=>{
+        let newMatchID = localStorage.getItem("newMatchID")
+        let previousPlayerName = localStorage.getItem("previousPlayerName")
+        
+        if (newMatchID !== undefined && newMatchID !== null && newMatchID !== "INSUFF_PLAYERS" && previousPlayerName!==undefined) {
+            setmatchID(newMatchID)
+            setplayerName(previousPlayerName)
+            Join()
+        }
+    }, [])
+
+
+    const Join = () => {
+        setjoining(true)
     };
 
     const Create  = async () => {
-        console.log(numberOfPlayers)
+        //console.log(numberOfPlayers)
         try {
             const { matchID } = await lobbyClient.createMatch('SHED', {
                 numPlayers: numberOfPlayers
@@ -112,6 +119,7 @@ export const Lobby = (props) => {
         
     };
 
+
     function handleChangeJoinMatch (event) {
         setmatchID(event.target.value)
     };
@@ -122,11 +130,12 @@ export const Lobby = (props) => {
 
     function handleChangeNumberOfPlayers (event, value) {
         setnumberOfPlayers(value)
+        event.preventDefault()
     }
-
+  
     function handleJoin (event) {
         if (playerName.length!==0) {
-            if (matchID.length === 9) {
+            if (matchID.length === 11) {
                 Join(); 
             event.preventDefault();
             } else {
@@ -135,7 +144,7 @@ export const Lobby = (props) => {
         } else {
             alert('must enter a name before joining!')
         }
-        event.preventDefault();
+        
     };
 
     function handleCreateMatch (event) {
@@ -145,7 +154,7 @@ export const Lobby = (props) => {
     }
 
     return (
-        <div className="lobby">
+        <div id={props.isMobile? "mobileLobby": "lobby"}>
             <CreateMatch
                 onChangeCreateMatch={handleCreateMatch}
                 onChangeNumberOfPlayers={handleChangeNumberOfPlayers}
@@ -164,23 +173,28 @@ export const Lobby = (props) => {
 //REMOVED SUBMUIT FROM FORM TAG - MAY NEED TO GO BACK IN
 const JoinMatch = (props) => {
     return(
-        <form onSubmit={props.onSubmit}>
-            <h2>Join Match</h2>
-            <div>
-                <label>
+        <div>
+            <form onSubmit={props.onSubmit}>
+                <h2>Join Match</h2>
+                <div>
+                    <label>
                     Player Name:
-                    <input type="text" value={props.playerName} onChange={props.onChangePlayerName} /> 
-                </label>
-            </div>
-            <div>
-                <label>
+                        <input type="text" value={props.playerName} onChange={props.onChangePlayerName} /> 
+                    </label>
+                </div>
+                <div>
+                    <label>
                     match ID:
-                    <input type="text" value={props.matchID} onChange={props.onChangeMatchID} />
-                    <input type="submit" value="Join" onSubmit={props.onSubmit} />
-                </label>
-            </div>
-    </form>
-);
+                        <div className="inlineSubmit" >
+                            <input type="text" value={props.matchID} onChange={props.onChangeMatchID} />
+                            <input id="inputButton" type="submit" value="" onSubmit={props.onSubmit} />
+                        </div> 
+                    </label>
+                </div>
+            </form>
+        </div>
+        
+    );
 }
 
 const CreateMatch = (props) => {
@@ -189,7 +203,7 @@ const CreateMatch = (props) => {
         <h2>Create Match</h2>
         <label>
             Number of Players:
-            <Slider 
+            <Slider id="slider"
                 defaultValue={2}
                 onChange={props.onChangeNumberOfPlayers}
                 aria-labelledby="discrete-slider"
@@ -201,8 +215,8 @@ const CreateMatch = (props) => {
             />
         </label>
         
-        <button onClick={props.onChangeCreateMatch}>
-            <h2>Create match</h2>
+        <button className="bigButton" onClick={props.onChangeCreateMatch}>
+            Create match
         </button>
     </div>
     );

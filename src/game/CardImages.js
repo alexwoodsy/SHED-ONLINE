@@ -56,6 +56,15 @@ import diamondsK from "../images/cards/KD.png";
 import diamondsA from "../images/cards/AD.png";
 //card back
 import cardback from "../images/cards/CardBack.png"
+import emptyCard from "../images/cards/EmptyCard.png"
+//burnt cards
+import ashC from '../images/magicEvents/Ash_C.png'
+import ashS from '../images/magicEvents/Ash_S.png'
+import ashD from '../images/magicEvents/Ash_D.png'
+import ashH from '../images/magicEvents/Ash_H.png'
+//card Indicator
+//import indicator from '../images/UI/NailIndicator.png'
+
 
 
 const CardFaces = {
@@ -65,10 +74,20 @@ const CardFaces = {
     clubs: [clubs2, clubs3, clubs4, clubs5, clubs6, clubs7, clubs8, clubs9, clubs10, clubsJ, clubsQ, clubsK, clubsA],
 }
 
+const AshSuits = {
+    hearts: ashH,
+    diamonds: ashD,
+    spades: ashS,
+    clubs: ashC
+}
+
 
 export const CardImages = {
     Faces: CardFaces,
     Back: cardback, 
+    Empty: emptyCard,
+    Ash: AshSuits,
+    //Indicator: indicator,
 }
 
 //function that gets the image from the card

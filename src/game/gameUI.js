@@ -1,5 +1,5 @@
-import React from "react"; //, { useEffect, useState }
-import { Image, Group, Text, Rect } from 'react-konva';
+import React, {useRef, useEffect} from "react"; 
+import { Image } from 'react-konva';
 import useImage from 'use-image';
 //magic
 import burn from '../images/magicEvents/burn.png'
@@ -8,6 +8,11 @@ import HighOrLow from '../images/magicEvents/HighOrLow.png'
 import reset from '../images/magicEvents/reset.png'
 //ui
 import wood from '../images/UI/wood.png'
+import waitingImg from '../images/UI/Waiting.png'
+import yourTurnImg from '../images/UI/YourTurn.png'
+//end turn button
+import endTurn from '../images/UI/EndTurn.png'
+//import endTurnDepressed from '../images/UI/EndTurnDepressed.png'
 //benchui
 import benchReady from '../images/UI/BenchReady.png'
 import benchUnready from '../images/UI/BenchUnready.png'
@@ -18,7 +23,6 @@ import lowerArrow from '../images/magicEvents/LowerArrow.png'
 import winnerScreen from '../images/Winner.png'
 import loserScreen from '../images/Loser.png'
 
-
 const MagicImages = {
   burn: burn,
   invisble: invisible,
@@ -27,7 +31,7 @@ const MagicImages = {
   wood: wood,
 }
 
-function imageRatio (image) {
+export function imageRatio (image) {
   //scale image
   let imgRatio=1; //inni to 1 ao image still renders
   if (image !== undefined) {
@@ -80,7 +84,6 @@ const MagicImage = (props) => {
 
 
 //BenchReadyButton - need this for doing these
-
 
 export class MagicEvent extends React.Component {
     constructor(props) {
@@ -137,6 +140,30 @@ export class MagicEvent extends React.Component {
     }
   }
 
+  export const EndTurnButton = (props) => {
+    let [UnPressed] = useImage(endTurn)
+    let scale = props.scale*8
+    let width = scale*imageRatio(UnPressed);
+    let height = scale;
+    let x = props.x - width/2;
+    let y = props.y - height/2;
+   
+    
+    return (
+      <Image 
+        image={UnPressed} 
+        x={x} 
+        y={y}
+        width={width} 
+        height={height}
+        shadowBlur={props.shadowBlur} 
+        onClick={props.onClick}
+        onTap={props.onTap}
+      />
+      )
+  }  
+
+
 export const BenchReadyButton = (props) => {
   let [unready] = useImage(benchUnready)
   let [ready] = useImage(benchReady)
@@ -151,7 +178,7 @@ export const BenchReadyButton = (props) => {
       shadowColor = "#4feb34"
     }
 
-  let scale = props.scale*15
+  let scale = props.scale*8
   let width = scale*imageRatio(image);
   let height = scale;
   let x = props.x //- width/2;
@@ -186,10 +213,10 @@ export const SevenChoiceInstruction = (props) => {
       return null;
     }
 
-  let scale = props.scale*7
+  let scale = props.scale*5
   let width = scale*imageRatio(image);
   let height = scale;
-  let x = props.x //- width/2;
+  let x = props.x - width;
   let y = props.y - height/2;
   
   
@@ -207,110 +234,118 @@ export const SevenChoiceInstruction = (props) => {
   )
 }
 
-
 export const GameOver = (props) => {
-  let tableState= props.tableState
-  let gameOverState = props.gameOverState;
+  let winnerID = props.winnerID
   let matchData=props.matchData;
   let playerID = props.playerID;
   let winner=null;
   let losers=[];
-  let width;
-  let height;
-  let fontsize = 2*tableState.cardScale;
-
-  const [loserImg] = useImage(loserScreen);
-  const [winnerImg] = useImage(winnerScreen);
   
-  if ( gameOverState !== undefined) {
-    
-    
-    for (let i=0; i<matchData.length; i++) {
-      if (i !== parseInt(gameOverState.winner) ) {
-        losers.push (matchData[i])
-      } else {
-        winner=matchData[i];
-      }
+  for (let i=0; i<matchData.length; i++) {
+    if (i !== parseInt(winnerID) ) {
+      losers.push (matchData[i])
+    } else {
+      winner=matchData[i];
     }
+  }
 
-    let loserNames=[]
-      losers.forEach(element => {
-        loserNames.push ( element.name )
-      });
+  let loserNames=[]
+    losers.forEach(element => {
+      loserNames.push ( element.name )
+    });
 
     if (playerID===winner.id) {
-      width = tableState.cardScale*25
-      height= width/imageRatio(winnerImg)
-      //retrun winner screen
       return (
-        <Group>
-          <Image 
-            image={winnerImg} 
-            x={tableState.padx} 
-            y={tableState.pady}
-            width={width} 
-            height={height}
-          />
-          <Rect
-            x={tableState.padx} 
-            y={tableState.pady+height}
-            width={width} 
-            height={height}
-            fill={"white"}
-            opacity={0.5}
-          />
-          <Text
-            x={tableState.padx} 
-            y={tableState.pady+3*height/2 - 3*fontsize}
-            text={`You Won!!!! mr cheeks says \nwell done ${winner.name}`}
-            fontSize ={fontsize}
-          />
-          <Text
-            x={tableState.padx} 
-            y={tableState.pady+3*height/2}
-            text={`Losers were:\n${loserNames.join("\n")}`}
-            fontSize ={fontsize}
-          />
-        </Group>
+        <div id="EndScreenMessage">
+          <img id="EndScreenImage" src={winnerScreen} alt={wood} />
+          Well done {winner.name}, you won!
+        </div>
+        
       )
     } else {
-      //return loser screen
-      width = tableState.cardScale*25
-      height = width/imageRatio(loserImg)
       return(
-        <Group>
-          <Image 
-            image={loserImg} 
-            x={tableState.padx} 
-            y={tableState.pady}
-            width={width} 
-            height={height}
-          />
-          <Rect
-            x={tableState.padx} 
-            y={tableState.pady+height}
-            width={width} 
-            height={height}
-            fill={"white"}
-            opacity={0.5}
-          />
-          <Text
-            x={tableState.padx} 
-            y={tableState.pady+3*height/2- 4*fontsize}
-            text={`You lost :( but the winner \n${winner.name} sent you this crab \nwith their condolences`}
-            fontSize ={fontsize}
-            wrap
-          />
-          <Text
-            x={tableState.padx} 
-            y={tableState.pady+3*height/2}
-            text={`Losers were:\n${loserNames.join("\n")}`}
-            fontSize ={fontsize}
-          />
-        </Group>
-      )   
+        <div id="EndScreenMessage" >
+          <img id="EndScreenImage" src={loserScreen} alt={wood} />
+          Unlucky, you lost! {winner.name} Won!
+      
+      </div>
+      )
     }
-  } else {
+
+}
+
+
+export const Instructions = (props) => {
+  let [waiting] = useImage(waitingImg);
+  let [yourTurn] = useImage(yourTurnImg)
+  let currentPlayer = props.currentPlayer
+  let phase = props.phase;
+  let player = props.player
+  let x = props.x
+  let y = props.y
+  let scale = props.scale*10
+
+  const waitingRef = useRef(null)
+  //const shoWhosTurn = useRef(false) //use this to show the player whos turn
+
+  useEffect(()=>{
+    let counter;
+    const onHover = () => {
+      counter = setTimeout(()=>{
+        console.log(player)
+      },500)
+    }
+
+    const stopCounter = () => {
+      clearTimeout(counter)
+    }
+
+    if (waitingRef.current!==null ) {
+      waitingRef.current.on('mouseover',()=>onHover()) 
+      waitingRef.current.on('mouseout',()=>stopCounter() )
+    }
+
+    return () => {
+      stopCounter()
+    }
+
+  }, [waitingRef, player])
+
+  
+  if (phase==='StartPhase') {
     return null
+  } else if (phase==='MainPhase') {
+      if (player.toString()===currentPlayer) { // instructions for player making turn
+        let width = scale*imageRatio(yourTurn);
+        let height = scale;
+        y = y - height/2
+        return (
+          <Image 
+              image={yourTurn} 
+              x={x} 
+              y={y}
+              width={width} 
+              height={height}
+              shadowBlur={props.shadowBlur} 
+          />
+        )
+      } else { //instructions for everyone else
+        let width = scale*imageRatio(waiting);
+        let height = scale;
+        y = y - height/2
+        return (
+          <Image
+              ref={waitingRef}
+              image={waiting} 
+              x={x} 
+              y={y}
+              width={width} 
+              height={height}
+              shadowBlur={props.shadowBlur} 
+          />
+        )
+      }  
+  } else {
+    return null;
   }
 }
