@@ -163,7 +163,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@@alexwoodsy](https://twitter.com/@alexwoodsy) - alexanderwilliamwoods@gmail.com
+Your Name - [@alexwoodsy](https://twitter.com/@alexwoodsy) - alexanderwilliamwoods@gmail.com
 
 Project Link: [https://github.com/alexwoodsy/SHED-ONLINE](https://github.com/alexwoodsy/SHED-ONLINE)
 
@@ -182,15 +182,15 @@ Project Link: [https://github.com/alexwoodsy/SHED-ONLINE](https://github.com/ale
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/alexwoodsy/repo.svg?style=for-the-badge
-[contributors-url]: https://github.com/alexwoodsy/repo/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/alexwoodsy/repo.svg?style=for-the-badge
-[forks-url]: https://github.com/alexwoodsy/repo/network/members
-[stars-shield]: https://img.shields.io/github/stars/alexwoodsy/repo.svg?style=for-the-badge
-[stars-url]: https://github.com/alexwoodsy/repo/stargazers
-[issues-shield]: https://img.shields.io/github/issues/alexwoodsy/repo.svg?style=for-the-badge
-[issues-url]: https://github.com/alexwoodsy/repo/issues
-[license-shield]: https://img.shields.io/github/license/alexwoodsy/repo.svg?style=for-the-badge
-[license-url]: https://github.com/alexwoodsy/repo/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/alexwoodsy/SHED-online.svg?style=for-the-badge
+[contributors-url]: https://github.com/alexwoodsy/SHED-online/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/alexwoodsy/SHED-online.svg?style=for-the-badge
+[forks-url]: https://github.com/alexwoodsy/SHED-online/network/members
+[stars-shield]: https://img.shields.io/github/stars/alexwoodsy/SHED-online.svg?style=for-the-badge
+[stars-url]: https://github.com/alexwoodsy/SHED-online/stargazers
+[issues-shield]: https://img.shields.io/github/issues/alexwoodsy/SHED-online.svg?style=for-the-badge
+[issues-url]: https://github.com/alexwoodsy/SHED-online/issues
+[license-shield]: https://img.shields.io/github/license/alexwoodsy/SHED-online.svg?style=for-the-badge
+[license-url]: https://github.com/alexwoodsy/SHED-online/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/alexwoodsy
