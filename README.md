@@ -193,4 +193,4 @@ Project Link: [https://github.com/alexwoodsy/SHED-ONLINE](https://github.com/ale
 [license-shield]: https://img.shields.io/github/license/alexwoodsy/SHED-online.svg?style=for-the-badge
 [license-url]: https://github.com/alexwoodsy/SHED-online/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/alexwoodsy
+[linkedin-url]: https://linkedin.com/in/alex-woods-913a811a6
