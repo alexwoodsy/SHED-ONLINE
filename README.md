@@ -35,7 +35,7 @@ shed online - the game for bois
 <br />
 <p align="center">
   <a href="https://github.com/alexwoodsy/SHED-ONLINE">
-    <img src="https://github.com/alexwoodsy/SHED-ONLINE/blob/main/src/images/Logo.png" alt="Logo" width="80" height="80">
+    <img src="https://github.com/alexwoodsy/SHED-ONLINE/blob/main/src/images/Logo.png" alt="Logo" width="700" height="500">
   </a>
 
   <h3 align="center">SHED-online</h3>
