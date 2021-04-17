@@ -1,26 +1,42 @@
 import React from 'react'
 import "../pages/Style.css"
+import reset from '../images/magicEvents/reset.png'
+import invisible from '../images/magicEvents/Invis.png'
+import highlow from '../images/magicEvents/HighOrLow.png'
+import burn from '../images/magicEvents/burn.png'
 
 
 class MenuDropdown extends React.Component {
     container = React.createRef();
     state = {
         open: false,
+        showRules: false
     }
 
     handleButtonClick = () => {
         this.setState(state => {
           return {
             open: !state.open,
+            showRules: false
           };
         });
       };
+
+    handleRulesClick = () => {
+      this.setState(state => {
+        return {
+          showRules: !state.showRules,
+          open: false,
+        };
+      });
+    }
 
 
     handleClickOutside = event => {
         if (this.container.current && !this.container.current.contains(event.target)) {
           this.setState({
             open: false,
+            showRules: false
           });
         }
       };
@@ -42,10 +58,29 @@ class MenuDropdown extends React.Component {
                     <div className="LeftDropdown">
                     <ul>
                         <li>Leave</li>
-                        <li>Rules</li>
+                        <li onClick={this.handleRulesClick} >Rules</li>
                         <li onClick={() => {navigator.clipboard.writeText(this.props.matchID)}}>Copy Match ID</li>
                     </ul>
                     </div>
+                )}
+                {this.state.showRules && (
+                  <div className="centerDropdown"> 
+                    <h1>Rules</h1>
+                    <p>The aim of SHED is to be the first player with no cards. </p>
+
+                    <p>Your Bench is used when the deck and your hand are depleted.
+                    you can swap between the Bench ONLY at the start of the game.</p>
+
+                    <p>A Valid move consists of playing a higher card than that player 
+                    previosuly laid, unless you play a magic card (2,3 or 10).</p>
+
+                    <p>2 = Reset the pile <img id="rulesImage" src={reset} alt={''}/></p>
+                    <p>3 = Invisible (must play according to the card below)<img id="rulesImage" src={invisible} alt={''}/></p>
+                    <p>10 = Burns the deck <img id="rulesImage" src={burn} alt={''}/></p>
+                    <p>7 = You get to choose if the next player has to go higher or lower
+                      than a 7. This CANNOT be played on cards with rank {'>'} 7<img id="rulesImage" src={highlow} alt={''}/></p>
+                    <p>The deck is also burnt when all 4 suits of the same rank are in the pile </p>
+                  </div>
                 )}
             </div>
         )
@@ -177,6 +212,8 @@ class ChatBar extends React.Component {
         )
     }
 }
+
+
 
 
 const Menu = (props) => {
