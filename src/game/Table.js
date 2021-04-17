@@ -629,6 +629,7 @@ export class SHEDtable extends React.Component {
                         sendChatMessage={this.props.sendChatMessage}
                         chatMessages={this.props.chatMessages} 
                         playerNames={playerNames}
+                        clientName={this.props.matchData[this.props.playerID].name}
                         matchID={this.props.matchID} 
                     /> 
                     <div id="overlay"/>
@@ -658,6 +659,7 @@ export class SHEDtable extends React.Component {
                         chatMessages={this.props.chatMessages} 
                         matchID={this.props.matchID} 
                         playerNames={playerNames}
+                        clientName={this.props.matchData[this.props.playerID].name}
                     />
                     </div>
                     <div id="Game">
