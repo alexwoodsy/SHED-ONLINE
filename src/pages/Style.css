@@ -349,7 +349,6 @@ li:hover {
   background-color: rgba(179, 179, 179, 0.3); /* Black background with opacity */
     border-radius: 25px;
     padding: 5px 5px;
-    text-align: left;
   color: rgb(0, 0, 0);
   text-shadow: 2px 2px  rgba(255, 51, 0, 1);
   overflow-wrap: break-word;
@@ -360,15 +359,23 @@ li:hover {
 #messagesList {
   position: relative;
   display: inline-block;
-  left: 0;
-	text-align: left; 
+  text-align: left;
+  left: 2.5%;
+  width: 95%;
+  height: 72vh;
   font-size: 25px;
   line-height: 1;
   background-color: transparent;
   overflow-wrap: break-word;
+  overflow: scroll;
+  overflow-x: hidden
 }
 
-
+#messageItem {
+  display: inline-block;
+  text-align: left;
+  width: 95%;
+}
 
 /* width */
 ::-webkit-scrollbar {

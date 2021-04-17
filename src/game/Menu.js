@@ -119,17 +119,15 @@ class ChatBar extends React.Component {
                         
                           <ul id="messagesList">
                           {messages.map((message, index)=> (
-                            <li key={index}>{message.sender}: {message.text}</li>
+                            <li key={index} id="messageItem">{message.sender}: {message.text}</li>
                             ))}
                           </ul>
                         
                         
                           <form className="chatSubmit" onSubmit={(event)=>{this.sendNewMessage(event)}} >
-                          <input type="text" value={this.state.newMessage} onChange={(event)=>this.updateNewMessage(event)} /> 
-                          <input id="sendButton" type="submit" value="" onSubmit={(event)=>{this.sendNewMessage(event)}} />
-                          </form>
-                          
-                        
+                            <input type="text" value={this.state.newMessage} onChange={(event)=>this.updateNewMessage(event)} /> 
+                            <input id="sendButton" type="submit" value="" onSubmit={(event)=>{this.sendNewMessage(event)}} />
+                          </form>     
                     </div>
                 )}
             </div>
