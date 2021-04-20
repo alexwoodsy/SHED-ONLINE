@@ -23,7 +23,7 @@ export class SHEDtable extends React.Component {
         uiHeight:3*window.innerHeight/4,
         dropShadow: 20,
         hostClient: null,
-        playerNames: !DEBUGING_UI ? this.props.matchData.map(elem=>elem.name) : null,
+        playerNames: !DEBUGING_UI ? this.props.matchData.map(elem=>elem.name) : [],
     }
 
     
@@ -615,10 +615,7 @@ export class SHEDtable extends React.Component {
            names[i] = this.state.playerNames[order[i+1]]
         }
 
-        if (DEBUGING_UI) {
-            names = ['top', 'left', 'right']
-            names = this.state.playerNames
-        }
+        
         if (this.props.ctx.numPlayers > 2 ) {
             names =[names[1], names[0], 'right'];
         }
