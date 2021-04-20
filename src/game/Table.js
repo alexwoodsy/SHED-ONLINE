@@ -563,7 +563,7 @@ export class SHEDtable extends React.Component {
             let xline = [(0), (this.state.screeny/2), (this.state.screenx), (this.state.screeny/2)]
             return(
                 <Layer>
-                    <Rect x={0} y={0} width={this.state.screenx-2*this.state.padx} height={this.state.screeny} fill="blue" />
+                    {/* <Rect x={0} y={0} width={this.state.screenx-2*this.state.padx} height={this.state.screeny} fill="blue" /> */}
                     <Line points={yline} stroke="red" strokeWidth={3}/>
                     <Line points={xline} stroke="red" strokeWidth={3}/>
                 </Layer>
@@ -605,6 +605,63 @@ export class SHEDtable extends React.Component {
             return null;
         }
        
+    }
+
+    nameTags = () => {
+        let nameTags = []
+        let names = Array(this.props.ctx.numPlayers);
+        let order = this.getPlayerOrder()
+        for (let i=0; i<this.props.ctx.numPlayers; i++) {
+           names[i] = this.state.playerNames[order[i+1]]
+        }
+
+        if (DEBUGING_UI) {
+            names = ['top', 'left', 'right']
+            names = this.state.playerNames
+        }
+        if (this.props.ctx.numPlayers > 2 ) {
+            names =[names[1], names[0], 'right'];
+        }
+        const style = (coords) => {
+            return({
+                position: "absolute",
+                left: coords[0],
+                bottom: coords[1],
+                transform: coords[2],
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                zIndex: "2", 
+                margin: "auto",      
+                fontSize: `${this.state.cardScale*2.5}px`,
+                color: " rgb(255, 255, 255)",
+                opacity: "0.2",
+                ":hover": {
+                    opacity: "0.5"
+                }
+            })
+        }
+        let coords = [
+            ["50%", `${this.state.screeny - this.state.cardheight/2}px` ,`rotate(0deg) translate(-50%, 0%)`], //top
+            [`${this.state.screenx/2 - 7*this.state.cardheight/5 - 6*this.state.cardwidth/5}px`, "50%" ,`translate(-50%, 0%) rotate(90deg)`], //left
+            [`${this.state.screenx/2 + 7*this.state.cardheight/5 + 6*this.state.cardwidth/5}px`,"50%" ,`translate(-50%, 0%) rotate(-90deg)`], //right
+        ]
+
+        for (let i=0; i<this.props.ctx.numPlayers-1; i++) {
+            nameTags.push(
+                <div 
+                    key={names[i]}
+                    id="nameTags"
+                    style={style(coords[i])}
+                >
+                    {names[i]}
+                </div> 
+            )
+        }
+ 
+        return (
+            nameTags
+        )
     }
     
     render() {               
@@ -663,6 +720,7 @@ export class SHEDtable extends React.Component {
                     />
                     </div>
                     <div id="Game">
+                        <this.nameTags />
                         <Stage x={0} y={0} width={this.state.screenx} height={this.state.screeny}>
                             <this.renderGrid />
                             <Layer>

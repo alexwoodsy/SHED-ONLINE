@@ -44,9 +44,11 @@ class MenuDropdown extends React.Component {
 
     componentDidMount() {
         document.addEventListener("mousedown", this.handleClickOutside);
+        document.addEventListener("touchstart", this.handleClickOutside)
     }
     componentWillUnmount() {
       document.removeEventListener("mousedown", this.handleClickOutside);
+      document.removeEventListener("touchstart", this.handleClickOutside);
     }
 
 
@@ -73,13 +75,12 @@ class MenuDropdown extends React.Component {
 
                     <p>A Valid move consists of playing a higher card than that player 
                     previosuly laid, unless you play a magic card (2,3 or 10).</p>
-
                     <p>2 = Reset the pile <img id="rulesImage" src={reset} alt={''}/></p>
                     <p>3 = Invisible (must play according to the card below)<img id="rulesImage" src={invisible} alt={''}/></p>
                     <p>10 = Burns the deck <img id="rulesImage" src={burn} alt={''}/></p>
                     <p>7 = You get to choose if the next player has to go higher or lower
-                      than a 7. This CANNOT be played on cards with rank {'>'} 7<img id="rulesImage" src={highlow} alt={''}/></p>
-                    <p>The deck is also burnt when all 4 suits of the same rank are in the pile </p>
+                      than a 7. This CANNOT be played on cards with rank {'>'} 7<img id="rulesImage" src={highlow} alt={''}/> <br/>
+                      The deck is also burnt when all 4 suits of the same rank are in the pile </p>
                   </div>
                 )}
             </div>
@@ -136,6 +137,7 @@ class ChatBar extends React.Component {
 
     componentDidMount() {
         document.addEventListener("mousedown", this.handleClickOutside);
+        document.addEventListener("touchstart", this.handleClickOutside)
     }
     componentDidUpdate(prevProps) {
       if (this.props.chatMessages !==prevProps.chatMessages) {
@@ -170,6 +172,7 @@ class ChatBar extends React.Component {
 
     componentWillUnmount() {
       document.removeEventListener("mousedown", this.handleClickOutside);
+      document.removeEventListener("touchstart", this.handleClickOutside);
       clearInterval(this.Notificationinterval)
     }
 

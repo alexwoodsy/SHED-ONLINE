@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from 'react';
-import { Group, Image, Text } from 'react-konva';
+import { Image, Text } from 'react-konva';
 import useImage from 'use-image';
 import CardImages from './CardImages';
 import { imageRatio } from './gameUI'
@@ -181,24 +181,23 @@ export const CardImage = (props) => {
                 dims = expanded
             }
             return (
-                <Group>
-                    <Image
-                        ref={cardRef}
-                        key={props.keyProp}
-                        image={front}
-                        x={dims.x}
-                        y={props.underInvisible? dims.y + dims.height/6 : dims.y}
-                        width={dims.width}
-                        height={dims.height}
-                        opacity={opacity}
-                        rotation = {rotation}
-                        shadowBlur={props.shadowBlur}
-                        shadowColor={shadowColor}
-                        player={props.player}
-                        onClick={props.onClick}
-                        onTap={props.onTap}
-                    />
-                </Group>  
+                <Image
+                    ref={cardRef}
+                    key={props.keyProp}
+                    image={front}
+                    x={dims.x}
+                    y={props.underInvisible? dims.y + dims.height/6 : dims.y}
+                    width={dims.width}
+                    height={dims.height}
+                    opacity={opacity}
+                    rotation = {rotation}
+                    shadowBlur={props.shadowBlur}
+                    shadowColor={shadowColor}
+                    player={props.player}
+                    onClick={props.onClick}
+                    onTap={props.onTap}
+                    cornerRadius={20}
+                />
             );
         }
     }
@@ -268,3 +267,5 @@ export function CardRenderParam (rangeX, rangeY, cardwidth, cardheight, screenX,
     }
     return Params;
 }
+
+

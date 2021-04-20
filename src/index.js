@@ -33,7 +33,7 @@ const DebugSHEDClient = Client({
   game: SHED,
   board: SHEDtable,
   debug: !isMobile,
-  numPlayers: 2,
+  numPlayers: 4,
   multiplayer: Local(),
 });
 
@@ -46,8 +46,8 @@ const App = () => {
           <div> 
               <DebugSHEDClient playerID="0" isMobile={isMobile}  />
               <DebugSHEDClient playerID="1" isMobile={isMobile}  />
-              {/* <DebugSHEDClient playerID="2" isMobile={isMobile}  />
-              <DebugSHEDClient playerID="3" isMobile={isMobile}  /> */}
+              <DebugSHEDClient playerID="2" isMobile={isMobile}  />
+              <DebugSHEDClient playerID="3" isMobile={isMobile}  />
           </div>
       );  
     }

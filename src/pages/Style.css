@@ -237,7 +237,7 @@ input[type=text]:focus {
     width: 100%;
   font-family: Carn;
   height: 6%;
-  background-color: rgba(255, 51, 0, 1);
+  background-color:rgba(255, 51, 0, 1);
   z-index: 3;
 }
 
@@ -274,10 +274,11 @@ input[type=text]:focus {
 
 .centerDropdown {
   position: absolute;
-  top: 7vh;
+  top: 6.2vh;
   left: 12.5%;
   width: 75%;
   font-size: 3vh;
+  line-height: 80%;
   padding: 10px 5px;
   z-index: 2;
   border: 1px solid rgba(0, 0, 0, 0.04);
@@ -451,3 +452,4 @@ li:hover {
   background: rgb(0, 26, 255);
   color: white;
 }
+
