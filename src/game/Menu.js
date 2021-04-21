@@ -59,7 +59,6 @@ class MenuDropdown extends React.Component {
                 {this.state.open && (
                     <div className="LeftDropdown">
                     <ul>
-                        <li>Leave</li>
                         <li onClick={this.handleRulesClick} >Rules</li>
                         <li onClick={() => {navigator.clipboard.writeText(this.props.matchID)}}>Copy Match ID</li>
                     </ul>
