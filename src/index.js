@@ -12,6 +12,7 @@ import './index.css';
 import Homescreen from "./pages/homescreen";
 import Lobby from "./pages/lobby";
 import { GameRoom } from "./pages/gameroom";
+import { JoinByLink } from './pages/MatchLinkRedirect'
 import reportWebVitals from './reportWebVitals';
 
 
@@ -61,6 +62,9 @@ const App = () => {
           </Route>
           <Route path="/shed/:matchID">
             <GameRoom history={history} isMobile={isMobile} />
+          </Route>
+          <Route path="/matchLinkRedirect/:matchID">
+            {<JoinByLink history={history} isMobile={isMobile} />}
           </Route>
           <Redirect to="/" />
         </Switch> 

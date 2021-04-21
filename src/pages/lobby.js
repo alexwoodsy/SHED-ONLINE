@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { LobbyClient } from 'boardgame.io/client';
 import { DEFAULT_PORT, APP_PRODUCTION } from "../config";
 import Slider from '@material-ui/core/Slider';
@@ -29,6 +29,7 @@ export const Lobby = (props) => {
     //const [playerCredentials, setplayerCredentials] = useState(null)
     const [joining, setjoining] = useState(false)
     //const connectingClient = useRef(false);
+    const showCreateMatch = useRef(true)
     let lobbyClient = useMemo(()=> new LobbyClient({ server: SERVER }), [])//empty dependency means init once
     
     useEffect(()=>{
@@ -88,15 +89,20 @@ export const Lobby = (props) => {
         
     }, [joining, playerName, lobbyClient, matchID, props.history])
 
-    //on mount check if the player has a newmatch
+    //on mount check if the player has a newmatch or has joined via a redirect
     useEffect(()=>{
         let newMatchID = localStorage.getItem("newMatchID")
+        let linkMatchID = localStorage.getItem("joinByLinkMatchID")
         let previousPlayerName = localStorage.getItem("previousPlayerName")
-        
+        console.log(localStorage)
         if (newMatchID !== undefined && newMatchID !== null && newMatchID !== "INSUFF_PLAYERS" && previousPlayerName!==undefined) {
             setmatchID(newMatchID)
             setplayerName(previousPlayerName)
             Join()
+        } else if ( linkMatchID!== undefined && linkMatchID !== null) {
+            setmatchID(linkMatchID)
+            showCreateMatch.current = false
+            localStorage.removeItem("joinByLinkMatchID")
         }
     }, [])
 
@@ -157,10 +163,10 @@ export const Lobby = (props) => {
 
     return (
         <div id={props.isMobile? "mobileLobby": "lobby"}>
-            <CreateMatch
+            {showCreateMatch.current && <CreateMatch
                 onChangeCreateMatch={handleCreateMatch}
                 onChangeNumberOfPlayers={handleChangeNumberOfPlayers}
-            />
+            />}
             <JoinMatch
                 playerName={playerName} 
                 onChangePlayerName={handleChangePlayerName}

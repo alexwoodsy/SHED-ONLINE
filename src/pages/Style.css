@@ -321,6 +321,11 @@ li:hover {
   left: 0;
   cursor: pointer;
 }
+li:active {
+  background-color: rgba(32, 32, 32, 0.5);
+  left: 0;
+  cursor: pointer;
+}
 
 #ChatContainer {
   float: right;

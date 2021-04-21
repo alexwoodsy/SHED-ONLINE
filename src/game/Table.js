@@ -1,5 +1,5 @@
 import React from 'react';
-import {Layer, Group, Rect, Stage, Text, Line } from 'react-konva';
+import {Layer, Group, Stage, Text, Line } from 'react-konva';
 import Menu from './Menu'
 import { Pending } from '../pages/gameroom'
 import { CardImage, CardRenderParam } from './card';

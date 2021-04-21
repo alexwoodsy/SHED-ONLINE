@@ -5,6 +5,8 @@ import invisible from '../images/magicEvents/Invis.png'
 import highlow from '../images/magicEvents/HighOrLow.png'
 import burn from '../images/magicEvents/burn.png'
 
+const { origin } = window.location;
+
 
 class MenuDropdown extends React.Component {
     container = React.createRef();
@@ -31,6 +33,13 @@ class MenuDropdown extends React.Component {
       });
     }
 
+    handleCopyMatchId = () => {
+      navigator.clipboard.writeText(`${origin}/matchLinkRedirect/${this.props.matchID}`)
+      this.setState({
+        open: false,
+      });
+    }
+
 
     handleClickOutside = event => {
         if (this.container.current && !this.container.current.contains(event.target)) {
@@ -53,6 +62,7 @@ class MenuDropdown extends React.Component {
 
 
     render() {
+      console.log()
         return (
             <div id="MenuContainer" ref={this.container}>
                 <button  id="MenuButton" onClick={this.handleButtonClick} />
@@ -60,7 +70,7 @@ class MenuDropdown extends React.Component {
                     <div className="LeftDropdown">
                     <ul>
                         <li onClick={this.handleRulesClick} >Rules</li>
-                        <li onClick={() => {navigator.clipboard.writeText(this.props.matchID)}}>Copy Match ID</li>
+                        <li onClick={this.handleCopyMatchId}>Link to Join Match</li>
                     </ul>
                     </div>
                 )}
