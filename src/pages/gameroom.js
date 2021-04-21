@@ -100,6 +100,7 @@ export const GameRoom = (props) => {
 
     
     useEffect(()=>{
+        let isSubscribed = true;
         const CreateNewMatch  = async () => {
             try {
                 const { matchID } = await lobbyClient.createMatch('SHED', {
@@ -130,10 +131,14 @@ export const GameRoom = (props) => {
                 //console.log("setting local stroage - not enough players") 
                 localStorage.setItem("newMatchID","INSUFF_PLAYERS")
                 document.dispatchEvent(new CustomEvent("newMatchCreated"))    
-            } else {
+            } else if (isSubscribed) {
             getnewMatchID()
             }
         }
+
+        return () => (
+            isSubscribed = false
+        )
     }, [numPlayingAgain, lobbyClient])
 
     

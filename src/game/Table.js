@@ -68,8 +68,8 @@ export class SHEDtable extends React.Component {
             }
         }
 
-    if (this.props.ctx.phase === "EndPhase" && this.props.G.newMatchID !== prevProps.G.newMatchID ) {
-        console.log("match id new ",this.props.G.newMatchID)
+        if (this.props.ctx.phase === "EndPhase" && this.props.G.newMatchID !== prevProps.G.newMatchID ) {
+            console.log("match id new ",this.props.G.newMatchID)
             this.setState({showWaitingForOthers: false})
             if (this.props.G.newMatchID === "INSUFF_PLAYERS") {
                 document.dispatchEvent(new CustomEvent("ReturnLobby"))    
@@ -78,6 +78,10 @@ export class SHEDtable extends React.Component {
                     detail: { matchID: this.props.G.newMatchID }
                 }))
             }
+        }
+
+        if (this.props.ctx.phase === "EndPhase" && this.props.G.playingAgain[parseInt(this.props.playerID)]===false) {
+            document.dispatchEvent(new CustomEvent("ReturnLobby"))
         }
     }
 
@@ -121,9 +125,9 @@ export class SHEDtable extends React.Component {
     handlePlayAgain = (choice) => {
         this.props.moves.playAgain(choice, parseInt(this.props.playerID))
         //leave if the player chose to return to lobby (done here so G updates)
-        if (this.props.G.playingAgain[parseInt(this.props.playerID)]===false) {
-           document.dispatchEvent(new CustomEvent("ReturnLobby"))
-        }
+        // if (this.props.G.playingAgain[parseInt(this.props.playerID)]===false) {
+        //    document.dispatchEvent(new CustomEvent("ReturnLobby"))
+        // }
         
     }
 
