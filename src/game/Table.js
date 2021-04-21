@@ -588,21 +588,26 @@ export class SHEDtable extends React.Component {
 
             }
         } 
+        
+        const mobileStyle = {
+            width: "100%" 
+         }
 
         if (playerPlayingAgain===false) {
             return (
-                <div id="EndScreen">
+                <div id="EndScreen" style={this.props.isMobile?mobileStyle:{}} >
                     <GameOver 
                         winnerID={this.props.G.winner}
                         matchData={this.props.matchData}
                         playerID={thisPlayerNumber}
+                        isMobile={this.props.isMobile}
                     /> 
                 <div>
                     <button id="EndGameChoice" onClick={()=>this.handlePlayAgain(true)}>
                         play again
                     </button>
                     <button id="EndGameChoice" onClick={()=>this.handlePlayAgain(false)}>
-                        return to lobby
+                        Leave
                     </button>
                 </div>
                 </div>
@@ -611,11 +616,12 @@ export class SHEDtable extends React.Component {
         } else if (this.state.showWaitingForOthers) {
             return (
                 <div>
-                    <div id="EndScreen">
+                    <div id="EndScreen" style={this.props.isMobile?mobileStyle:{}}>
                     <GameOver 
                         winnerID={this.props.G.winner}
                         matchData={this.props.matchData}
                         playerID={thisPlayerNumber}
+                        isMobile={this.props.isMobile}
                     /> 
                     </div>
                     <Pending text={"Waiting for others"} />

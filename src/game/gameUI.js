@@ -254,10 +254,14 @@ export const GameOver = (props) => {
       loserNames.push ( element.name )
     });
 
+    const mobileStyle = {
+      width: "100%" 
+   }
+  
     if (playerID===winner.id) {
       return (
         <div id="EndScreenMessage">
-          <img id="EndScreenImage" src={winnerScreen} alt={wood} />
+          <img className="EndScreenImage" src={winnerScreen} alt={wood} style={props.isMobile?mobileStyle:{}} />
           Well done {winner.name}, you won!
         </div>
         
@@ -265,7 +269,7 @@ export const GameOver = (props) => {
     } else {
       return(
         <div id="EndScreenMessage" >
-          <img id="EndScreenImage" src={loserScreen} alt={wood} />
+          <img className="EndScreenImage" src={loserScreen} alt={wood} style={props.isMobile?mobileStyle:{}} />
           Unlucky, you lost! {winner.name} Won!
       
       </div>
