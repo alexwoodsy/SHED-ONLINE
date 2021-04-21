@@ -12,7 +12,7 @@ import './index.css';
 import Homescreen from "./pages/homescreen";
 import Lobby from "./pages/lobby";
 import { GameRoom } from "./pages/gameroom";
-import { JoinByLink } from "./pages/matchlinkredirect";
+import  JoinByLink  from "./pages/joinredirect";
 import reportWebVitals from './reportWebVitals';
 
 
