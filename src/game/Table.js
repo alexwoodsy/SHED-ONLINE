@@ -1,6 +1,7 @@
 import React from 'react';
 import {Layer, Group, Rect, Stage, Text, Line } from 'react-konva';
 import Menu from './Menu'
+import { Pending } from '../pages/gameroom'
 import { CardImage, CardRenderParam } from './card';
 import { MagicEvent, BenchReadyButton, SevenChoiceInstruction, Instructions, EndTurnButton, GameOver } from './gameUI'
 import { DEBUGING_UI } from '../config';
@@ -24,6 +25,7 @@ export class SHEDtable extends React.Component {
         dropShadow: 20,
         hostClient: null,
         playerNames: !DEBUGING_UI ? this.props.matchData.map(elem=>elem.name) : [],
+        showWaitingForOthers: true,
     }
 
     
@@ -68,6 +70,7 @@ export class SHEDtable extends React.Component {
 
     if (this.props.ctx.phase === "EndPhase" && this.props.G.newMatchID !== prevProps.G.newMatchID ) {
         console.log("match id new ",this.props.G.newMatchID)
+            this.setState({showWaitingForOthers: false})
             if (this.props.G.newMatchID === "INSUFF_PLAYERS") {
                 document.dispatchEvent(new CustomEvent("ReturnLobby"))    
             } else if (this.props.G.newMatchID !== null) {
@@ -574,15 +577,15 @@ export class SHEDtable extends React.Component {
 
     EndOfGameOptions = () => {
         let thisPlayerNumber = parseInt(this.props.playerID);
-        let pressed = false;
+        let playerPlayingAgain = false;
         for (let i=0; i<this.props.ctx.numPlayers; i++) {
             if (this.props.G.playingAgain[i]!==null && i === parseInt(this.props.playerID)) {
-                pressed = true
+                playerPlayingAgain = true
 
             }
         } 
 
-        if (pressed===false) {
+        if (playerPlayingAgain===false) {
             return (
                 <div id="EndScreen">
                     <GameOver 
@@ -601,6 +604,19 @@ export class SHEDtable extends React.Component {
                 </div>
                 
             ) 
+        } else if (this.state.showWaitingForOthers) {
+            return (
+                <div>
+                    <div id="EndScreen">
+                    <GameOver 
+                        winnerID={this.props.G.winner}
+                        matchData={this.props.matchData}
+                        playerID={thisPlayerNumber}
+                    /> 
+                    </div>
+                    <Pending text={"Waiting for others"} />
+                </div> 
+            )
         } else {
             return null;
         }

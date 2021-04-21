@@ -9,23 +9,33 @@ import { LobbyClient } from 'boardgame.io/client';
 import "./Style.css"
 
 
+
 const { origin, protocol, hostname } = window.location;
 const SERVER = APP_PRODUCTION ? origin : `${protocol}//${hostname}:${DEFAULT_PORT}`;
 
+export const Pending = (props) => { 
+    return (
+        <div className="center">
+            <div className="lds-dual-ring" />
+            <div className="center" style={{
+                "top": "65%",
+                "fontSize": 50,
+                "color": "rgba(255,255,255)"
+            }}>
+                {props.text}
+            </div>
+        </div>
+    )
+  }
+  const loading = () => <Pending text={"loading"}/>
 
 const SHEDClient = Client({
     game: SHED,
     board: SHEDtable,
     debug: false, 
     multiplayer: SocketIO({server: SERVER}), 
-    loading: loading,
+    loading: loading
   });
-
-function loading () { 
-    const element = (<h1> put loading screen here</h1>)
-    return element;
-    
-  }
 
 export const GameRoom = (props) => {
     let lobbyClient = useMemo(()=> new LobbyClient({ server: SERVER }), [])//empty dependency means init once
@@ -181,9 +191,7 @@ export const GameRoom = (props) => {
     const DelayTimer = () => {
         if (joinDelay !== null) {
             return (
-                <div id="overlay">
-                    Joining in {joinDelay/1000}...
-                </div>
+                <Pending text={`Joining in ${joinDelay/1000}...`}/>
             )
         } else {
             return null;
@@ -191,10 +199,6 @@ export const GameRoom = (props) => {
     }
 
     
-
-   //chnage how client is instantiated so I can call tranport functions
-
-     
     if (playersJoined.length === parseInt(numberOfPlayers) ) {
         return (
             <div>
