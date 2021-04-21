@@ -113,7 +113,7 @@ export const Lobby = (props) => {
                 });
             setmatchID(matchID)
         } catch(err) {
-            alert('could no create match - check connection')
+            alert('could not create match - check connection')
             console.error(err)
         }
         
@@ -134,7 +134,9 @@ export const Lobby = (props) => {
     }
   
     function handleJoin (event) {
-        if (playerName.length!==0) {
+        if (playerName.length > 20) {
+            alert('Name is too long! (must be <20 chars')
+        } else if (playerName.length!==0) {
             if (matchID.length === 11) {
                 Join(); 
             event.preventDefault();
