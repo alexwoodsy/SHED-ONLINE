@@ -1,5 +1,3 @@
-# SHED-ONLINE
-shed online - the game for bois
 <!--
 *** Thanks for checking out the Best-README-Template. If you have a suggestion
 *** that would make this better, please fork the repo and create a pull request
@@ -34,19 +32,19 @@ shed online - the game for bois
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/alexwoodsy/SHED-ONLINE">
+  <a href="http://shed-online.com">
     <img src="https://github.com/alexwoodsy/SHED-ONLINE/blob/main/src/images/Logo.png" alt="Logo" width="696.5" height="314.5">
   </a>
 
-  <h3 align="center">SHED-online</h3>
+  <h3 align="center"><a href="http://shed-online.com"> SHED - Online</a></h3>
 
   <p align="center">
-    project_description
+    Online Card game build on top of the turn based JavaScript [boardgam.io](https://github.com/boardgameio/boardgame.io) engine, with a React front end
     <br />
     <a href="https://github.com/alexwoodsy/SHED-ONLINE"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/alexwoodsy/SHED-ONLINE">View Demo</a>
+    <a href="http://shed-online.com">Play with friends here!</a>
     ·
     <a href="https://github.com/alexwoodsy/SHED-ONLINE/issues">Report Bug</a>
     ·
