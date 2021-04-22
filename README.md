@@ -39,9 +39,9 @@
   <h3 align="center"><a href="http://shed-online.com"> SHED - Online</a></h3>
 
   <p align="center">
-    Online Card game build on top of the turn based JavaScript [boardgam.io](https://github.com/boardgameio/boardgame.io) engine, with a React front end
-    <br />
-    <a href="https://github.com/alexwoodsy/SHED-ONLINE"><strong>Explore the docs »</strong></a>
+    Online Card game build on top of the turn based JavaScript [](boardgam.io) engine, with a React front end
+    <!-- <br />
+    <a href="https://github.com/alexwoodsy/SHED-ONLINE"><strong>Explore the docs »</strong></a> -->
     <br />
     <br />
     <a href="http://shed-online.com">Play with friends here!</a>
@@ -84,15 +84,17 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
+This is a project I have been working on in my spare time during lockdown. Besides being great fun and good project to 
+familiaise myself further with JavaScript, React and web/game developent. I started this project so me and my friends could play our favourite card game we used to play whilst at university (before lockdown hit).
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+A few months later and here we are :smile:. The game is free to play at [SHED-Online](http://shed-online.com), hosted by Heroku.
 
 
 ### Built With
 
-* []()
-* []()
-* []()
+* [boardgame.io](https://github.com/boardgameio/boardgame.io)
+* [React](https://github.com/facebook/react/)
+* [Konva](https://github.com/konvajs/konva) (HTML5 Canvas JavaScript framework)
 
 
 
@@ -103,11 +105,8 @@ To get a local copy up and running follow these simple steps.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
+Make sure you have node installed, everything can then be installed using node package manager (see below)
+
 
 ### Installation
 
@@ -119,16 +118,35 @@ This is an example of how to list things you need to use the software and how to
    ```sh
    npm install
    ```
+### Running Locally
+to run the game locally do the following
+
+1. start two clients (or up to four for the max number of players) 
+```sh
+npm start
+```
+2. initialise the server which initialises the server
+```sh
+npm run serve
+```
+
+optionally you can just open a single client in debug mode to see the game interface. to do this, within `config.js`
+set 
+```javascript
+export const DEBUGING_UI = true 
+```
+
+
 
 
 
 <!-- USAGE EXAMPLES -->
-## Usage
+<!-- ## Usage
 
 Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
 _For more examples, please refer to the [Documentation](https://example.com)_
-
+ -->
 
 
 <!-- ROADMAP -->
@@ -141,7 +159,7 @@ See the [open issues](https://github.com/alexwoodsy/SHED-ONLINE/issues) for a li
 <!-- CONTRIBUTING -->
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Feel free to fork this and play around with it, any pull requests are welcome :smile:. Any contributions you make are **greatly appreciated**.
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
@@ -154,7 +172,7 @@ Contributions are what make the open source community such an amazing place to b
 <!-- LICENSE -->
 ## License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+Distributed under the GNU General Public License v3.0. See `LICENSE` for more information.
 
 
 
@@ -170,9 +188,9 @@ Project Link: [https://github.com/alexwoodsy/SHED-ONLINE](https://github.com/ale
 <!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements
 
-* []()
-* []()
-* []()
+* Big thanks to Harry Collins for drawing the lovely grpahics
+
+
 
 
 
