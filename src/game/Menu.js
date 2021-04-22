@@ -5,6 +5,7 @@ import invisible from '../images/magicEvents/Invis.png'
 import highlow from '../images/magicEvents/HighOrLow.png'
 import burn from '../images/magicEvents/burn.png'
 
+
 const { origin } = window.location;
 
 
@@ -12,14 +13,16 @@ class MenuDropdown extends React.Component {
     container = React.createRef();
     state = {
         open: false,
-        showRules: false
+        showRules: false,
+        showSharingMenu: false
     }
 
     handleButtonClick = () => {
         this.setState(state => {
           return {
             open: !state.open,
-            showRules: false
+            showRules: false,
+            showSharingMenu: false,
           };
         });
       };
@@ -35,8 +38,11 @@ class MenuDropdown extends React.Component {
 
     handleCopyMatchId = () => {
       navigator.clipboard.writeText(`${origin}/matchLinkRedirect/${this.props.matchID}`)
-      this.setState({
-        open: false,
+      this.setState(state => {
+        return {
+          open: false,
+          showSharingMenu: this.props.isMobile ? (!state.showSharingMenu): false,
+        };
       });
     }
 
@@ -45,7 +51,8 @@ class MenuDropdown extends React.Component {
         if (this.container.current && !this.container.current.contains(event.target)) {
           this.setState({
             open: false,
-            showRules: false
+            showRules: false,
+            showSharingMenu: false,
           });
         }
       };
@@ -62,7 +69,6 @@ class MenuDropdown extends React.Component {
 
 
     render() {
-      console.log()
         return (
             <div id="MenuContainer" ref={this.container}>
                 <button  id="MenuButton" onClick={this.handleButtonClick} />
@@ -70,7 +76,7 @@ class MenuDropdown extends React.Component {
                     <div className="LeftDropdown">
                     <ul>
                         <li onClick={this.handleRulesClick} >Rules</li>
-                        <li onClick={this.handleCopyMatchId}>Link to Join Match</li>
+                        <li onClick={this.handleCopyMatchId}>Copy Link to Join Match</li>
                     </ul>
                     </div>
                 )}
@@ -92,6 +98,19 @@ class MenuDropdown extends React.Component {
                       The deck is also burnt when all 4 suits of the same rank are in the pile </p>
                   </div>
                 )}
+                {this.state.showSharingMenu && (
+                  <div className="centerDropdown" >
+                    <div className="inlineSubmit">
+                        <div style={{fontSize: 40,width: "100%" , textAlign: "center", padding: "10px"}}>share link to match</div>
+                        <input 
+                          style={{width: "100%", color: "rgba(255, 255, 255, 1)"}}
+                          readOnly={true}
+                          type="text" 
+                          onFocus={(event)=>{event.target.select()}} 
+                          value={`${origin}/matchLinkRedirect/${this.props.matchID}`} />
+                    </div>
+                  </div>
+                )}
             </div>
         )
     } 
@@ -101,6 +120,7 @@ class ChatBar extends React.Component {
   constructor(props) {
     super(props)
     this.container = React.createRef();
+    this.chatList = React.createRef();
     this.Notificationinterval = null;
     this.state = {
       open: false,
@@ -131,6 +151,11 @@ class ChatBar extends React.Component {
       }
     };
 
+  scrollToBottom = () => {
+    if (this.chatList.current !== null) {
+      this.chatList.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    } 
+  }
 
     updateNewMessage (event) {
       this.setState({newMessage: event.target.value })
@@ -146,9 +171,11 @@ class ChatBar extends React.Component {
 
     componentDidMount() {
         document.addEventListener("mousedown", this.handleClickOutside);
-        document.addEventListener("touchstart", this.handleClickOutside)
+        document.addEventListener("touchstart", this.handleClickOutside);
+        this.scrollToBottom();
     }
     componentDidUpdate(prevProps) {
+      this.scrollToBottom()
       if (this.props.chatMessages !==prevProps.chatMessages) {
         let messages = [] 
         if (this.props.chatMessages !== undefined && this.props.chatMessages.length > 0) {
@@ -158,14 +185,13 @@ class ChatBar extends React.Component {
           })
           let lastMessage = messages[messages.length-1]
           let unreadNotifications = this.state.unreadNotifications
-          console.log(this.state.unreadNotifications)
+          
           if (this.props.clientName === lastMessage.sender) {
             lastMessage = null;
-            console.log('was sender')
           } else {
             unreadNotifications++
           }
-          console.log(this.state.unreadNotifications)
+          
           this.setState({
             messageNotification: lastMessage,
             messages: messages,
@@ -195,10 +221,11 @@ class ChatBar extends React.Component {
               )}
               {this.state.open && (
                   <div className="RightDropdown">
-                    <ul id="messagesList">
+                    <ul id="messagesList" >
                       {this.state.messages.map((message, index)=> (
-                        <li 
+                        <li
                           key={index} 
+                          ref={this.chatList}
                           id="messageItem" 
                           style={message.sender===this.props.clientName?{"textShadow": "2px 2px  rgb(255, 230, 0)"}:{}}
                         >

@@ -711,6 +711,7 @@ export class SHEDtable extends React.Component {
                         playerNames={playerNames}
                         clientName={!DEBUGING_UI?this.props.matchData[this.props.playerID].name:'DEBUG'}
                         matchID={this.props.matchID} 
+                        isMobile={this.props.isMobile}
                     /> 
                     <div id="overlay"/>
                     <this.EndOfGameOptions />
@@ -740,6 +741,7 @@ export class SHEDtable extends React.Component {
                         matchID={this.props.matchID} 
                         playerNames={playerNames}
                         clientName={!DEBUGING_UI?this.props.matchData[this.props.playerID].name:'DEBUG'}
+                        isMobile={this.props.isMobile}
                     />
                     </div>
                     <div id="Game">

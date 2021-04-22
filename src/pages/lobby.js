@@ -30,6 +30,7 @@ export const Lobby = (props) => {
     const [joining, setjoining] = useState(false)
     //const connectingClient = useRef(false);
     const showCreateMatch = useRef(true)
+    const [showShareOptions, setshowShareOptions] = useState(false)
     let lobbyClient = useMemo(()=> new LobbyClient({ server: SERVER }), [])//empty dependency means init once
     
     useEffect(()=>{
@@ -118,6 +119,7 @@ export const Lobby = (props) => {
                 numPlayers: numberOfPlayers
                 });
             setmatchID(matchID)
+            setshowShareOptions(true)
         } catch(err) {
             alert('could not create match - check connection')
             console.error(err)
@@ -173,6 +175,7 @@ export const Lobby = (props) => {
                 matchID={matchID}
                 onChangeMatchID={handleChangeJoinMatch}
                 onSubmit={handleJoin} 
+                showShareOptions={showShareOptions}
             />
         </div>
     );
@@ -199,6 +202,17 @@ const JoinMatch = (props) => {
                         </div> 
                     </label>
                 </div>
+                {props.showShareOptions && (
+                    <div className="inlineSubmit">
+                        share link to match
+                        <input 
+                            readOnly={true}
+                            type="text" 
+                            onFocus={(event)=>{event.target.select()}} 
+                            value={`${origin}/matchLinkRedirect/${props.matchID}`}
+                        />
+                    </div>
+                )}
             </form>
         </div>
         
