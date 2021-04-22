@@ -227,7 +227,7 @@ class ChatBar extends React.Component {
                           key={index} 
                           ref={this.chatList}
                           id="messageItem" 
-                          style={message.sender===this.props.clientName?{"textShadow": "2px 2px  rgb(255, 230, 0)"}:{}}
+                          style={message.sender===this.props.clientName?{"textShadow": "2px 2px rgba(0, 68, 255, 0.5)"}:{}}
                         >
                           {message.sender===this.props.clientName?"you":message.sender}: {message.text}
                         </li>

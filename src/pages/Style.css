@@ -280,7 +280,7 @@ input[type=text]:focus {
   z-index: 2;
   border: 1px solid rgba(0, 0, 0, 0.04);
   box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.301);
-  background-color: rgba(179, 179, 179, 0.3); /* Black background with opacity */
+  background-color:rgba(80, 80, 80, 0.6);; /* Black background with opacity */
     border-radius: 25px;
     padding: 10px 5px;
   color: aliceblue;
@@ -307,7 +307,6 @@ ul {
   list-style: none;
   padding: 0;
   margin: 0;
-  background-color: rgba(119, 119, 119, 0.219);
 }
 li {
   padding: 8px 12px;
@@ -318,11 +317,13 @@ li {
 
 li:hover {
   background-color: rgba(0, 0, 0, 0.14);
+  border-radius: 15px;
   left: 0;
   cursor: pointer;
 }
 li:active {
-  background-color: rgba(32, 32, 32, 0.5);
+  background-color: rgba(0, 0, 0, 0.14);
+  border-radius: 15px;
   left: 0;
   cursor: pointer;
 }
@@ -393,7 +394,7 @@ li:active {
   z-index: 2;
   border: 1px solid rgba(0, 0, 0, 0.04);
   box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.301);
-  background-color: rgba(179, 179, 179, 0.3); /* Black background with opacity */
+  background-color: rgba(80, 80, 80, 0.6); /* Black background with opacity */
     border-radius: 25px;
     padding: 5px 5px;
   color: rgb(0, 0, 0);
@@ -415,7 +416,7 @@ li:active {
     border-radius: 25px;
     padding: 5px 5px;
   color: rgb(0, 0, 0);
-  text-shadow: 2px 2px  rgba(255, 51, 0, 1);
+  text-shadow: 2px 2px  rgba(255, 51, 0, 0.5);
   overflow-wrap: break-word;
   word-break: break-all; 
 }
@@ -436,9 +437,10 @@ li:active {
 }
 
 #messageItem {
+  color: rgb(255, 255, 255);
   display: inline-block;
   text-align: left;
-  width: 95%;
+  width: 92%;
 }
 
 /* width */
@@ -448,7 +450,7 @@ li:active {
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #f1f1f12f;
+  background: transparent;
 }
 
 /* Handle */
