@@ -39,7 +39,7 @@
   <h3 align="center"><a href="http://shed-online.com"> SHED - Online</a></h3>
 
   <p align="center">
-    Online Card game build on top of the turn based JavaScript [https://github.com/boardgameio/boardgame.io](boardgam.io) engine, with a React front end
+    Online Card game build on top of the turn based JavaScript [boardgam.io](https://github.com/boardgameio/boardgame.io) engine, with a React front end
     <!-- <br />
     <a href="https://github.com/alexwoodsy/SHED-ONLINE"><strong>Explore the docs »</strong></a> -->
     <br />
