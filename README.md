@@ -87,7 +87,7 @@
 This is a project I have been working on in my spare time during lockdown. Besides being great fun and good project to 
 familiaise myself further with JavaScript, React and web/game developent. I started this project so me and my friends could play our favourite card game we used to play whilst at university (before lockdown hit).
 
-A few months later and here we are :smile:. The game is free to play at [SHED-Online](http://shed-online.com), hosted by Heroku.
+A few months later and here we are :smile:. The game is free to play at [SHED-Online](http://shed-online.com), hosted on Heroku.
 
 
 ### Built With
@@ -125,7 +125,7 @@ to run the game locally do the following
 ```sh
 npm start
 ```
-2. initialise the server which initialises the server
+2. initialise the server which handles communicatig game state between clients
 ```sh
 npm run serve
 ```
