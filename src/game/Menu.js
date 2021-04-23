@@ -37,7 +37,10 @@ class MenuDropdown extends React.Component {
     }
 
     handleCopyMatchId = () => {
-      navigator.clipboard.writeText(`${origin}/matchLinkRedirect/${this.props.matchID}`)
+      if (!this.props.isMobile) {
+        navigator.clipboard.writeText(`${origin}/matchLinkRedirect/${this.props.matchID}`)
+      }
+      
       this.setState(state => {
         return {
           open: false,
@@ -76,7 +79,9 @@ class MenuDropdown extends React.Component {
                     <div className="LeftDropdown">
                     <ul>
                         <li onClick={this.handleRulesClick} >Rules</li>
-                        <li onClick={this.handleCopyMatchId}>Copy Link to Join Match</li>
+                        <li onClick={this.handleCopyMatchId}> 
+                          {this.props.isMobile? "Link to Join Match": "Copy link to clipboard"}
+                        </li>
                     </ul>
                     </div>
                 )}
@@ -104,7 +109,6 @@ class MenuDropdown extends React.Component {
                         <div style={{fontSize: 40,width: "100%" , textAlign: "center", padding: "10px"}}>share link to match</div>
                         <input 
                           style={{width: "100%", color: "rgba(255, 255, 255, 1)"}}
-                          readOnly={true}
                           type="text" 
                           onFocus={(event)=>{event.target.select()}} 
                           value={`${origin}/matchLinkRedirect/${this.props.matchID}`} />

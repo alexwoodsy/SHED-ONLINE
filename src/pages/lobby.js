@@ -202,11 +202,10 @@ const JoinMatch = (props) => {
                         </div> 
                     </label>
                 </div>
-                {props.showShareOptions && (
+                { (props.showShareOptions && props.matchID.length===11) && (
                     <div className="inlineSubmit">
                         share link to match
                         <input 
-                            readOnly={true}
                             type="text" 
                             onFocus={(event)=>{event.target.select()}} 
                             value={`${origin}/matchLinkRedirect/${props.matchID}`}
