@@ -239,7 +239,7 @@ class ChatBar extends React.Component {
                     </ul>
                   
                     <form className="chatSubmit" onSubmit={(event)=>{this.sendNewMessage(event)}} >
-                      <input type="text" value={this.state.newMessage} onChange={(event)=>this.updateNewMessage(event)} /> 
+                      <input type="text" style={{color: "#fff"}} value={this.state.newMessage} onChange={(event)=>this.updateNewMessage(event)} /> 
                       <input id="sendButton" type="submit" value="" onSubmit={(event)=>{this.sendNewMessage(event)}} />
                     </form>     
                   </div>
