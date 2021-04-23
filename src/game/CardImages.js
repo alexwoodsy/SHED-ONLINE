@@ -62,10 +62,6 @@ import ashC from '../images/magicEvents/Ash_C.png'
 import ashS from '../images/magicEvents/Ash_S.png'
 import ashD from '../images/magicEvents/Ash_D.png'
 import ashH from '../images/magicEvents/Ash_H.png'
-//card Indicator
-//import indicator from '../images/UI/NailIndicator.png'
-
-
 
 const CardFaces = {
     hearts: [hearts2, hearts3, hearts4, hearts5, hearts6, hearts7, hearts8, hearts9, hearts10, heartsJ, heartsQ, heartsK, heartsA],
@@ -87,9 +83,7 @@ export const CardImages = {
     Back: cardback, 
     Empty: emptyCard,
     Ash: AshSuits,
-    //Indicator: indicator,
 }
 
-//function that gets the image from the card
 
 export default CardImages;

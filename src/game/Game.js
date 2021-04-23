@@ -1,15 +1,14 @@
 import { INVALID_MOVE } from 'boardgame.io/core';
 
-
-// VARS TO CHNAGE FOR DEBUGGING 
+//Debugging parameters
 var cardsInHand = 3; //default 3
 var emptyDeck = false; //false
 var handOf = null; //default null
-var endGame = true; //default false
+var endGame = false; //default false
 
 const constructCard = (suit, rank) => {
     const isMagic = () => {
-        let magic = [2, 3, 10]; //ranks of the magic cards - 7 not included -> DAN mode add 7 in this array 
+        let magic = [2, 3, 10]; 
         let magicCheck = false;
         for (let i=0; i < magic.length; i++) {
             if (magic[i] === rank) {
@@ -50,7 +49,6 @@ function GetDeck() {
             deck.push( card ) 
         }
     }
-    //console.log("deck", deck)
     return deck
 }
 
@@ -70,8 +68,7 @@ export const SHED = {
         playingAgain: Array(ctx.numPlayers),
         newMatchID: null,
         winner: null,
-        hostClient: null, //for end of game rematching - will issue new game commands (needs to be selected dynamically)
-                
+        hostClient: null,       
      }),
 
     turn: {
@@ -86,7 +83,7 @@ export const SHED = {
                 G.deck = ctx.random.Shuffle(G.deck);
                 initHand(G, ctx);
                 initBench(G, ctx);
-                if (emptyDeck===true) {G.deck = []};//DEBUGGING: SET TO empty}
+                if (emptyDeck===true) {G.deck = []};
                 ctx.events.setActivePlayers({
                     all: 'settingBench'
                 });
@@ -113,7 +110,7 @@ export const SHED = {
 
         MainPhase:{
             next:'EndPhase',
-            turn: { //if this doesnt work, try moving all logic away and just calling a function that sets this
+            turn: { 
                 onBegin: (G, ctx) => { 
                     if (G.hands[ctx.currentPlayer].length > 0) {
                         if ( CanPlay(G, ctx) ) {
@@ -122,10 +119,6 @@ export const SHED = {
                             ctx.events.setActivePlayers({currentPlayer: 'pickup'});
                         };
                     } else {
-                        // if (BenchPlayable(G, ctx).positions.length !==0) was remove from else above
-                        // console.log('BPlayer', BenchPlayable(G, ctx).layer)
-                        // console.log('BP pos', BenchPlayable(G, ctx).positions)
-                        //     console.log('onbegin', CanPlayBench(G, ctx))
                         if ( CanPlayBench(G, ctx) || BenchPlayable(G, ctx).layer ===0){
                             ctx.events.setActivePlayers({currentPlayer: 'playBench'});
                         } else if (G.deck.length === 0 && BenchPlayable(G, ctx).layer===1) {
@@ -152,7 +145,7 @@ export const SHED = {
                     },
                     play: {
                         moveLimit: 4,
-                        moves: {PlayCard, EndPlay}, //add pick up the pile here
+                        moves: {PlayCard, EndPlay}, 
                     },
                     playBench: {
                         moveLimit: 4,
@@ -214,12 +207,9 @@ function playAgain(G, ctx, choice, player) {
     });
 
     if (numChosen===ctx.numPlayers) {
-        //console.log("selecting host")
         for (let i=0; i<ctx.numPlayers; i++) {
-            //console.log('checking',i)
             if (G.playingAgain[i]) {
                 G.hostClient = i.toString()
-                //console.log('host set to ',i.toString())
                 break;   
             }  
         }
@@ -235,13 +225,8 @@ function setnewMatchID(G, ctx, matchID) {
 }
 
 function GameOver(G, ctx) {
-    //enter end of game phase - where play again / leave can be chosen
     G.winner = ctx.currentPlayer
     ctx.events.endPhase()
-
-
-
-    //ctx.events.endGame({winner: ctx.currentPlayer})
 }
 
 
@@ -259,7 +244,7 @@ function initBench (G, ctx) {
 
 function initHand (G, ctx) {
     for (let id=0; id < ctx.numPlayers; id++){
-        if (handOf !== null && id===0) { //for debugging player zero hand all to one suit
+        if (handOf !== null && id===0) { 
             for (let i=0; i<G.deck.length; i++) {
                 if (G.deck[i].rank === handOf) {
                     let card = G.deck.splice(i, 1)[0]
@@ -286,7 +271,7 @@ function PickupTable(G, ctx) {
         });
         G.hands[ctx.currentPlayer] = G.hands[ctx.currentPlayer].concat(cards);
         G.table = [];
-        G.lastPlayed = null; //Incase someone picks up -------------------------------------was changed - if stuff is broke then comment out again
+        G.lastPlayed = null; 
         ShouldMagicEventReset(G, ctx)
         orderHand(G, ctx)
         ctx.events.endTurn();
@@ -296,14 +281,12 @@ function PickupTable(G, ctx) {
 };
 
 
-//draw the card from deck and add the end of hand
 function DrawCard(G, ctx) {
     if (G.deck.length > 0) {
         let card = G.deck.pop();
         updateCardLocation(card, 'hand')
         G.hands[ctx.currentPlayer].push( card  )  
-        //console.log("added to hand")
-
+        
         if (G.hands[ctx.currentPlayer].length >=3 || G.deck.length===0) {
             orderHand(G, ctx)
             ctx.events.endTurn()
@@ -315,24 +298,19 @@ function DrawCard(G, ctx) {
     
 }
   
-  //later need to update to allow playing of more than 1 card - should be anmother function that calls this one
+  
 function PlayCard(G, ctx, position) {  
     let card = G.hands[ctx.currentPlayer][position]
     if ( MoveValid(G, ctx, card) ) {
         let card = G.hands[ctx.currentPlayer].splice(position, 1)[0]
-        
-
         card.LastPlayedBy = ctx.currentPlayer;
         card.turnPlayed = ctx.turn;
         updateCardLocation(card, 'table')
-        //add to last played for movevalid / ui decision checks
         G.lastPlayed = card;
         ShouldMagicEventReset(G, ctx)
-
-                
+      
         //add to table
         G.table = G.table.concat( card )
-        //console.log("added to table") 
 
         //burn instantly deck if card was a 10
         if ( canBurn(G, ctx) ) { burnTable(G, ctx) }
@@ -342,17 +320,13 @@ function PlayCard(G, ctx, position) {
 
         
         //end of play behaviour
-        //console.log('can play again?', CanPlayAgain(G, ctx))
        if (CanPlayAgain(G, ctx) === false) {
-           //let topCard = G.table[G.table.length-1]
            //update gamestate if card(s) played have magic behaviour
-          // console.log('cant play again')
             MoveIsMagic(G, ctx)
             EndPlay(G, ctx); 
        }; 
 
-       
-       //hanle playing last card in hand 
+       //handle playing last card in hand 
        if (G.hands[ctx.currentPlayer].length===0 && (BenchPlayable(G, ctx).layer===0 && BenchPlayable(G, ctx).positions.length ===0)) {
             GameOver(G, ctx);
        } else if (G.hands[ctx.currentPlayer].length===0 && G.deck.length===0) {
@@ -368,22 +342,15 @@ function PlayCard(G, ctx, position) {
             MoveIsMagic(G, ctx)
             EndPlay(G, ctx);
        }
-
-       
-
     } else {
         return INVALID_MOVE;
     };
   };
 
-
-
-//add card in bench postion to hand - add null in to sill space where card was
 function TakeBench(G, ctx, player, position) {
     let benchPoslen = G.benchs[player][position].length
     if (benchPoslen !== 1) {
         let card = G.benchs[player][position].pop()
-        // = ctx.currentPlayer //used to check if taken from bench - removed because this behaviour is not right + set last played wrong!
         updateCardLocation(card, 'hand')
         G.hands[player].push( card ) 
     } else {
@@ -395,7 +362,7 @@ function TakeBench(G, ctx, player, position) {
     }
 };
 
-//add card in hand to the bench
+
 function AddBench(G, ctx, player, position) {
     let freeBenchPos = null;
     //find free space on the bench to add the card
@@ -406,34 +373,27 @@ function AddBench(G, ctx, player, position) {
         };
     };
     
-    if (freeBenchPos !== null ) { //&& G.hands[player][position].LastPlayedBy===null - removed this functionallity
+    if (freeBenchPos !== null ) {
         let card = G.hands[player].splice(position, 1)[0]
         updateCardLocation(card, 'bench')
         G.benchs[player][freeBenchPos].push( card )
-        
-        //console.log('adding to bench')
     } else {
         return INVALID_MOVE;
     };
 };
 
 function PlayBench(G, ctx, position) {
-    //G.magicEvent.type = null//reset before turn 
     let PlayablePositions = BenchPlayable(G, ctx).positions;
-    //console.log('playable pos', PlayablePositions)
     let StartLayer = BenchPlayable(G, ctx).layer;
     let section = G.benchs[ctx.currentPlayer][position];
     let card = section[section.length-1];
     
     //make sure they are not playing from bottom if top remains
-    
     let correctLayer = false;
     for (let i=0; i<PlayablePositions.length; i++) {
-        //console.log('bench playable checking', position, PlayablePositions[i] )
         if (position===PlayablePositions[i]) {correctLayer = true}
     }
 
-    //console.log('correct layer:', correctLayer)
     if ( MoveValid(G, ctx, card) && correctLayer) {
         //play the card
         let card = G.benchs[ctx.currentPlayer][position].pop()
@@ -443,10 +403,6 @@ function PlayBench(G, ctx, position) {
         G.lastPlayed = card;
         G.table.push( card ) 
         ShouldMagicEventReset(G, ctx)
-
-        // if (card.rank !== 3) {
-        //     G.sevenHighLow = 'default'
-        // }
 
         //burn instantly deck if card was a 10
         if ( canBurn(G, ctx) ) { burnTable(G, ctx) }
@@ -463,7 +419,6 @@ function PlayBench(G, ctx, position) {
 
     } else {
         if (StartLayer===1) {
-            //console.log('move on top layer is invalid')
             return INVALID_MOVE;
         } else if (StartLayer===0) {
             card.LastPlayedBy = ctx.currentPlayer;
@@ -472,13 +427,13 @@ function PlayBench(G, ctx, position) {
             G.table.push( G.benchs[ctx.currentPlayer][position].pop() ) 
             //do not do magic in this case
             ctx.events.setStage('pickup')
-            //console.log('card was not valid move so now pickup')
         }
         
     };
 }
 
-function BenchPlayable(G, ctx) { //returns the postions and the layer from which bench cards can be played 
+//returns the positions and the layer from which bench cards can be played 
+function BenchPlayable(G, ctx) { 
     //get cards in bench playable
     let bench = G.benchs[ctx.currentPlayer];
     let topRowFilled = [];
@@ -503,13 +458,11 @@ function BenchPlayable(G, ctx) { //returns the postions and the layer from which
 
 
 function ReadyUp(G, ctx, readyPlayer) {
-    //toggle the button through gamestate
     if (G.Ready[readyPlayer] === 1) {
         G.Ready[readyPlayer] = 0;
     } else {
         G.Ready[readyPlayer] = 1;
     }
-
 
     //now check all are ready
     let checkval = 0;
@@ -536,9 +489,7 @@ function EndPlay(G, ctx) {
             ctx.events.setStage('sevenChoice')
         } else  {
             ctx.events.endTurn();
-        }// else {
-        //     ctx.events.setStage('draw')  //if (BenchPlayable(G,ctx).positions.length > 0)              
-        // };
+        }
     }; 
 };
 
@@ -565,18 +516,16 @@ function MoveValid(G, ctx, card) {
         while (i>=0) {
             if (table[i].invisible === false) {
                 lastNormCard=table[i]
-                break;
+                break
             }
-            i--;
+            i--
         };
         
-        
-        if ((G.lastPlayed.LastPlayedBy===ctx.currentPlayer)  ) {//needs to be last played incase burns && (G.lastPlayed.turnPlayedOn===ctx.turn)
+        if ((G.lastPlayed.LastPlayedBy===ctx.currentPlayer)  ) {
             if (G.lastPlayed.rank !== card.rank) {checkval = false}
-
         } else if (card.magic === false) {
             if (topCard.invisible) {
-                if (lastNormCard!==null) { //if only invis we dont need to check this
+                if (lastNormCard!==null) { 
                     if (lastNormCard.rank === 7 ) {  
                         if ( (card.rank > 7 && G.sevenHighLow === 'lower') || (card.rank < 7 && G.sevenHighLow === 'higher') ) {
                             checkval = false;
@@ -589,34 +538,27 @@ function MoveValid(G, ctx, card) {
                 if ( (card.rank > 7 && G.sevenHighLow === 'lower') || (card.rank < 7 && G.sevenHighLow === 'higher') ) {
                     checkval = false;
                 } 
-            } else if (topCard.rank > card.rank) { //removed table > 0 as redundant
+            } else if (topCard.rank > card.rank) {
                 checkval = false; 
             };       
         };
     
         
     };
-   //console.log('move valid', checkval)
     //valid unless a check above says otherwise
     return checkval;
 };
 
 
-
 //retrun true if player has card in hand with rank = to the one they just played 
 function CanPlayAgain(G, ctx) { 
     let cards=G.hands[ctx.currentPlayer]
-    //let hand = G.hands[ctx.currentPlayer];
     let chekval = false;
-    
+
     if (G.lastPlayed === null || (G.magicEvent.type==='burning' )) {
         chekval = true;
     } else {
         for (let i=0; i < cards.length; i++) {
-            // if (cards[i].rank===G.lastPlayed.rank ) {
-            //     console.log('play again cards', cards[i].rank)
-            //     chekval = true
-            // } removed as a test
             if (MoveValid(G, ctx, cards[i])) {
                 chekval = true
             }
@@ -629,7 +571,7 @@ function CanPlay(G, ctx) {
     let checkval = false;
     if (G.lastPlayed === null) {
         checkval = true;
-    } else { //has to be here as othrwise doing a check at start when no-one is in a stage
+    } else { 
         let cards=G.hands[ctx.currentPlayer]
         for (let i=0; i < cards.length; i++) {
             let card = cards[i];
@@ -667,7 +609,6 @@ function CanPlayAgainBench(G, ctx) {
             checkval = true;
         }
     } else {
-        
         for (let i=0; i<postions.length; i++) {
             let card = G.benchs[ctx.currentPlayer][postions[i]][layer];
             if ( MoveValid(G, ctx, card) ) {checkval = true}
@@ -676,25 +617,15 @@ function CanPlayAgainBench(G, ctx) {
     return checkval;
 }
 
-
-
-
-//return event type to log the moves made - needed for the invisible check when checking move validity
 function MoveIsMagic(G, ctx) {
     let movetype = null //default
     let table=G.table
     if (table.length !==0) {
         let topCard = table[table.length-1]
-        //console.log('table',table,'topcard',topCard)
-        //determinie movetype from top card on table
-        //console.log
-        // if (topCard.magic) {
-             movetype = topCard.rank
-        // };
-
-        //if its a seven then just set magicevent but dont retrun move is magic
+        movetype = topCard.rank
 
         if (canBurn(G, ctx)===true ) { movetype ='burn'}
+
         switch(movetype) {
             case 10:
             case 'burn':
@@ -703,26 +634,21 @@ function MoveIsMagic(G, ctx) {
             case 7:
                 G.magicEvent.type = 'Higher or lower'
                 G.magicEvent.count++
-                //dont need to do anything - handled by game logic
                 break;
             case 3:
                 G.magicEvent.type = 'Invisible'
                 G.magicEvent.count++
                 break;
             case 2:
-                //no action needed for 2 reset as no cards lower than 2
                 G.magicEvent.type = 'reset'
                 G.magicEvent.count++
                 break
-            default: //when movetype is null due card being normal
-                //console.log('standard')
+            default: 
                 G.magicEvent.type = null
                 G.magicEvent.count = 0
-                break // do nothing - allow us to track magic events 
+                break 
         };
-    }
-    
-    //return movetype;
+    };
 };
 
 function burnTable(G, ctx) {
@@ -731,9 +657,8 @@ function burnTable(G, ctx) {
     G.magicEvent.count++
 }
 
-
+//check if there are 4 of the same played - burn if so 
 function canBurn(G, ctx) {
-    //check if there are 4 of the same played - burn if so 
     let table = G.table;
 
     if (table[table.length-1].rank===10) {
@@ -752,32 +677,26 @@ function canBurn(G, ctx) {
     return false;
 }
 
-function hasTen (G, ctx) { //has a ten in the same collection as intially played from
-    //console.log('ten last played', G.lastPlayed.LastLocation)
+function hasTen (G, ctx) { 
     let stage = ctx.activePlayers[ctx.currentPlayer]
-    
+
     if (stage === 'play') {
-        //console.log('checking hands and player', ctx.currentPlayer)
         let cards=G.hands[ctx.currentPlayer]
             for (let i=0; i < cards.length; i++) {
                 let card = cards[i];
                 if ( card.rank===10 ) {
-                    //('has ten in hand')
                     return true}
             }
-    } else if (stage === 'playBench'){ //check the bench for a ten
-        //if on top layer - look on to layer
-        //console.log('checking bench and player',ctx.currentPlayer)
+    } else if (stage === 'playBench'){
         if (BenchPlayable(G, ctx).layer===1 && G.lastPlayed.LastLocation === 'bench') {
             let postions = BenchPlayable(G, ctx).positions;
             for (let i=0; i<postions.length; i++) {
                 let card = G.benchs[ctx.currentPlayer][postions[i]][1];
                 if ( card.rank===10 ) {
-                    //console.log('has ten in bench')
                     return true}
             };
-        }     
-    }
+        };    
+    };
     return false;
 }
 
@@ -792,32 +711,6 @@ function ShouldMagicEventReset (G, ctx) {
         G.magicEvent = {type: null, count:0}
         G.sevenHighLow = 'default'
     }
-        
-    
-    //if last played === 3 and magic is burning and last played by this play then set the magic event to invisible 
 }
-
-
-
-// function canEndTurnAfterBurn (G, ctx) {//returns true when the button for ending play should be shown
-//     let haveTen = false; //return true ONLY if they just burnt and have a 10
-
-
-
-
-
-//     
-
-
-//         //if on the bottom - do nothing
-//     }  
-    
-//     let notBurningCheck = !(G.magicEvent==='burning') || haveTen
-//     console.log('haveTen',haveTen,'noBurning',notBurningCheck)
-
-//     G.canEndTurnAfterBurn = (notBurningCheck)
- 
-// }
-
 
 export default SHED;

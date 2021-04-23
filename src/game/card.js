@@ -9,7 +9,7 @@ import { imageRatio } from './gameUI'
 
 const DEBUG = false;
 
-//retrun index in CradImages.Faces of corresponding cards
+//return index in CradImages.Faces of corresponding cards
 function GetFace(card) {
     if (card === null) {
         return (CardImages.Empty)
@@ -85,7 +85,6 @@ export const CardImage = (props) => {
     const cardRef = useRef(null)
     useEffect(()=>{
         const expandCard = () => {
-            //cardRef.current.moveToTop()
             cardRef.current.to({
                 x: expanded.x,
                 y: expanded.y,
@@ -210,7 +209,7 @@ export function CardRenderParam (rangeX, rangeY, cardwidth, cardheight, screenX,
     let xspacing = cardheight/2 + padX
     let ratioX = ((screenX-2*padX)/screenY) ;
     let ratioY = ((screenY-2*padY)/screenX);
-    let Params =Array(numberCards); // [ [x, y]_n ]
+    let Params =Array(numberCards); 
     let dx =1; //cos rot
     let dy =0; // sin rot
     let originX = 0;

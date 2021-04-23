@@ -4,7 +4,6 @@ export const JoinByLink = (props) => {
     let { matchID } = useParams();
     localStorage.setItem("joinByLinkMatchID", matchID)
     props.history.push("/lobby")
-    
     return (null)
 }
 

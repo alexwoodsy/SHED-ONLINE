@@ -8,8 +8,6 @@ import { DEFAULT_PORT, APP_PRODUCTION } from "../config";
 import { LobbyClient } from 'boardgame.io/client';
 import "./Style.css"
 
-
-
 const { origin, protocol, hostname } = window.location;
 const SERVER = APP_PRODUCTION ? origin : `${protocol}//${hostname}:${DEFAULT_PORT}`;
 
@@ -41,7 +39,7 @@ const SHEDClient = Client({
   });
 
 export const GameRoom = (props) => {
-    let lobbyClient = useMemo(()=> new LobbyClient({ server: SERVER }), [])//empty dependency means init once
+    let lobbyClient = useMemo(()=> new LobbyClient({ server: SERVER }), [])//empty dependency  (init once)
     const playerID = localStorage.getItem("playerID");
     const matchID = localStorage.getItem("MatchID");
     const numberOfPlayers = localStorage.getItem("numberOfPlayers");
@@ -59,7 +57,6 @@ export const GameRoom = (props) => {
         const PlayersInRoom = async () => {
             let players = [];
             const matchInstance = await lobbyClient.getMatch('SHED', matchID)
-            console.log('checking number of players joined is ...',matchInstance.players.length)
             matchInstance.players.forEach(element => {
                 if (element.name !== undefined) {
                     players.push( element.name )
@@ -85,7 +82,6 @@ export const GameRoom = (props) => {
     const hasCreated=useRef(false)
     useEffect(()=>{
         const getNumPlayingAgain = (event) => {
-            //console.log('getting num playing again')
             let count = 0
             for (let i=0; i<event.detail.players.length; i++) {
                 if (event.detail.players[i]) {count++}
@@ -121,23 +117,19 @@ export const GameRoom = (props) => {
         };
 
         const getnewMatchID = async () => {
-            let newMatchID = await CreateNewMatch()
-            //console.log("setting local stroage")    
+            let newMatchID = await CreateNewMatch()  
             localStorage.setItem("newMatchID", newMatchID)
-            //console.log('new match ID - triggereing event to update G')
             document.dispatchEvent(new CustomEvent("newMatchCreated"))    
         }
 
         if (isInitialMount.current) {
             isInitialMount.current = false;
         } else {
-            //console.log('num playing agin', numPlayingAgain)
             if (numPlayingAgain<2) {
-                //console.log("setting local stroage - not enough players") 
                 localStorage.setItem("newMatchID","INSUFF_PLAYERS")
                 document.dispatchEvent(new CustomEvent("newMatchCreated"))    
             } else if (isSubscribed) {
-            getnewMatchID()
+                getnewMatchID()
             }
         }
 
@@ -149,21 +141,14 @@ export const GameRoom = (props) => {
     
     useEffect(()=>{
         const redirectLobby = () => {
-            console.log('redirecting to lobby')
             props.history.push("/lobby")
         }
         
-
         const conectToNewMatch = (event) => {
             localStorage.setItem("newMatchID", event.detail.matchID )
             localStorage.setItem("previousPlayerName", playerName)
-            //NEED NUM OF PLAYERS TO BE SET
-            //localStorage.setItem("numberOfPlayers",);
-
-
             //trigger timer to delay join
             setjoinDelay((2+parseInt(playerID))*1000)
-            
         }
 
         if (localStorage.getItem("newMatchID")!== undefined) {
@@ -208,7 +193,6 @@ export const GameRoom = (props) => {
         }
     }
 
-    
     if (playersJoined.length === parseInt(numberOfPlayers) ) {
         return (
             <div>
@@ -219,34 +203,22 @@ export const GameRoom = (props) => {
                     isMobile={props.isMobile}
                 /> 
                 <DelayTimer/>
-            </div>
-            
-                        
+            </div>              
         ); 
-            //need another else if match ID is null
-
     } else {
         return (
             <div>
                 <Menu matchID={matchID} isMobile={props.isMobile}/>
                 <div id={props.isMobile? "mobileLobby": "lobby"}>
-                <h1>waiting room</h1>
-                <h2> players in room({playersJoined.length}/{numberOfPlayers}):</h2>
-                <div>
-                    {playersJoined.map((name, index) => (
-                        <p key={index}>{index+1}. {name}</p>
-                    ))}
-                </div>
-            </div> 
+                    <h1>waiting room</h1>
+                    <h2> players in room({playersJoined.length}/{numberOfPlayers}):</h2>
+                    <div>
+                        {playersJoined.map((name, index) => (
+                            <p key={index}>{index+1}. {name}</p>
+                        ))}
+                    </div>
+                </div> 
             </div>
-            
         )
-    }
-    
-    
+    }   
 }
-//buttons for playing again or return to lobby:
-//- "return to lobby" calls leavematch and reidrcts to lobby
-//- play again call's play again handler
-
-

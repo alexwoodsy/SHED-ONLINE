@@ -7,7 +7,6 @@ import wood from '../images/UI/wood.png'
 export const Homescreen = (props) => {     
     useEffect(()=>{
         localStorage.clear()
-        //console.log(localStorage) 
     }, [])
     
     return(

@@ -48,8 +48,6 @@ export class SHEDtable extends React.Component {
     componentDidMount() {
         window.addEventListener('resize', this.updateDimensions);
         document.addEventListener("newMatchCreated", this.handleNewMatch, { once: true })
-        //console.log(this.props.G.hands[0][0].name)
-        //console.log(this.state.playerNames)
     }
 
     componentWillUnmount() {
@@ -60,7 +58,6 @@ export class SHEDtable extends React.Component {
     componentDidUpdate(prevProps) {
         //when all players have made a choice dispatch num of players for new match
         if (this.props.ctx.phase === "EndPhase" && (this.props.G.hostClient !== prevProps.G.hostClient) ) {
-            console.log('host', this.props.G.hostClient, 'this player', this.props.playerID, this.props.G.hostClient===this.props.playerID)
             if (this.props.G.hostClient===this.props.playerID) {
                 document.dispatchEvent(new CustomEvent("PlayAgain", {
                     detail: {players: this.props.G.playingAgain}
@@ -69,7 +66,6 @@ export class SHEDtable extends React.Component {
         }
 
         if (this.props.ctx.phase === "EndPhase" && this.props.G.newMatchID !== prevProps.G.newMatchID ) {
-            console.log("match id new ",this.props.G.newMatchID)
             this.setState({showWaitingForOthers: false})
             if (this.props.G.newMatchID === "INSUFF_PLAYERS") {
                 document.dispatchEvent(new CustomEvent("ReturnLobby"))    
@@ -87,10 +83,8 @@ export class SHEDtable extends React.Component {
 
     
     clickCard = (type, position, player) => {
-        let thisPlayerNumber = parseInt(this.props.playerID); //the current player
-        //player = card thats has been clicked
-
-        if(type === 'draw') {//legacy not n more manual drawing
+        let thisPlayerNumber = parseInt(this.props.playerID); 
+        if(type === 'draw') {
              this.props.moves.DrawCard()
         } else if(type === 'play' && player===thisPlayerNumber) {
             this.props.moves.PlayCard(position)
@@ -123,17 +117,11 @@ export class SHEDtable extends React.Component {
 
 
     handlePlayAgain = (choice) => {
-        this.props.moves.playAgain(choice, parseInt(this.props.playerID))
-        //leave if the player chose to return to lobby (done here so G updates)
-        // if (this.props.G.playingAgain[parseInt(this.props.playerID)]===false) {
-        //    document.dispatchEvent(new CustomEvent("ReturnLobby"))
-        // }
-        
+        this.props.moves.playAgain(choice, parseInt(this.props.playerID))        
     }
 
     handleNewMatch = () => {
         if (this.props.G.newMatchID===null) {
-            console.log('setting new match ID')
             this.props.moves.setnewMatchID(localStorage.getItem("newMatchID"))
         }  
     }
@@ -152,9 +140,9 @@ export class SHEDtable extends React.Component {
 
 
     renderHand = (props) => {
-        let thisPlayerNumber = parseInt(this.props.playerID); //the current player
+        let thisPlayerNumber = parseInt(this.props.playerID);
         let stage = this.props.ctx.activePlayers[this.props.ctx.currentPlayer];
-        let x = this.state.screenx/2// cardwidth/2 
+        let x = this.state.screenx/2
         let y =0
         let cards = [];
         let zones =['bottom', 'top', 'left', 'right'];
@@ -187,14 +175,8 @@ export class SHEDtable extends React.Component {
             let cardParams = CardRenderParam(x, y, this.state.cardwidth, this.state.cardheight, this.state.screenx, this.state.screeny, this.state.padx, this.state.pady, range, hand.length, zone, this.props.isMobile)
             for (let i= 0; i < hand.length; i++) {
                 let xcord; let ycord;
-
                 xcord = cardParams[i][0] 
                 ycord = cardParams[i][1]
-                
-                //append coords etc to card
-                
-
-                //console.log('rendering:', hand[i], 'player', player, `at x:${xcord} y:${ycord} in zone ${zone}`)
                 
                 //define click type for bench setting stage and normal game play
                 let phase = this.props.ctx.phase;
@@ -202,9 +184,7 @@ export class SHEDtable extends React.Component {
                 if (phase === 'StartPhase') {clickAction = 'addBench'} else {clickAction = 'play'};
                 let key = hand[i] !== null ? hand[i].name : `${player}hand${i}`
                 if(hand[i] === null) { 
-                    console.log("glitchy key found", this.props.G, this.props.ctx)
-                    console.log("hand[i]", hand[i])
-                 } else {
+                } else {
                     cards.push(
                         <CardImage
                             card={hand[i]}
@@ -225,8 +205,9 @@ export class SHEDtable extends React.Component {
                             highlight={highlight}
                             isPlayer={player===thisPlayerNumber}
                             isMobile={this.props.isMobile}
-                        />)
-                 }
+                        />
+                    )
+                }
                 
             }
         }
@@ -234,10 +215,10 @@ export class SHEDtable extends React.Component {
     };
 
     renderBench = () => {
-        let thisPlayerNumber = parseInt(this.props.playerID); //the current player
-        let x = this.state.screenx/2// cardwidth/2 
+        let thisPlayerNumber = parseInt(this.props.playerID);
+        let x = this.state.screenx/2
         let yspace = this.state.cardheight/10; 
-        let y = this.state.screeny/2 - 6*this.state.cardheight/5  //3*this.state.pady + this.state.cardheight;
+        let y = this.state.screeny/2 - 6*this.state.cardheight/5  
         let range = 500
         let cards=[];
         let zones =['bottom', 'top', 'left', 'right'];
@@ -279,7 +260,7 @@ export class SHEDtable extends React.Component {
                     let xcord; let ycord;
                     xcord=cardParams[j][0]
                     ycord=cardParams[j][1] 
-                    switch (zone) { //adaptation to hanle unique bench positioning
+                    switch (zone) { //adaptation to handle unique bench positioning
                         case "right":
                             xcord=this.state.screenx/2 + 7*this.state.cardheight/5 + this.state.cardwidth
                             break
@@ -292,7 +273,6 @@ export class SHEDtable extends React.Component {
 
                     let rotation = cardParams[j][2];
                     let key = bench[j][i] !== null ? bench[j][i].name : `${player}bench${j}${i}`
-                    if(bench[j][i] === null) { console.log("glitchy key found") }
                     cards.push(
                         <CardImage
                             reverse={i===0}
@@ -319,14 +299,13 @@ export class SHEDtable extends React.Component {
 
     renderDeck = (props) => {
         let deck = this.props.G.deck
-        let thisPlayerNumber = parseInt(this.props.playerID); //the current player
+        let thisPlayerNumber = parseInt(this.props.playerID); 
         let stage = this.props.ctx.activePlayers[thisPlayerNumber];
         let x = this.state.screenx/2 - 6*this.state.cardwidth/5;
         let y = this.state.screeny/2 - this.state.cardheight/2;
         let topcard = deck[deck.length -1]
         if (deck.length > 0) {
             let key = topcard !== null ? topcard.name : `deck`
-            if(topcard === null) { console.log("glitchy key found") }
             return (
                 <CardImage 
                     key = {key}
@@ -354,7 +333,7 @@ export class SHEDtable extends React.Component {
                     x={x} 
                     y={y} 
                 />
-               )
+            );
         };
     };
 
@@ -375,12 +354,11 @@ export class SHEDtable extends React.Component {
                 }
                 index--
             }
-            //console.log('table cards', tableCardsToRender)
-            //getTableCards(table, (table.length-1))
+            
             let renderedCards = [];
             for (let i=0; i<tableCardsToRender.length; i++) {
                 let key = tableCardsToRender[i] !== null ? tableCardsToRender[i].name : `table${i}`
-                if(tableCardsToRender[i] === null) { console.log("glitchy key found") }
+
                 renderedCards.push( 
                     <CardImage 
                         card={tableCardsToRender[i]} 
@@ -401,7 +379,6 @@ export class SHEDtable extends React.Component {
             }
             return renderedCards.reverse();
         } else if (this.props.G.magicEvent.type==="burning") {
-            console.log('getting ash')
             let card = "burnt"+this.props.G.lastPlayed.suit
             return (
                 <CardImage 
@@ -689,7 +666,6 @@ export class SHEDtable extends React.Component {
     }
     
     render() {               
-        //loop over all 4 players and render them accordingly
         let thisPlayerNumber = parseInt(this.props.playerID);
         let playerNames=[];
         if (!DEBUGING_UI) {playerNames = this.props.matchData.map((player)=>{
@@ -759,8 +735,6 @@ export class SHEDtable extends React.Component {
                                 <this.renderHand />  
                                 <this.renderDeck /> 
                                 <this.renderTable />
-                                {/* <Rect ref={node => {this.rect = node;} } x={this.state.positions.box.x} y={this.state.positions.box.y} width={70} height={70} fill={"white"} onClick={()=>this.moveTo("deck","box")} />
-                                <Rect ref={node => {this.rect = node;} } x={this.state.positions.box2.x} y={this.state.positions.box2.y} width={70} height={70} fill={"grey"} onClick={(node)=>this.moveTo("deck","box2", node)} /> */}
                             </Layer>
                             <Layer>
                             <SevenChoiceInstruction 
@@ -786,7 +760,7 @@ export class SHEDtable extends React.Component {
             );
          };
     };
-}
+};
 
 export default SHEDtable
 
