@@ -135,7 +135,7 @@
   font-size: 5vh;
   font-family: Carn;
   width: 60%;
-  z-index: 3;
+  z-index: 2;
   color: rgb(255, 255, 255);
 }
 
@@ -251,7 +251,9 @@ input[type=text]:focus {
     width: 100%;
   font-family: Carn;
   height: 6%;
-  background-color:rgba(255, 51, 0, 1);
+  background: rgb(5,0,91);
+  background: linear-gradient(107deg, rgba(5,0,91,1) 14%, rgba(15,15,134,1) 48%, rgba(0,212,255,1) 100%);
+  box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   z-index: 3;
 }
 
@@ -398,7 +400,7 @@ li:active {
     border-radius: 25px;
     padding: 5px 5px;
   color: rgb(0, 0, 0);
-  text-shadow: 2px 2px  rgba(255, 51, 0, 1);
+  text-shadow: 2px 2px  rgba(15,15,134,0.5);
   overflow-wrap: break-word;
   word-break: break-word; 
 }
@@ -416,7 +418,7 @@ li:active {
   border-radius: 25px;
   padding: 5px 5px;
   color: #fff;
-  text-shadow: 2px 2px  rgba(255, 51, 0, 0.5);
+  text-shadow: 2px 2px  rgba(15,15,134,0.5);
   overflow-wrap: break-word;
   word-break: break-all; 
 }

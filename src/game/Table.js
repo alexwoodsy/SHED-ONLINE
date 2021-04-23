@@ -641,9 +641,10 @@ export class SHEDtable extends React.Component {
            names[i] = this.state.playerNames[order[i+1]]
         }
 
-        
-        if (this.props.ctx.numPlayers > 2 ) {
-            names =[names[1], names[0], 'right'];
+        if (this.props.ctx.numPlayers === 3 ) {
+            names =[names[1], names[0]];
+        } else if ( this.props.ctx.numPlayers === 4 ) {
+            names =[names[1], names[0], names[2]];
         }
         const style = (coords) => {
             return({

@@ -95,7 +95,7 @@ export const Lobby = (props) => {
         let newMatchID = localStorage.getItem("newMatchID")
         let linkMatchID = localStorage.getItem("joinByLinkMatchID")
         let previousPlayerName = localStorage.getItem("previousPlayerName")
-        console.log(localStorage)
+        
         if (newMatchID !== undefined && newMatchID !== null && newMatchID !== "INSUFF_PLAYERS" && previousPlayerName!==undefined) {
             setmatchID(newMatchID)
             setplayerName(previousPlayerName)
@@ -207,6 +207,7 @@ const JoinMatch = (props) => {
                         share link to match
                         <input 
                             type="text" 
+                            onChange={()=>null}
                             onFocus={(event)=>{event.target.select()}} 
                             value={`${origin}/matchLinkRedirect/${props.matchID}`}
                         />

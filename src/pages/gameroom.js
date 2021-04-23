@@ -15,15 +15,18 @@ const SERVER = APP_PRODUCTION ? origin : `${protocol}//${hostname}:${DEFAULT_POR
 
 export const Pending = (props) => { 
     return (
-        <div className="center">
-            <div className="lds-dual-ring" />
+        <div className="center" style={{
+            "background": "rgba(1,1,1,0.2)"
+        }}>
             <div className="center" style={{
                 "top": "65%",
                 "fontSize": 50,
-                "color": "rgba(255,255,255)"
+                "color": "rgba(255,255,255)",
+                
             }}>
                 {props.text}
             </div>
+            <div className="lds-dual-ring" />
         </div>
     )
   }
@@ -52,6 +55,7 @@ export const GameRoom = (props) => {
      
     //ping the server for number of players 
     useEffect(() => {
+        let isSubscribed = true;
         const PlayersInRoom = async () => {
             let players = [];
             const matchInstance = await lobbyClient.getMatch('SHED', matchID)
@@ -65,14 +69,15 @@ export const GameRoom = (props) => {
         }
 
         const timeout = setTimeout(() => PlayersInRoom().then( value => {
-          if (playersJoined.length !== parseInt(numberOfPlayers) ) {
-              setplayersJoined(value)
+          if (playersJoined.length !== parseInt(numberOfPlayers) && isSubscribed ) {  
+            setplayersJoined(value)
             }
           }  
         ), 1000)
     
         return () => {
           clearTimeout(timeout);
+          isSubscribed=false;
           
         };
       }, [playersJoined, numberOfPlayers, lobbyClient, matchID ])
@@ -143,7 +148,7 @@ export const GameRoom = (props) => {
 
     
     useEffect(()=>{
-        const redirectLobby = async () => {
+        const redirectLobby = () => {
             console.log('redirecting to lobby')
             props.history.push("/lobby")
         }

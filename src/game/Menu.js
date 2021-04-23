@@ -4,6 +4,7 @@ import reset from '../images/magicEvents/reset.png'
 import invisible from '../images/magicEvents/Invis.png'
 import highlow from '../images/magicEvents/HighOrLow.png'
 import burn from '../images/magicEvents/burn.png'
+import ash from '../images/magicEvents/Ash_H.png'
 
 
 const { origin } = window.location;
@@ -88,19 +89,24 @@ class MenuDropdown extends React.Component {
                 {this.state.showRules && (
                   <div className="centerDropdown"> 
                     <h1>Rules</h1>
-                    <p>The aim of SHED is to be the first player with no cards. </p>
+                    <p>The aim of SHED is to be the first player to clear their bench. </p>
 
                     <p>Your Bench is used when the deck and your hand are depleted.
                     you can swap between the Bench ONLY at the start of the game.</p>
 
-                    <p>A Valid move consists of playing a higher card than that player 
-                    previosuly laid, unless you play a magic card (2,3 or 10).</p>
-                    <p>2 = Reset the pile <img id="rulesImage" src={reset} alt={''}/></p>
-                    <p>3 = Invisible (must play according to the card below)<img id="rulesImage" src={invisible} alt={''}/></p>
-                    <p>10 = Burns the deck <img id="rulesImage" src={burn} alt={''}/></p>
-                    <p>7 = You get to choose if the next player has to go higher or lower
+                    <p>A Valid move consists of playing a higher card than that
+                    previosuly laid, unless you play a magic card (2,3 or 10).
+                    <br/>
+                    2 = Reset the pile <img id="rulesImage" src={reset} alt={''}/>
+                    <br/>
+                    3 = Invisible, meaning the next player must play according to the card below<img id="rulesImage" src={invisible} alt={''}/>
+                    <br/>
+                    10 = Burns the deck <img id="rulesImage" src={burn} alt={''}/>
+                    <br/>
+                    7 = You get to choose if the next player has to go higher or lower
                       than a 7. This CANNOT be played on cards with rank {'>'} 7<img id="rulesImage" src={highlow} alt={''}/> <br/>
-                      The deck is also burnt when all 4 suits of the same rank are in the pile </p>
+                      <br/>
+                      The deck is also burnt when all 4 suits of the same rank are in the pile<img id="rulesImage" src={ash} alt={''}/> </p>
                   </div>
                 )}
                 {this.state.showSharingMenu && (
@@ -109,6 +115,7 @@ class MenuDropdown extends React.Component {
                         <div style={{fontSize: 40,width: "100%" , textAlign: "center", padding: "10px"}}>share link to match</div>
                         <input 
                           style={{width: "100%", color: "rgba(255, 255, 255, 1)"}}
+                          onChange={()=>null}
                           type="text" 
                           onFocus={(event)=>{event.target.select()}} 
                           value={`${origin}/matchLinkRedirect/${this.props.matchID}`} />
@@ -231,7 +238,7 @@ class ChatBar extends React.Component {
                           key={index} 
                           ref={this.chatList}
                           id="messageItem" 
-                          style={message.sender===this.props.clientName?{"textShadow": "2px 2px rgba(0, 68, 255, 0.5)"}:{}}
+                          style={message.sender===this.props.clientName?{"textShadow": "2px 2px rgba(0,212,255,0.5)"}:{}}
                         >
                           {message.sender===this.props.clientName?"you":message.sender}: {message.text}
                         </li>
