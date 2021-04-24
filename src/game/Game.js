@@ -1,4 +1,4 @@
-import { INVALID_MOVE } from 'boardgame.io/core';
+import { INVALID_MOVE, TurnOrder } from 'boardgame.io/core';
 
 //Debugging parameters
 var cardsInHand = 3; //default 3
@@ -55,7 +55,9 @@ function GetDeck() {
 
 export const SHED = {
     name: 'SHED',
-    setup: ctx => ({ 
+    setup: (ctx, setupData) => ({ 
+        settings: setupData,
+        startingOrder: Array(ctx.numPlayers),
         deck: GetDeck(),
         hands: Array(ctx.numPlayers).fill(Array(0)),
         benchs: Array(ctx.numPlayers).fill(Array(3).fill(Array(2))),
@@ -83,6 +85,7 @@ export const SHED = {
                 G.deck = ctx.random.Shuffle(G.deck);
                 initHand(G, ctx);
                 initBench(G, ctx);
+                setPlayingOrder(G, ctx);
                 if (emptyDeck===true) {G.deck = []};
                 ctx.events.setActivePlayers({
                     all: 'settingBench'
@@ -95,6 +98,7 @@ export const SHED = {
             
 
             turn: {
+                order: TurnOrder.CUSTOM_FROM('startingOrder'),
                 stages: {
                     settingBench: {
                         start: true,
@@ -111,6 +115,7 @@ export const SHED = {
         MainPhase:{
             next:'EndPhase',
             turn: { 
+                order: TurnOrder.CUSTOM_FROM('startingOrder'),
                 onBegin: (G, ctx) => { 
                     if (G.hands[ctx.currentPlayer].length > 0) {
                         if ( CanPlay(G, ctx) ) {
@@ -228,6 +233,34 @@ function GameOver(G, ctx) {
     G.winner = ctx.currentPlayer
     ctx.events.endPhase()
 }
+
+function LowestCardPlayer(G, ctx) { 
+    let lowestRank=15; //init high
+    let lowestPlayers = [];
+    for (let id=0; id < ctx.numPlayers; id++){
+        let hand = G.hands[id]
+        for (let i=0; i<hand.length; i++) {
+            let card = hand[i]
+            if (card.rank === lowestRank) { lowestPlayers.push(id) }
+            if (card.rank < lowestRank && !card.magic ) { lowestPlayers = [id]; lowestRank=card.rank }
+        }
+    }
+    return {lowestRank, lowestPlayers}
+}
+
+
+function setPlayingOrder(G, ctx) {
+    let first = LowestCardPlayer(G, ctx).lowestPlayers[0]
+    let playerOrder = [0, 1, 2, 3].slice(0, ctx.numPlayers);
+    for (let i=0; i<first; i++) {
+        let front = playerOrder.shift()
+        playerOrder.push(front)
+    };
+    G.startingOrder = playerOrder.map(String)
+}
+
+
+                
 
 
 function initBench (G, ctx) {

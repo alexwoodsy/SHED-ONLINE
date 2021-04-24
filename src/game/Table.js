@@ -665,7 +665,7 @@ export class SHEDtable extends React.Component {
         )
     }
     
-    render() {               
+    render() {           
         let thisPlayerNumber = parseInt(this.props.playerID);
         let playerNames=[];
         if (!DEBUGING_UI) {playerNames = this.props.matchData.map((player)=>{
@@ -692,7 +692,7 @@ export class SHEDtable extends React.Component {
                     /> 
                     <div id="overlay"/>
                     <this.EndOfGameOptions />
-                    <div id="Game">
+                    <div id={DEBUGING_UI?"GameDebugView":"Game"}>
                         <Stage x={this.state.screenx/4} y={0} width={this.state.screenx} height={this.state.screeny}>
                             <this.renderGrid />
                             <Layer>
@@ -721,7 +721,7 @@ export class SHEDtable extends React.Component {
                         isMobile={this.props.isMobile}
                     />
                     </div>
-                    <div id="Game">
+                    <div id={DEBUGING_UI?"GameDebugView":"Game"}>
                         <this.nameTags />
                         <Stage x={0} y={0} width={this.state.screenx} height={this.state.screeny}>
                             <this.renderGrid />

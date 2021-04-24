@@ -76,6 +76,17 @@
   
 }
 
+#GameDebugView {
+  font-family: Carn;
+  position: static;
+  width: 100%; /* Full width (cover the whole page) */
+  height: 1060; /* Full height (cover the whole page) */
+  top: 6%;
+  margin: 0;
+  padding:0;
+  
+}
+
 #slider {
   color: red;
   display: block;

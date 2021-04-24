@@ -102,7 +102,8 @@ export const Lobby = (props) => {
     const Create  = async () => {
         try {
             const { matchID } = await lobbyClient.createMatch('SHED', {
-                numPlayers: numberOfPlayers
+                numPlayers: numberOfPlayers,
+                setupData: {cutIns: true, danMode: false, playOnafterWin: false}
                 });
             setmatchID(matchID)
             setshowShareOptions(true)
