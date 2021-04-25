@@ -105,7 +105,8 @@ export const GameRoom = (props) => {
         const CreateNewMatch  = async () => {
             try {
                 const { matchID } = await lobbyClient.createMatch('SHED', {
-                    numPlayers: numPlayingAgain
+                    numPlayers: numPlayingAgain,
+                    setupData: JSON.parse(localStorage.getItem('setupData'))
                     });
                 return matchID;
             } catch(err) {

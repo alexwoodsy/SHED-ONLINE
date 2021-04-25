@@ -33,6 +33,18 @@
   border-radius: 25px;
 }
 
+.setupButton {
+  margin: auto;
+  font-size: 27px;
+  font-family: Carn;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.3); /* Black background with opacity */
+  border-radius: 25px;
+}
+
+
 #lobby {
   position: absolute;
   top: 50%;
@@ -88,7 +100,7 @@
 }
 
 #slider {
-  color: red;
+  color: rgba(15,15,134,1);
   display: block;
     margin-left: auto;
     margin-right: auto;
@@ -128,10 +140,10 @@
 #EndGameChoice { 
   position: relative;
   bottom: 0%;
-  font-size: 5vw;
+  font-size: 80%;
   font-family: Carn;
   width: 50%;
-  height: 6%;
+  height: 10vh;
   padding: 5px;
   background-color: rgba(255, 255, 255, 0.3); /* Black background with opacity */
   border-radius: 25px;
@@ -143,31 +155,55 @@
   top: 6%;
   justify-content: center;
   align-items: center;
+  font-size: 6vh;
+  font-family: Carn;
+  z-index: 2;
+  color: rgb(255, 255, 255);
+}
+
+#finishedMessage {
+  position: absolute;
+  bottom: 2%;
+  left: 50%;
+  justify-content: center;
+  text-align: center;
   font-size: 5vh;
   font-family: Carn;
-  width: 60%;
+  width: fit-content;
+  transform: translate(-50%, -50%);
+  display: "flex";
   z-index: 2;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.1);
+  background-color:rgba(255, 0, 0, 0.6);; /* Black background with opacity */
+  border-radius: 25px;
+  padding: 10px 10px;
   color: rgb(255, 255, 255);
 }
 
 .EndScreenImage {
   display: block;
-  left: 15%;
   margin-left: auto;
   margin-right: auto;
-  width: 60%;
+  height: 55vh; min-height: 120px;
+  max-height: 100vw;
 
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 #EndScreenMessage {
    text-align: center;
+   align-items: center;
   display: block;
-  margin-left: auto;
   margin-right: auto;
   width: 100%;
 }
-
+#EndScreenRankings {
+  position: relative;
+  width: 100%;
+  text-Align: left;
+  font-size: smaller;
+}
 
 
 
@@ -273,6 +309,9 @@ input[type=text]:focus {
   height: 100%;
 }
 #MenuButton {
+  position: absolute;
+  left: 2px;
+  top: 0px;
   padding: 0;
   width: 6vh;
   height: 100%;
@@ -347,8 +386,12 @@ li:active {
 }
 
 #ChatButton {
+  position: absolute;
+  right: 2px;
+  top: 0px;
+  padding: 0;
   width: 6vh;
-  height: 6vh;
+  height: 100%;
   border: 0;
   background: transparent;
   background-image: url(/src/images/icons/chat.png);

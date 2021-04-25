@@ -226,40 +226,37 @@ export const SevenChoiceInstruction = (props) => {
 };
 
 export const GameOver = (props) => {
-  let winnerID = props.winnerID;
-  let matchData = props.matchData;
-  let playerID = props.playerID;
-  let winner = null;
-  let losers = [];
-
-  for (let i = 0; i < matchData.length; i++) {
-    if (i !== parseInt(winnerID)) {
-      losers.push(matchData[i]);
-    } else {
-      winner = matchData[i];
-    }
-  }
-
-  let loserNames = [];
-  losers.forEach((element) => {
-    loserNames.push(element.name);
-  });
-
-  const mobileStyle = {
-    width: "100%",
+  let namesOrdered = []
+  
+  for (let i=0; i < props.winningOrder.length; i++) {
+    namesOrdered.push(props.playerNames[parseInt(props.winningOrder[i])])
   };
 
-  if (playerID === winner.id) {
-    return (
-      <div id="EndScreenMessage">
-        <img
-          className="EndScreenImage"
-          src={winnerScreen}
-          alt={wood}
-          style={props.isMobile ? mobileStyle : {}}
-        />
-        Well done {winner.name}, you won!
+
+  const Rankings = () => (
+    <div id="EndScreenRankings" >loosing order:
+        <div>
+          {namesOrdered.slice(1, namesOrdered.length).map((name, index)=>{
+            return <div key={index}>{index+2}. {name}</div> 
+          })}
+        </div>
       </div>
+  )
+
+  if (Number(props.playerID) === Number(props.winningOrder[0])) {
+    return (
+      <div>
+        <div id="EndScreenMessage">
+          <img
+            className="EndScreenImage"
+            src={winnerScreen}
+            alt={wood}
+          />
+          Well done {namesOrdered[0]}, you won!
+          {namesOrdered.length>1 && (<Rankings />)}
+        </div>
+      </div>
+      
     );
   } else {
     return (
@@ -268,13 +265,61 @@ export const GameOver = (props) => {
           className="EndScreenImage"
           src={loserScreen}
           alt={wood}
-          style={props.isMobile ? mobileStyle : {}}
         />
-        Unlucky, you lost! {winner.name} Won!
+        Unlucky, you lost! {namesOrdered[0]} Won!
+        {namesOrdered.length>1 && (<Rankings />)}
       </div>
     );
   }
 };
+
+export class FinishedMessage extends React.Component {
+  constructor (props) {
+    super(props);
+    this.state = {
+      show: false,
+    };
+    this.interval = null;
+  }
+
+  componentDidUpdate (prevProps) {
+    if (prevProps.winningOrder!==this.props.winningOrder && this.props.winningOrder.length !==0) {
+      this.setState({
+        show: true
+      })
+
+      this.interval = setTimeout(
+        () => this.setState({
+          show: false
+        }), 5000
+      );
+    }
+  }
+
+    
+  render() {
+    let winningOrder = this.props.winningOrder
+    let place = winningOrder.length.toString()
+    let finishedPosition = place === "1" ? "1st" : place ==="2" ? "2nd": place==="3" ? "3rd": place==="4"? "4th": "" 
+    let finishedPlayerID = winningOrder[winningOrder.length-1]
+    let finishedName = this.props.playerNames[finishedPlayerID]
+    
+    let finishedMessage = `Well done ${finishedName}! you came ${finishedPosition}! Waiting for others to finish...`
+    let otherMessage = `${finishedName} has finished ${finishedPosition}! keep on going...`
+
+    if (this.state.show) {
+      return (
+        <div id="finishedMessage" style={this.props.player === finishedPlayerID?{backgroundColor:"rgba(9, 255, 0, 0.6)"}:{}}>
+          {this.props.player === finishedPlayerID? finishedMessage : otherMessage}
+        </div>
+        )
+    } else {
+      return null;
+    }
+  }
+  
+}
+
 
 export const Instructions = (props) => {
   let [waiting] = useImage(waitingImg);

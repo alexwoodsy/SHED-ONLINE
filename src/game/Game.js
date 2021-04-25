@@ -1,10 +1,12 @@
 import { INVALID_MOVE, TurnOrder } from 'boardgame.io/core';
+import { DEBUGING_UI } from '../config';
 
 //Debugging parameters
 var cardsInHand = 3; //default 3
 var emptyDeck = false; //false
 var handOf = null; //default null
 var endGame = false; //default false
+var debugGameSettings = {cutIns: false, danMode: false, playOnafterWin: false}; //only used in debug mode
 
 const constructCard = (suit, rank) => {
     const isMagic = () => {
@@ -56,7 +58,7 @@ function GetDeck() {
 export const SHED = {
     name: 'SHED',
     setup: (ctx, setupData) => ({ 
-        settings: setupData,
+        settings: DEBUGING_UI ? debugGameSettings : setupData,
         startingOrder: Array(ctx.numPlayers),
         deck: GetDeck(),
         hands: Array(ctx.numPlayers).fill(Array(0)),
@@ -69,7 +71,7 @@ export const SHED = {
         hasTen: false,
         playingAgain: Array(ctx.numPlayers),
         newMatchID: null,
-        winner: null,
+        winningOrder: [],
         hostClient: null,       
      }),
 
@@ -85,7 +87,7 @@ export const SHED = {
                 G.deck = ctx.random.Shuffle(G.deck);
                 initHand(G, ctx);
                 initBench(G, ctx);
-                setPlayingOrder(G, ctx);
+                setStartingOrder(G, ctx);
                 if (emptyDeck===true) {G.deck = []};
                 ctx.events.setActivePlayers({
                     all: 'settingBench'
@@ -115,7 +117,17 @@ export const SHED = {
         MainPhase:{
             next:'EndPhase',
             turn: { 
-                order: TurnOrder.CUSTOM_FROM('startingOrder'),
+                order: {
+                    first: (G, ctx) => Number(G.startingOrder[0]),
+                    next: (G, ctx) => {
+                        if (G.settings.playOnafterWin && ctx.numPlayers > 2) {
+                            return nextPlayerNotFinished(G, ctx)
+                        }
+                        return (ctx.playOrderPos + 1) % ctx.numPlayers
+                    },
+                },
+
+
                 onBegin: (G, ctx) => { 
                     if (G.hands[ctx.currentPlayer].length > 0) {
                         if ( CanPlay(G, ctx) ) {
@@ -132,10 +144,6 @@ export const SHED = {
                             ctx.events.setActivePlayers({currentPlayer: 'pickup'});
                         };
                     };
-
-                    if (endGame) {
-                        GameOver(G, ctx)
-                    }
                 },
                 
                 
@@ -187,10 +195,7 @@ export const SHED = {
             },
         },
     },
-  };
-
-
-
+};
 
 
 function orderHand(G, ctx) {
@@ -225,13 +230,54 @@ function playAgain(G, ctx, choice, player) {
     }
 }
 
+
+
 function setnewMatchID(G, ctx, matchID) {
     G.newMatchID = matchID 
 }
 
-function GameOver(G, ctx) {
-    G.winner = ctx.currentPlayer
-    ctx.events.endPhase()
+function nextPlayerNotFinished(G, ctx) {
+    let player = ctx.currentPlayer
+    let playerFinished = G.winningOrder.includes(player) 
+    console.log("current player done", playerFinished)
+    let remainingPlayers = ctx.playOrder.filter((element)=>{
+        return !G.winningOrder.includes(element) || G.winningOrder.includes(player) 
+    })
+
+    let playerIndex = remainingPlayers.indexOf(player)
+    
+
+    for (let i=0; i< playerIndex; i++) {
+        let front = remainingPlayers.shift()
+        remainingPlayers.push(front)
+    }
+
+    
+
+    console.log("remaining", remainingPlayers)
+    console.log("current", player, "next calculated", Number(remainingPlayers[1]))
+    return Number(remainingPlayers[1]);
+}
+
+function playerFinished(G, ctx) {
+    console.log('finished')
+    if (G.settings.playOnafterWin && ctx.numPlayers > 2) {
+        G.winningOrder.push(ctx.currentPlayer)
+        ctx.events.endTurn();
+        console.log("before if",G.winningOrder.length)
+        if (G.winningOrder.length === ctx.numPlayers-1) {
+            //add remaining
+            let remainingPlayer = ctx.playOrder.filter((element)=>{
+                return !G.winningOrder.includes(element)
+            })
+            G.winningOrder = G.winningOrder.concat(remainingPlayer)
+            ctx.events.endPhase()
+        }
+
+    } else {
+        G.winningOrder.push(ctx.currentPlayer)
+        ctx.events.endPhase()
+    }
 }
 
 function LowestCardPlayer(G, ctx) { 
@@ -249,7 +295,7 @@ function LowestCardPlayer(G, ctx) {
 }
 
 
-function setPlayingOrder(G, ctx) {
+function setStartingOrder(G, ctx) {
     let first = LowestCardPlayer(G, ctx).lowestPlayers[0]
     let playerOrder = [0, 1, 2, 3].slice(0, ctx.numPlayers);
     for (let i=0; i<first; i++) {
@@ -334,6 +380,7 @@ function DrawCard(G, ctx) {
   
 function PlayCard(G, ctx, position) {  
     let card = G.hands[ctx.currentPlayer][position]
+    //debugging end game instantly
     if ( MoveValid(G, ctx, card) ) {
         let card = G.hands[ctx.currentPlayer].splice(position, 1)[0]
         card.LastPlayedBy = ctx.currentPlayer;
@@ -353,15 +400,19 @@ function PlayCard(G, ctx, position) {
 
         
         //end of play behaviour
-       if (CanPlayAgain(G, ctx) === false) {
-           //update gamestate if card(s) played have magic behaviour
-            MoveIsMagic(G, ctx)
-            EndPlay(G, ctx); 
-       }; 
+        if (CanPlayAgain(G, ctx) === false) {
+            //update gamestate if card(s) played have magic behaviour
+                MoveIsMagic(G, ctx)
+                EndPlay(G, ctx); 
+        }; 
 
+        //Debuuging end game (say this player has finsihed if they play a 4)
+        if (endGame && card.rank===4) { 
+            playerFinished(G, ctx)
+        }
        //handle playing last card in hand 
        if (G.hands[ctx.currentPlayer].length===0 && (BenchPlayable(G, ctx).layer===0 && BenchPlayable(G, ctx).positions.length ===0)) {
-            GameOver(G, ctx);
+            playerFinished(G, ctx);
        } else if (G.hands[ctx.currentPlayer].length===0 && G.deck.length===0) {
             MoveIsMagic(G, ctx)
             if (G.magicEvent.type ==="Higher or lower") {
@@ -444,7 +495,7 @@ function PlayBench(G, ctx, position) {
         G.hasTen = hasTen(G, ctx)
 
         if (BenchPlayable(G, ctx).layer===0 && BenchPlayable(G, ctx).positions.length ===0) {
-            GameOver(G, ctx);
+            playerFinished(G, ctx);
         } else if (CanPlayAgainBench(G, ctx) === false) {
             MoveIsMagic(G, ctx)
             EndPlay(G, ctx); 

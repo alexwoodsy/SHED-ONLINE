@@ -1,20 +1,21 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { LobbyClient } from 'boardgame.io/client';
 import { DEFAULT_PORT, APP_PRODUCTION } from "../config";
-import Slider from '@material-ui/core/Slider';
+import { Slider, Checkbox } from '@material-ui/core/';
 import "./Style.css"
 
 const { origin, protocol, hostname } = window.location;
 const SERVER = APP_PRODUCTION ? origin : `${protocol}//${hostname}:${DEFAULT_PORT}`;
 
 
-function saveClientData(playerID, MatchID, numberOfPlayers, playerName, playerCredentials, lobbyClient) {
+function saveClientData(playerID, MatchID, numberOfPlayers, playerName, playerCredentials, setupData) {
     console.log("saving number of players", numberOfPlayers)
     localStorage.setItem("playerID", playerID);
     localStorage.setItem("MatchID", MatchID);
     localStorage.setItem("numberOfPlayers", numberOfPlayers);
     localStorage.setItem("playerName", playerName);
     localStorage.setItem("playerCredentials", playerCredentials);
+    localStorage.setItem("setupData", JSON.stringify(setupData));
     //clear once joined
     localStorage.removeItem("newMatchID")
     localStorage.removeItem("previousPlayerName")
@@ -26,6 +27,10 @@ export const Lobby = (props) => {
     const [playerName, setplayerName] = useState('')
     const [numberOfPlayers, setnumberOfPlayers] = useState(2)
     const [joining, setjoining] = useState(false)
+    const [danMode, setdanMode] = useState(false)
+    const [playOnafterWin, setplayOnafterWin] = useState(false)
+    const [cutIns, setcutIns] = useState(false)
+
     const showCreateMatch = useRef(true)
     const [showShareOptions, setshowShareOptions] = useState(false)
     let lobbyClient = useMemo(()=> new LobbyClient({ server: SERVER }), [])//empty dependency means init once
@@ -65,7 +70,7 @@ export const Lobby = (props) => {
                     numPlayersMatchJoining, 
                     playerName, 
                     playerCredentials,
-                    lobbyClient
+                    {cutIns: cutIns, danMode: danMode, playOnafterWin: playOnafterWin}
                 )
                 props.history.push("/shed/"+matchID) 
             }
@@ -75,7 +80,7 @@ export const Lobby = (props) => {
             ConnectClient()  
         };
         
-    }, [joining, playerName, lobbyClient, matchID, props.history])
+    }, [joining, playerName, lobbyClient, matchID, playOnafterWin, cutIns, danMode, props.history])
 
     //on mount check if the player has a newmatch or has joined via a redirect
     useEffect(()=>{
@@ -103,7 +108,7 @@ export const Lobby = (props) => {
         try {
             const { matchID } = await lobbyClient.createMatch('SHED', {
                 numPlayers: numberOfPlayers,
-                setupData: {cutIns: true, danMode: false, playOnafterWin: false}
+                setupData: {cutIns: cutIns, danMode: danMode, playOnafterWin: playOnafterWin}
                 });
             setmatchID(matchID)
             setshowShareOptions(true)
@@ -127,7 +132,8 @@ export const Lobby = (props) => {
         setnumberOfPlayers(value)
         event.preventDefault()
     }
-  
+    
+    
     function handleJoin (event) {
         if (playerName.length > 20) {
             alert('Name is too long! (must be <20 chars')
@@ -148,11 +154,18 @@ export const Lobby = (props) => {
         Create()
     }
 
+   
     return (
         <div id={props.isMobile? "mobileLobby": "lobby"}>
             {showCreateMatch.current && <CreateMatch
                 onChangeCreateMatch={handleCreateMatch}
                 onChangeNumberOfPlayers={handleChangeNumberOfPlayers}
+                danMode={danMode}
+                playOnafterWin={playOnafterWin}
+                cutIns={cutIns}
+                onChangeDanMode={()=>setdanMode(!danMode)}
+                onChangePlayAgainafterWin={()=>setplayOnafterWin(!playOnafterWin)}
+                onChangeCutIns={()=>setcutIns(!cutIns)}
             />}
             <JoinMatch
                 playerName={playerName} 
@@ -204,6 +217,11 @@ const JoinMatch = (props) => {
 }
 
 const CreateMatch = (props) => {
+    const [showExtraOptions, setshowExtraOptions] = useState(false)
+    const changeShowExtraOptions = () => {
+        setshowExtraOptions(!showExtraOptions)
+    }
+    
     return(
     <div>
         <h2>Create Match</h2>
@@ -220,7 +238,35 @@ const CreateMatch = (props) => {
                 max={4}
             />
         </label>
-        
+        <button className="setupButton" onClick={changeShowExtraOptions}>
+            show extra options
+        </button>
+        {showExtraOptions && (
+        <div>
+            <Checkbox 
+                color="default"
+                checked={props.playOnafterWin}
+                onChange={props.onChangePlayAgainafterWin}
+                inputProps={{ 'aria-label': 'checkbox with default color' }}
+            />
+            Play on after win
+            <br/>
+            <Checkbox 
+                color="default"
+                checked={props.danMode}
+                onChange={props.onChangeDanMode}
+                inputProps={{ 'aria-label': 'checkbox with default color' }}
+            />
+            Dan mode (7 is magic)
+            <br/>
+            <Checkbox 
+                color="default"
+                checked={props.cutIns}
+                onChange={props.onChangeCutIns}
+                inputProps={{ 'aria-label': 'checkbox with default color' }}
+            />
+            Cut Ins   
+        </div>)}
         <button className="bigButton" onClick={props.onChangeCreateMatch}>
             Create match
         </button>

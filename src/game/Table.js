@@ -3,7 +3,7 @@ import {Layer, Group, Stage, Text, Line } from 'react-konva';
 import Menu from './Menu'
 import { Pending } from '../pages/gameroom'
 import { CardImage, CardRenderParam } from './card';
-import { MagicEvent, BenchReadyButton, SevenChoiceInstruction, Instructions, EndTurnButton, GameOver } from './gameUI'
+import { MagicEvent, BenchReadyButton, SevenChoiceInstruction, Instructions, EndTurnButton, GameOver, FinishedMessage } from './gameUI'
 import { DEBUGING_UI } from '../config';
 import "../pages/Style.css"
 
@@ -566,37 +566,35 @@ export class SHEDtable extends React.Component {
             }
         } 
         
-        const mobileStyle = {
-            width: "100%" 
-         }
-
         if (playerPlayingAgain===false) {
             return (
-                <div id="EndScreen" style={this.props.isMobile?mobileStyle:{}} >
-                    <GameOver 
-                        winnerID={this.props.G.winner}
-                        matchData={this.props.matchData}
-                        playerID={thisPlayerNumber}
-                        isMobile={this.props.isMobile}
-                    /> 
                 <div>
-                    <button id="EndGameChoice" onClick={()=>this.handlePlayAgain(true)}>
-                        play again
-                    </button>
-                    <button id="EndGameChoice" onClick={()=>this.handlePlayAgain(false)}>
-                        Leave
-                    </button>
+                    <div id="overlay"/>
+                    <div id="EndScreen" >
+                        <GameOver 
+                            playerNames={this.state.playerNames}
+                            winningOrder={this.props.G.winningOrder}
+                            playerID={thisPlayerNumber}
+                            isMobile={this.props.isMobile}
+                        /> 
+                        <div>
+                            <button id="EndGameChoice" onClick={()=>this.handlePlayAgain(true)}>
+                                play again
+                            </button>
+                            <button id="EndGameChoice" onClick={()=>this.handlePlayAgain(false)}>
+                                Leave
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                </div>
-                
             ) 
         } else if (this.state.showWaitingForOthers) {
             return (
                 <div>
-                    <div id="EndScreen" style={this.props.isMobile?mobileStyle:{}}>
+                    <div id="EndScreen" >
                     <GameOver 
-                        winnerID={this.props.G.winner}
-                        matchData={this.props.matchData}
+                        playerNames={this.state.playerNames}
+                        winningOrder={this.props.G.winningOrder}
                         playerID={thisPlayerNumber}
                         isMobile={this.props.isMobile}
                     /> 
@@ -665,16 +663,14 @@ export class SHEDtable extends React.Component {
         )
     }
     
-    render() {           
+    render() {       
         let thisPlayerNumber = parseInt(this.props.playerID);
-        let playerNames=[];
-        if (!DEBUGING_UI) {playerNames = this.props.matchData.map((player)=>{
-            return player.name
-        })}
+        let playerNames= [];
+        if (!DEBUGING_UI) {playerNames = this.state.playerNames}
         if (this.props.ctx.phase === "EndPhase"  && DEBUGING_UI) {
             return (
                 <div>
-                 <h1> player {this.props.G.winner}  won! </h1>
+                 <h1> player {this.props.G.winningOrder[0]}  won! </h1>
              </div>
             )
         }
@@ -690,10 +686,9 @@ export class SHEDtable extends React.Component {
                         matchID={this.props.matchID} 
                         isMobile={this.props.isMobile}
                     /> 
-                    <div id="overlay"/>
                     <this.EndOfGameOptions />
                     <div id={DEBUGING_UI?"GameDebugView":"Game"}>
-                        <Stage x={this.state.screenx/4} y={0} width={this.state.screenx} height={this.state.screeny}>
+                    <Stage x={0} y={0} width={this.state.screenx} height={this.state.screeny}>
                             <this.renderGrid />
                             <Layer>
                                 <this.renderDeck /> 
@@ -723,6 +718,12 @@ export class SHEDtable extends React.Component {
                     </div>
                     <div id={DEBUGING_UI?"GameDebugView":"Game"}>
                         <this.nameTags />
+                        {this.props.G.settings.playOnafterWin && (
+                        <FinishedMessage 
+                            playerNames={playerNames}
+                            winningOrder={this.props.G.winningOrder}
+                            player={this.props.playerID}
+                        />)}
                         <Stage x={0} y={0} width={this.state.screenx} height={this.state.screeny}>
                             <this.renderGrid />
                             <Layer>
