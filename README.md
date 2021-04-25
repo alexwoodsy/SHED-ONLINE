@@ -188,7 +188,7 @@ Project Link: [https://github.com/alexwoodsy/SHED-ONLINE](https://github.com/ale
 <!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements
 
-* Big thanks to Harry Collins for drawing the lovely grpahics
+* Big thanks to Harry Collins for drawing the lovely graphics
 
 
 
