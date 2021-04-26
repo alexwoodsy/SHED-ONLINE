@@ -104,7 +104,7 @@ class MenuDropdown extends React.Component {
                     10 = Burns the deck <img id="rulesImage" src={burn} alt={''}/>
                     <br/>
                     7 = You get to choose if the next player has to go higher or lower
-                      than a 7. This CANNOT be played on cards with rank {'>'} 7<img id="rulesImage" src={highlow} alt={''}/> <br/>
+                      than a 7. This CANNOT be played on cards with rank {'>'} 7 (unless playing in Dan mode)<img id="rulesImage" src={highlow} alt={''}/> <br/>
                       <br/>
                       The deck is also burnt when all 4 suits of the same rank are in the pile<img id="rulesImage" src={ash} alt={''}/> </p>
                   </div>

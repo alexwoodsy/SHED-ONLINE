@@ -11,6 +11,9 @@ var debugGameSettings = {cutIns: false, danMode: false, playOnafterWin: false}; 
 const constructCard = (suit, rank) => {
     const isMagic = () => {
         let magic = [2, 3, 10]; 
+        if (debugGameSettings.danMode) {
+          magic = [2, 3, 7, 10];
+        }
         let magicCheck = false;
         for (let i=0; i < magic.length; i++) {
             if (magic[i] === rank) {
