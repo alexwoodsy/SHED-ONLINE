@@ -507,6 +507,7 @@ export class SHEDtable extends React.Component {
             currentPlayer={currentPlayer}
             phase={phase}
             player={player}
+            numPlayers={this.props.ctx.numPlayers}
             scale={this.state.cardScale}
             x={x}
             y={y}
@@ -757,6 +758,7 @@ export class SHEDtable extends React.Component {
                             </Layer>
                         </Stage>
                     </div>
+                    <div id ="table"/>
                 </div>
             );
          };

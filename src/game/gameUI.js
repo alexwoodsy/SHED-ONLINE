@@ -1,5 +1,5 @@
-import React, { useRef, useEffect } from "react";
-import { Image } from "react-konva";
+import React, { useRef, useEffect, useState } from "react";
+import { Image, Group } from "react-konva";
 import useImage from "use-image";
 //magic
 import burn from "../images/magicEvents/burn.png";
@@ -9,6 +9,7 @@ import reset from "../images/magicEvents/reset.png";
 //ui
 import wood from "../images/UI/wood.png";
 import waitingImg from "../images/UI/Waiting.png";
+import waitingHandsImg from "../images/UI/WaitingHands.png";
 import yourTurnImg from "../images/UI/YourTurn.png";
 //end turn button
 import endTurn from "../images/UI/EndTurn.png";
@@ -323,36 +324,37 @@ export class FinishedMessage extends React.Component {
 
 export const Instructions = (props) => {
   let [waiting] = useImage(waitingImg);
+  let [waitingHands] = useImage(waitingHandsImg)
   let [yourTurn] = useImage(yourTurnImg);
   let currentPlayer = props.currentPlayer;
   let phase = props.phase;
   let player = props.player;
+  let numPlayers = props.numPlayers
   let x = props.x;
   let y = props.y;
   let scale = props.scale * 10;
-  const waitingRef = useRef(null);
+  const handsRef = useRef(null)
+  
+  useEffect(()=>{
+   // sethandPosition(Number(currentPlayer))
+  }, [currentPlayer])
 
-  useEffect(() => {
-    let counter;
-    const onHover = () => {
-      counter = setTimeout(() => {
-        console.log(player);
-      }, 500);
-    };
+  useEffect(()=>{
+    const rotateHand = () => {
+      handsRef.current.to({
+        rotation: (Number(currentPlayer)+1)*90,
+        duration: (Number(currentPlayer)+1)
+      })
 
-    const stopCounter = () => {
-      clearTimeout(counter);
-    };
-
-    if (waitingRef.current !== null) {
-      waitingRef.current.on("mouseover", () => onHover());
-      waitingRef.current.on("mouseout", () => stopCounter());
     }
 
-    return () => {
-      stopCounter();
-    };
-  }, [waitingRef, player]);
+    if (handsRef.current !== null) {
+      rotateHand()
+    }
+
+  }, [handsRef, currentPlayer, numPlayers])
+
+  
 
   if (phase === "StartPhase") {
     return null;
@@ -377,16 +379,40 @@ export const Instructions = (props) => {
       let width = scale * imageRatio(waiting);
       let height = scale;
       y = y - height / 2;
+
+      let widthHands  = scale/4 * imageRatio(waitingHands)
+      let heightHands = scale/4
+      let xoffset = 2*widthHands/5
+      let yoffset = 9*heightHands/10
+      let xHands= x + width/2 -xoffset
+      let yHands = y  + height/2 +yoffset/2
+
       return (
-        <Image
-          ref={waitingRef}
-          image={waiting}
-          x={x}
-          y={y}
-          width={width}
-          height={height}
-          shadowBlur={props.shadowBlur}
-        />
+        <Group>
+          <Image
+            image={waiting}
+            x={x}
+            y={y}
+            width={width}
+            height={height}
+            shadowBlur={props.shadowBlur}
+          />
+          <Image
+            ref={handsRef}
+            image={waitingHands}
+            x={xHands}
+            y={yHands}
+            width={widthHands}
+            height={heightHands}
+            rotation={0}
+            offset={{
+              x: xoffset,
+              y: yoffset
+            }}
+            shadowBlur={props.shadowBlur}
+          />
+      </Group>
+        
       );
     }
   } else {
