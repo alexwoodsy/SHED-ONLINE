@@ -6,7 +6,7 @@ var cardsInHand = 3; //default 3
 var emptyDeck = false; //false
 var handOf = null; //default null
 var endGame = false; //default false
-var debugGameSettings = {cutIns: false, danMode: false, playOnafterWin: false}; //only used in debug mode
+var debugGameSettings = {cutIns: true, danMode: false, playOnafterWin: false}; //only used in debug mode
 
 const constructCard = (suit, rank) => {
     const isMagic = () => {
@@ -90,7 +90,6 @@ export const SHED = {
                 G.deck = ctx.random.Shuffle(G.deck);
                 initHand(G, ctx);
                 initBench(G, ctx);
-                setStartingOrder(G, ctx);
                 if (emptyDeck===true) {G.deck = []};
                 ctx.events.setActivePlayers({
                     all: 'settingBench'
@@ -100,10 +99,12 @@ export const SHED = {
                     ctx.events.endPhase()
                 }
             },
+            onEnd: (G, ctx) => {
+                setStartingOrder(G, ctx); 
+            },
             
 
             turn: {
-                order: TurnOrder.CUSTOM_FROM('startingOrder'),
                 stages: {
                     settingBench: {
                         start: true,
