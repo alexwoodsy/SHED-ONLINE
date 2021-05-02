@@ -6,7 +6,7 @@ var cardsInHand = 3; //default 3
 var emptyDeck = false; //false
 var handOf = null; //default null
 var endGame = false; //default false
-var debugGameSettings = {cutIns: true, danMode: false, playOnafterWin: false}; //only used in debug mode
+var debugGameSettings = {cutIns: true, danMode: true, playOnafterWin: false}; //only used in debug mode
 
 const constructCard = (suit, rank) => {
     const isMagic = () => {
@@ -712,7 +712,7 @@ function SevenChoice(G, ctx, choice) { //TEST IF THIS FIX WORKED
     G.sevenHighLow = choice;
     if (G.deck.length === 0) {
         ctx.events.endTurn();
-    } else if (!needToDraw(G, ctx)) {
+    } else if (!needToDraw(G, ctx) && G.hands[ctx.currentPlayer].length >=3) {
         ctx.events.endTurn();
     } else {
         ctx.events.setStage('draw');
