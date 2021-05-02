@@ -90,7 +90,7 @@ export class CutInEvent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      show: true,
+      show: false,
       player: null
     };
 
@@ -98,10 +98,13 @@ export class CutInEvent extends React.Component {
   }
 
   getCutInEvent = () => {
-    this.setState({
-      show: this.props.cutIn.cutInOccured,
-      player: this.props.cutIn.playerCuttingIn
-    });
+    if (this.props.cutIn.cutInOccured) {
+      this.setState({
+        show: true,
+        player: this.props.cutIn.playerCuttingIn
+      });
+    }
+    
 
     this.interval = setTimeout(
       () => this.setState({ show: false, player: null }),

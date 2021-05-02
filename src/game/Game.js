@@ -469,6 +469,25 @@ function PickupTable(G, ctx) {
     }
 };
 
+function needToDraw (G, ctx) {
+    let PlayersNeedToDraw = [];
+    for (let i=0; i< ctx.numPlayers; i++) {
+        let stage = ctx.activePlayers[i]
+        if (stage === 'draw' && (G.hands[i].length >= 3 || G.deck.length === 0)) {
+            orderHand(G, ctx)
+            PlayersNeedToDraw.push(false)
+        } else if (stage === 'draw') {
+            PlayersNeedToDraw.push(true)
+        }
+    }
+    
+    if (PlayersNeedToDraw.every(elem=> !elem)) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
 
 function DrawCard(G, ctx, player) {
     if (G.deck.length === 0 || G.hands[player].length >= 3  ) {
@@ -479,23 +498,9 @@ function DrawCard(G, ctx, player) {
     updateCardLocation(card, 'hand')
     G.hands[player].push( card  ) 
     
-    //determine whether to end turn
-    let needToDraw = [];
-    for (let i=0; i< ctx.numPlayers; i++) {
-        let stage = ctx.activePlayers[i]
-        if (stage === 'draw' && (G.hands[i].length >= 3 || G.deck.length === 0)) {
-            orderHand(G, ctx)
-            needToDraw.push(false)
-        } else if (stage === 'draw') {
-            needToDraw.push(true)
-        }
-    }
-    
-
-    if (needToDraw.every(elem=> !elem)) {
+    if (!needToDraw(G, ctx)) {
         ctx.events.endTurn()
     }
-    
     
 }
 
@@ -703,11 +708,11 @@ function EndPlay(G, ctx) {
     }; 
 };
 
-function SevenChoice(G, ctx, choice) {
+function SevenChoice(G, ctx, choice) { //TEST IF THIS FIX WORKED
     G.sevenHighLow = choice;
     if (G.deck.length === 0) {
         ctx.events.endTurn();
-    } else if (G.hands[ctx.currentPlayer].length >=3 || G.deck.length===0) {
+    } else if (!needToDraw(G, ctx)) {
         ctx.events.endTurn();
     } else {
         ctx.events.setStage('draw');

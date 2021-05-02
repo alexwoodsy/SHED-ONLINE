@@ -458,7 +458,7 @@ export class SHEDtable extends React.Component {
         
         
         if ((stage==='play' || stage==='playBench') &&
-        numMoves >=1 && 
+        (numMoves >=1 || this.props.G.cutInInfo.playerCuttingIn === Number(this.props.playerID)) && 
         this.props.playerID === this.props.ctx.currentPlayer 
         && (this.props.G.magicEvent.type!=='burning' || hasTen)
         ) {
