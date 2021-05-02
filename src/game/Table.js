@@ -3,7 +3,7 @@ import {Layer, Group, Stage, Text, Line } from 'react-konva';
 import Menu from './Menu'
 import { Pending } from '../pages/gameroom'
 import { CardImage, CardRenderParam } from './card';
-import { MagicEvent, BenchReadyButton, SevenChoiceInstruction, Instructions, EndTurnButton, GameOver, FinishedMessage } from './gameUI'
+import { MagicEvent, BenchReadyButton, SevenChoiceInstruction, Instructions, EndTurnButton, GameOver, FinishedMessage, CutInEvent } from './gameUI'
 import { DEBUGING_UI } from '../config';
 import "../pages/Style.css"
 
@@ -55,7 +55,7 @@ export class SHEDtable extends React.Component {
         document.removeEventListener("newMatchCreated", this.handleNewMatch )
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps) {       
         //when all players have made a choice dispatch num of players for new match
         if (this.props.ctx.phase === "EndPhase" && (this.props.G.hostClient !== prevProps.G.hostClient) ) {
             if (this.props.G.hostClient===this.props.playerID) {
@@ -85,7 +85,9 @@ export class SHEDtable extends React.Component {
     clickCard = (type, position, player) => {
         let thisPlayerNumber = parseInt(this.props.playerID); 
         if(type === 'draw') {
-             this.props.moves.DrawCard()
+             this.props.moves.DrawCard(player)
+        }else if(type === 'cutIn') {
+            this.props.moves.CutIn(player, position)
         } else if(type === 'play' && player===thisPlayerNumber) {
             this.props.moves.PlayCard(position)
         } else if (type==='takeBench' && player===thisPlayerNumber) {
@@ -141,6 +143,7 @@ export class SHEDtable extends React.Component {
 
     renderHand = (props) => {
         let thisPlayerNumber = parseInt(this.props.playerID);
+        
         let stage = this.props.ctx.activePlayers[this.props.ctx.currentPlayer];
         let x = this.state.screenx/2
         let y =0
@@ -181,7 +184,15 @@ export class SHEDtable extends React.Component {
                 //define click type for bench setting stage and normal game play
                 let phase = this.props.ctx.phase;
                 let clickAction;
-                if (phase === 'StartPhase') {clickAction = 'addBench'} else {clickAction = 'play'};
+                if (phase === 'StartPhase') {
+                    clickAction = 'addBench'
+                } else {
+                    if (this.props.ctx.currentPlayer !== this.props.playerID) {
+                        clickAction = 'cutIn'
+                    } else {
+                        clickAction = 'play'
+                    }
+                };
                 let key = hand[i] !== null ? hand[i].name : `${player}hand${i}`
                 if(hand[i] === null) { 
                 } else {
@@ -316,10 +327,10 @@ export class SHEDtable extends React.Component {
                     y={y} 
                     width={this.state.cardwidth} 
                     height={this.state.cardheight}
-                    onClick={()=>this.clickCard('draw')}
+                    onClick={()=>this.clickCard('draw', null, thisPlayerNumber)}
                     onTap={()=>this.clickCard('draw')}
                     shadowBlur={this.state.dropShadow}
-                    highlight={stage==="draw" ? "green" : null}
+                    highlight={(stage==="draw" && this.props.G.hands[thisPlayerNumber].length < 3) ? "green" : null}
                 />
             );
         } else {
@@ -500,12 +511,32 @@ export class SHEDtable extends React.Component {
         let player = parseInt(this.props.playerID)
         let currentPlayer = this.props.ctx.currentPlayer
         let phase = this.props.ctx.phase;
+        let stage = this.props.ctx.activePlayers[player]
         let x = 3*this.state.screenx/4 
         let y = 3*this.state.screeny/4
+        let instruction = "waiting"
+        
+        if (stage==="draw" && this.props.G.hands[player].length < 3) {
+            instruction = "playing"
+        }
+
+        if (player.toString() === currentPlayer) {
+            instruction = "playing"
+        }
+        
+        if (player.toString() === currentPlayer && stage==="draw" && this.props.G.hands[player].length > 3) {
+            instruction = "waiting"
+        }
+
+
+        
+            
+        
         
         return( <Instructions
             currentPlayer={currentPlayer}
             phase={phase}
+            instruction={instruction}
             player={player}
             numPlayers={this.props.ctx.numPlayers}
             scale={this.state.cardScale}
@@ -751,6 +782,12 @@ export class SHEDtable extends React.Component {
                             <Layer>
                                 <MagicEvent 
                                     magicEvent={this.props.G.magicEvent} 
+                                    x={this.state.screenx/2} 
+                                    y={this.state.screeny/2}
+                                    scale={this.state.cardScale}
+                                />
+                                <CutInEvent 
+                                    cutIn={this.props.G.cutInInfo} 
                                     x={this.state.screenx/2} 
                                     y={this.state.screeny/2}
                                     scale={this.state.cardScale}

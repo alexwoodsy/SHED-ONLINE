@@ -22,6 +22,8 @@ import lowerArrow from "../images/magicEvents/LowerArrow.png";
 //gameover
 import winnerScreen from "../images/Winner.png";
 import loserScreen from "../images/Loser.png";
+//cutIn
+import cutIn from "../images/magicEvents/CutIn.png";
 
 const MagicImages = {
   burn: burn,
@@ -29,6 +31,7 @@ const MagicImages = {
   highOrLow: HighOrLow,
   reset: reset,
   wood: wood,
+  cutIn: cutIn
 };
 
 export function imageRatio(image) {
@@ -56,6 +59,9 @@ const MagicImage = (props) => {
     case "Higher or lower":
       img = MagicImages.highOrLow;
       break;
+    case "CutIn":
+      img = MagicImages.cutIn;
+      break;
     default:
       img = MagicImages.wood;
       break;
@@ -79,6 +85,60 @@ const MagicImage = (props) => {
     />
   );
 };
+
+export class CutInEvent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      show: true,
+      player: null
+    };
+
+    this.interval = null;
+  }
+
+  getCutInEvent = () => {
+    this.setState({
+      show: this.props.cutIn.cutInOccured,
+      player: this.props.cutIn.playerCuttingIn
+    });
+
+    this.interval = setTimeout(
+      () => this.setState({ show: false, player: null }),
+      2500
+    );
+  };
+
+  componentDidMount () {
+    this.getCutInEvent()
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.cutIn !== prevProps.cutIn) {
+      this.getCutInEvent();
+    }
+  }
+
+  render () {
+    return (<React.Fragment>
+        {this.state.show ? (
+          <MagicImage
+            magicEvent={{type: "CutIn"}}
+            x={this.props.x}
+            y={this.props.y}
+            scale={this.props.scale}
+            shadowBlur={15}
+          />
+        ) : null}
+      </React.Fragment>)
+  }
+
+
+}
 
 export class MagicEvent extends React.Component {
   constructor(props) {
@@ -326,19 +386,15 @@ export const Instructions = (props) => {
   let [waiting] = useImage(waitingImg);
   let [waitingHands] = useImage(waitingHandsImg)
   let [yourTurn] = useImage(yourTurnImg);
-  let currentPlayer = props.currentPlayer;
-  let phase = props.phase;
-  let player = props.player;
   let numPlayers = props.numPlayers
+  let currentPlayer = props.currentPlayer
+  let phase = props.phase
   let x = props.x;
   let y = props.y;
   let scale = props.scale * 10;
   const handsRef = useRef(null)
   
-  useEffect(()=>{
-   // sethandPosition(Number(currentPlayer))
-  }, [currentPlayer])
-
+ 
   useEffect(()=>{
     const rotateHand = () => {
       handsRef.current.to({
@@ -359,7 +415,7 @@ export const Instructions = (props) => {
   if (phase === "StartPhase") {
     return null;
   } else if (phase === "MainPhase") {
-    if (player.toString() === currentPlayer) {
+    if (props.instruction ==="playing") {
       // instructions for player making turn
       let width = scale * imageRatio(yourTurn);
       let height = scale;
@@ -374,7 +430,7 @@ export const Instructions = (props) => {
           shadowBlur={props.shadowBlur}
         />
       );
-    } else {
+    } else if (props.instruction === "waiting"){
       //instructions for everyone else
       let width = scale * imageRatio(waiting);
       let height = scale;
