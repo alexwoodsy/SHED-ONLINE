@@ -5,6 +5,7 @@ import invisible from '../images/magicEvents/Invis.png'
 import highlow from '../images/magicEvents/HighOrLow.png'
 import burn from '../images/magicEvents/burn.png'
 import ash from '../images/magicEvents/Ash_H.png'
+import { Checkbox } from '@material-ui/core/';
 
 
 const { origin } = window.location;
@@ -15,7 +16,8 @@ class MenuDropdown extends React.Component {
     state = {
         open: false,
         showRules: false,
-        showSharingMenu: false
+        showSharingMenu: false,
+        showInfo: false,
     }
 
     handleButtonClick = () => {
@@ -24,6 +26,7 @@ class MenuDropdown extends React.Component {
             open: !state.open,
             showRules: false,
             showSharingMenu: false,
+            showInfo: false
           };
         });
       };
@@ -32,6 +35,15 @@ class MenuDropdown extends React.Component {
       this.setState(state => {
         return {
           showRules: !state.showRules,
+          open: false,
+        };
+      });
+    }
+
+    handleInfoClick = () => {
+      this.setState(state => {
+        return {
+          showInfo: !state.showInfo,
           open: false,
         };
       });
@@ -57,6 +69,7 @@ class MenuDropdown extends React.Component {
             open: false,
             showRules: false,
             showSharingMenu: false,
+            showInfo: false,
           });
         }
       };
@@ -83,6 +96,7 @@ class MenuDropdown extends React.Component {
                         <li onClick={this.handleCopyMatchId}> 
                           {this.props.isMobile? "Link to Join Match": "Copy link to clipboard"}
                         </li>
+                        {this.props.matchInfo !== undefined && (<li onClick={this.handleInfoClick} >Match Info</li>)}
                     </ul>
                     </div>
                 )}
@@ -120,6 +134,31 @@ class MenuDropdown extends React.Component {
                           onFocus={(event)=>{event.target.select()}} 
                           value={`${origin}/matchLinkRedirect/${this.props.matchID}`} />
                     </div>
+                  </div>
+                )}
+                {this.state.showInfo && (
+                  <div className="LeftDropdown" >
+                    <h2>Game settings:</h2>
+                     <Checkbox 
+                        color="default"
+                        onClick={()=>{}}//disabled
+                        checked={this.props.matchInfo.playOnAfterWin}
+                      />
+                      Play on after win
+                      <br/>
+                      <Checkbox 
+                        color="default"
+                        onClick={()=>{}}//disabled
+                        checked={true}
+                      />
+                      Dan mode (7 is magic)
+                      <br/>
+                      <Checkbox 
+                        color="default"
+                        onClick={()=>{}}//disabled
+                        checked={true}
+                      />
+                      Cut Ins 
                   </div>
                 )}
             </div>

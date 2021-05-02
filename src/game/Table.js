@@ -714,6 +714,7 @@ export class SHEDtable extends React.Component {
                         sendChatMessage={this.props.sendChatMessage}
                         chatMessages={this.props.chatMessages} 
                         playerNames={playerNames}
+                        matchInfo={this.props.G.settings}
                         clientName={!DEBUGING_UI?this.props.matchData[this.props.playerID].name:'DEBUG'}
                         matchID={this.props.matchID} 
                         isMobile={this.props.isMobile}
@@ -743,6 +744,7 @@ export class SHEDtable extends React.Component {
                         sendChatMessage={this.props.sendChatMessage}
                         chatMessages={this.props.chatMessages} 
                         matchID={this.props.matchID} 
+                        matchInfo={this.props.G.settings}
                         playerNames={playerNames}
                         clientName={!DEBUGING_UI?this.props.matchData[this.props.playerID].name:'DEBUG'}
                         isMobile={this.props.isMobile}
