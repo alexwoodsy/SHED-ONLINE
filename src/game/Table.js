@@ -797,7 +797,7 @@ export class SHEDtable extends React.Component {
                             </Layer>
                         </Stage>
                     </div>
-                    <div id ="table"/>
+                    {/* <div id ="table"/> */}
                 </div>
             );
          };
