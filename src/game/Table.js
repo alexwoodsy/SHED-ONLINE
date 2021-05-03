@@ -297,8 +297,8 @@ export class SHEDtable extends React.Component {
                             height={this.state.cardheight}
                             player={player}
                             onClick={()=>this.clickCard(clickAction, j, player)}
-                            onTap={()=>this.clickCard(clickAction, j, player)}
                             shadowBlur={this.state.dropShadow}
+                            onTap={()=>this.clickCard(clickAction, j, player)}
                             highlight={highlight}
                         />
                     )
@@ -328,7 +328,7 @@ export class SHEDtable extends React.Component {
                     width={this.state.cardwidth} 
                     height={this.state.cardheight}
                     onClick={()=>this.clickCard('draw', null, thisPlayerNumber)}
-                    onTap={()=>this.clickCard('draw')}
+                    onTap={()=>this.clickCard('draw', null, thisPlayerNumber)}
                     shadowBlur={this.state.dropShadow}
                     highlight={(stage==="draw" && this.props.G.hands[thisPlayerNumber].length < 3) ? "green" : null}
                 />
