@@ -149,14 +149,14 @@ class MenuDropdown extends React.Component {
                       <Checkbox 
                         color="default"
                         onClick={()=>{}}//disabled
-                        checked={true}
+                        checked={this.props.matchInfo.DanMode}
                       />
                       Dan mode (7 is magic)
                       <br/>
                       <Checkbox 
                         color="default"
                         onClick={()=>{}}//disabled
-                        checked={true}
+                        checked={this.props.matchInfo.CutIn}
                       />
                       Cut Ins 
                   </div>
